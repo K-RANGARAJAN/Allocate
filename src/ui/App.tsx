@@ -1,6 +1,7 @@
 import { BreakdownTables } from "./components/BreakdownTables";
 import { ControlsPanel } from "./components/ControlsPanel";
 import { MetricGrid } from "./components/MetricGrid";
+import { TimelineChart } from "./charts/TimelineChart";
 import { PresetButtons } from "./components/PresetButtons";
 import { usePolicyRun } from "./state/usePolicyRun";
 
@@ -14,12 +15,23 @@ export function App() {
 
   let results = null;
   let tables = null;
+  let timeline = null;
   if (run.outcome !== null) {
     results = (
       <section className="panel">
         <h2 className="panel-title">Outcome</h2>
         <p className="panel-note">{status}</p>
         <MetricGrid metrics={run.outcome.metrics} stale={run.running} />
+      </section>
+    );
+
+    timeline = (
+      <section className="panel">
+        <h2 className="panel-title">Over the two years</h2>
+        <p className="panel-note">
+          Sampled by the engine at 26 points across the run, plotted as given.
+        </p>
+        <TimelineChart timeline={run.outcome.timeline} />
       </section>
     );
 
@@ -66,6 +78,7 @@ export function App() {
         <div className="stack">
           {placeholder}
           {results}
+          {timeline}
           {tables}
         </div>
       </div>

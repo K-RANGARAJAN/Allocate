@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 01:22 IST / a0280a3
+Updated: 2026-09-08 01:30 IST / 19a3708
 Building against contract version: 1.2.0
 
 ## Public surface I currently provide
@@ -18,6 +18,9 @@ on-demand calls are not wired yet.
 
 ## Done since last update
 
+- `charts/TimelineChart.tsx` plots `outcome.timeline` with Recharts — waitlist
+  size, cumulative transplants and cumulative deaths against day. You sample the
+  series yourself, so it is plotted as given, with no resampling on my side.
 - All four breakdown tables are in and wired. Verified against a real run at the
   default config: four age bands, three zones, two hospital types, and all four
   discard reasons with three of them sitting at zero and still rendered. The
