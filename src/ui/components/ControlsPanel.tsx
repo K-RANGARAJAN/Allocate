@@ -3,6 +3,7 @@ import type { Dispatch, SetStateAction } from "react";
 import type { PolicyConfig } from "../../contract/types";
 import { Select } from "./Select";
 import { Slider } from "./Slider";
+import { Toggle } from "./Toggle";
 
 export interface ControlsPanelProps {
   config: PolicyConfig;
@@ -105,6 +106,50 @@ export function ControlsPanel(props: ControlsPanelProps) {
           onChange={(next) =>
             setConstraint("localFirst", next as Constraints["localFirst"])
           }
+        />
+      </div>
+
+      <div className="control-group">
+        <span className="label">Constraints</span>
+        <Slider
+          label="Max cold ischemia"
+          value={config.constraints.maxColdIschemiaHours}
+          min={4}
+          max={36}
+          step={1}
+          suffix=" h"
+          onChange={(next) => setConstraint("maxColdIschemiaHours", next)}
+        />
+        <Slider
+          label="Minimum urgency to list"
+          value={config.constraints.minUrgencyToList}
+          min={0}
+          max={10}
+          step={1}
+          onChange={(next) => setConstraint("minUrgencyToList", next)}
+        />
+        <Slider
+          label="Retrieval hospital keeps"
+          value={config.constraints.retrievalHospitalKeeps}
+          min={0}
+          max={2}
+          step={1}
+          onChange={(next) => setConstraint("retrievalHospitalKeeps", next)}
+        />
+        <Toggle
+          label="Age matching"
+          checked={config.constraints.ageMatchingOn}
+          onChange={(next) => setConstraint("ageMatchingOn", next)}
+        />
+        <Toggle
+          label="Hospital rota"
+          checked={config.constraints.rotaEnabled}
+          onChange={(next) => setConstraint("rotaEnabled", next)}
+        />
+        <Toggle
+          label="Urgent supersedes rota"
+          checked={config.constraints.urgentSupersedesRota}
+          onChange={(next) => setConstraint("urgentSupersedesRota", next)}
         />
       </div>
     </section>

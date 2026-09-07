@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-07 23:52 IST / 43ee2f6
+Updated: 2026-09-08 00:01 IST / 05c33be
 Building against contract version: 1.2.0
 
 ## Public surface I currently provide
@@ -18,6 +18,9 @@ interface side is wired yet, so no engine export is being consumed by real UI.
 
 ## Done since last update
 
+- Constraints section added: cold ischemia ceiling, minimum urgency to list,
+  retrieval hospital keeps, and the three boolean constraints. All ranges taken
+  from the slider table in `docs/CONTRACT.md`.
 - Allocation controls added to the panel: `mode` across all three policies, and
   `localFirst`. I have your warning that `localFirst` binds every mode now, not
   just cascade, so it sits under Allocation rather than beside the cascade
