@@ -15,7 +15,12 @@ import type {
   ZoneId,
   ZoneRow
 } from "../contract/types";
-import type { SimulationLog } from "./model";
+import {
+  DISCARD_DECLINED,
+  DISCARD_ISCHEMIA,
+  DISCARD_NO_ELIGIBLE,
+  type SimulationLog
+} from "./model";
 
 export const STUB_TRANSPLANTS = 1180;
 export const STUB_ORGANS_DISCARDED = 96;
@@ -184,5 +189,74 @@ export function buildMetrics(log: SimulationLog): Metrics {
     meanColdIschemiaHours: round1(meanOf(coldTotal, count)),
     meanGraftQuality: round2(meanOf(qualityTotal, count)),
     regionGapPct: widestZoneGapPct(buildZoneRows(log))
+  };
+}
+
+// Exactly these four strings, in exactly this order. Person B's UI orders and
+// colours by them, so they do not change without a contract conversation.
+export const AGE_BANDS = ["18-39", "40-59", "60-69", "70+"];
+
+function ageBandOf(age: number): string {
+  if (age < 40) {
+    return "18-39";
+  }
+  if (age < 60) {
+    return "40-59";
+  }
+  if (age < 70) {
+    return "60-69";
+  }
+  return "70+";
+}
+
+function buildAgeBandRows(log: SimulationLog): AgeBandRow[] {
+  const rows: AgeBandRow[] = [];
+  for (const band of AGE_BANDS) {
+    const listed = log.listings.filter((row) => {
+      return ageBandOf(row.age) === band;
+    }).length;
+    const transplanted = log.transplants.filter((row) => {
+      return ageBandOf(row.age) === band;
+    }).length;
+    rows.push({ band, listed, transplanted, ratePct: ratePct(transplanted, listed) });
+  }
+  return rows;
+}
+
+function buildHospitalTypeRows(log: SimulationLog): HospitalTypeRow[] {
+  const types: HospitalType[] = ["government", "private"];
+  const rows: HospitalTypeRow[] = [];
+  for (const hospitalType of types) {
+    const listed = log.listings.filter((row) => {
+      return row.hospitalType === hospitalType;
+    }).length;
+    const transplanted = log.transplants.filter((row) => {
+      return row.hospitalType === hospitalType;
+    }).length;
+    rows.push({ hospitalType, listed, transplanted, ratePct: ratePct(transplanted, listed) });
+  }
+  return rows;
+}
+
+// All three reasons are always returned, including at zero, so the UI has a
+// stable table rather than one that grows and shrinks between runs.
+function buildDiscardRows(log: SimulationLog): DiscardRow[] {
+  const reasons = [DISCARD_NO_ELIGIBLE, DISCARD_DECLINED, DISCARD_ISCHEMIA];
+  const rows: DiscardRow[] = [];
+  for (const reason of reasons) {
+    const count = log.discards.filter((event) => {
+      return event.reason === reason;
+    }).length;
+    rows.push({ reason, count });
+  }
+  return rows;
+}
+
+export function buildBreakdowns(log: SimulationLog): Breakdowns {
+  return {
+    byAgeBand: buildAgeBandRows(log),
+    byZone: buildZoneRows(log),
+    byHospitalType: buildHospitalTypeRows(log),
+    discardReasons: buildDiscardRows(log)
   };
 }

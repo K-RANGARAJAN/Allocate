@@ -1,5 +1,5 @@
 # Status — Vignesh (Engine)
-Updated: 2026-09-07 17:24 IST / a9562bf
+Updated: 2026-09-07 17:30 IST / 7f90730
 Building against contract version: 1.0.0
 
 ## Public surface I currently provide
@@ -14,6 +14,10 @@ Building against contract version: 1.0.0
 
 ## Done since last update
 
+- Added the real breakdowns. Age bands are exactly `18-39`, `40-59`, `60-69`,
+  `70+`, in that order, always all four. Zones always all three, hospital types
+  always both, and all three discard reasons are always returned including at
+  zero, so your tables never grow or shrink between runs.
 - Added the real headline metrics to `metrics.ts`. All nine come off the event
   log. Wait times are measured over transplanted patients, the standard registry
   reading — people still waiting have no completed wait to report.
@@ -93,6 +97,10 @@ Building against contract version: 1.0.0
   you want a number that is not on the `Outcome`.
 
 ## Warnings
+
+- Age band strings changed from the stub set. They were `18-34`, `35-49`,
+  `50-64`, `65+`. They are now `18-39`, `40-59`, `60-69`, `70+`. If you hard
+  coded band names or colours anywhere, update them. These four are final.
 
 - At the default config `organsDiscarded` is 0. Every one of the 1170 organs
   finds a home, because 3800 people are waiting and someone is always
