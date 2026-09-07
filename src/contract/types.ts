@@ -1,4 +1,4 @@
-export const CONTRACT_VERSION = "1.1.0";
+export const CONTRACT_VERSION = "1.2.0";
 
 export type BloodGroup = "A" | "B" | "AB" | "O";
 export type ZoneId = "north" | "south" | "west";
@@ -110,6 +110,30 @@ export interface SensitivityRow {
   label: string;
   deltaPct: Partial<Record<MetricKey, number>>;
   impactScore: number;
+}
+
+// Which way a metric has to move to count as an improvement. "neutral" is used
+// where the platform deliberately refuses to say — the over-60 transplant rate
+// is the argument, not a score, and colouring it green or red would be the
+// platform naming a winner.
+export type MetricDirection = "higher" | "lower" | "neutral";
+
+export interface MetricDelta {
+  metric: MetricKey;
+  label: string;
+  before: number;
+  after: number;
+  delta: number;
+  // Percentage move from the baseline. Zero when the baseline is zero — read
+  // `delta` in that case, not this.
+  deltaPct: number;
+  betterDirection: MetricDirection;
+}
+
+export interface ScenarioComparison {
+  baselineLabel: string;
+  scenarioLabel: string;
+  rows: MetricDelta[];
 }
 
 export interface ParetoPoint {

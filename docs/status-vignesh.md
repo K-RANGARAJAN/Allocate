@@ -1,6 +1,6 @@
 # Status — Vignesh (Engine)
-Updated: 2026-09-07 22:08 IST / 240d740
-Building against contract version: 1.1.0
+Updated: 2026-09-07 22:26 IST / 62587c4
+Building against contract version: 1.2.0
 
 ## Public surface I currently provide
 
@@ -11,6 +11,7 @@ Building against contract version: 1.1.0
 | `runSimulation(config)` | working |
 | `runSensitivity(config)` | working |
 | `runParetoSweep(config, points)` | working |
+| `compareOutcomes(a, b, labelA?, labelB?)` | working |
 
 ## Handover — what to call and where every number lives
 
@@ -26,6 +27,7 @@ only from `src/engine/index.ts`.
 | `runSimulation(config)` | `Outcome` | ~0.65s | on config change, debounced |
 | `runSensitivity(config)` | `SensitivityRow[]` | 10-12s | on demand only, never on a drag |
 | `runParetoSweep(config, points)` | `ParetoPoint[]` | ~0.7s per point | on demand only |
+| `compareOutcomes(a, b, labelA?, labelB?)` | `ScenarioComparison` | instant | any panel showing a difference |
 
 `presets()` returns whole `PolicyConfig` objects. Set one as your live config and
 every control should read back the preset's values.
@@ -95,6 +97,32 @@ Ranga — this went in on Vignesh's approval because you had not started yet and
 the field is purely additive. Say if you would rather it came back out.
 
 ## Done since last update
+
+- **Contract 1.2.0: a sixth export, `compareOutcomes`.** Ranga was right that
+  the comparison panel was blocked — R4 forbids the interface subtracting two
+  numbers and nothing on the contract returned a difference, which left the
+  preset demos with no legitimate route to the screen. It takes two finished
+  `Outcome`s and returns one `MetricDelta` row per metric with `before`, `after`,
+  `delta`, `deltaPct` and `betterDirection`, in display order. It re-runs
+  nothing, so it is instant and safe on every render. The five existing
+  signatures are untouched. `ARCHITECTURE.md` now says six, not five.
+- **`betterDirection` is `"neutral"` for `overSixtyRatePct`**, on purpose.
+  Whether transplanting more or fewer older patients is an improvement is the
+  argument this whole platform refuses to settle, so it must not be coloured
+  like a score. Every other metric has an honest direction.
+- **The comparison surfaced a finding I had not looked at.** Under `utilityTrap`
+  the median wait falls from 934 days to **208** — a 78% drop. It looks like the
+  policy is making everyone wait less. It is not. It has stopped transplanting
+  the long-waiting older patients entirely, so they leave the median instead of
+  being served by it. That is the trap arriving disguised as an improvement, and
+  it is probably the strongest single line in the demo.
+- **Pareto chart wording agreed with Ranga.** The sweep always runs in score
+  mode. He reads `config.mode` from his own state — that is not computing a
+  metric — and shows: *"You're in cascade mode, which allocates by tier rather
+  than by weights, so there's no weight space to sweep for it. This maps the
+  score-policy space under your current constraints. The marked point is the
+  nearest weighting, not where you are."*
+
 
 - **Contract bumped to 1.1.0: `metrics.overSixtyRatePct` added.** The utility
   trap's headline number is now on the contract instead of being something the
@@ -247,6 +275,9 @@ the field is purely additive. Say if you would rather it came back out.
   it engine-side rather than have you compute it.
 
 ## Warnings
+
+- **Contract is 1.2.0 and there are six exports, not five.** `compareOutcomes`
+  is new and additive. Nothing existing changed.
 
 - **Contract is 1.1.0, not 1.0.0.** One field added to `Metrics`:
   `overSixtyRatePct`. Nothing else moved. Check `outcome.contractVersion` if you

@@ -1,12 +1,19 @@
-// The engine seam. This module exports exactly five functions and nothing else.
+// The engine seam. This module exports exactly six functions and nothing else.
 // The interface half imports only from here.
 //
-// All five are real. Every number they return comes out of a seeded simulation
+// All six are real. Every number they return comes out of a seeded simulation
 // of the same 730 days, and the same config at the same seed always produces the
 // same Outcome, with meta.runtimeMs the one documented exception.
 
 import { CONTRACT_VERSION } from "../contract/types";
-import type { Outcome, ParetoPoint, PolicyConfig, SensitivityRow } from "../contract/types";
+import type {
+  Outcome,
+  ParetoPoint,
+  PolicyConfig,
+  ScenarioComparison,
+  SensitivityRow
+} from "../contract/types";
+import { buildComparison } from "./compare";
 import { buildBreakdowns, buildMetrics } from "./metrics";
 import { buildPareto } from "./pareto";
 import { buildSensitivity } from "./sensitivity";
@@ -104,4 +111,16 @@ export function runParetoSweep(config: PolicyConfig, points: number): ParetoPoin
   return buildPareto(config, points, (swept) => {
     return runSimulation(swept).metrics;
   });
+}
+
+// Neither outcome is re-run, so this is instant. The interface never subtracts
+// two numbers itself, and a comparison panel has one source of truth like every
+// other number on screen.
+export function compareOutcomes(
+  baseline: Outcome,
+  scenario: Outcome,
+  baselineLabel = "Baseline",
+  scenarioLabel = "Scenario"
+): ScenarioComparison {
+  return buildComparison(baseline, scenario, baselineLabel, scenarioLabel);
 }

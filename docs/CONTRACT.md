@@ -1,6 +1,6 @@
 # Contract
 
-**Version 1.1.0**
+**Version 1.2.0**
 
 This document is the prose companion to `src/contract/types.ts`. The types file is
 the machine-readable truth. This file explains what the fields mean.
@@ -8,9 +8,9 @@ the machine-readable truth. This file explains what the fields mean.
 Neither developer changes the contract without messaging the other first. When it
 changes, `CONTRACT_VERSION` changes with it and both status files are updated.
 
-## The five-function API
+## The six-function API
 
-`src/engine/index.ts` exports exactly these five functions and nothing else. The
+`src/engine/index.ts` exports exactly these six functions and nothing else. The
 interface imports from this module only, never from engine internals.
 
 | Function | Returns | Purpose |
@@ -20,6 +20,7 @@ interface imports from this module only, never from engine internals.
 | `runSimulation(config)` | `Outcome` | Two years of allocation under one policy |
 | `runSensitivity(config)` | `SensitivityRow[]` | One lever moved at a time, ranked by impact |
 | `runParetoSweep(config, points)` | `ParetoPoint[]` | A sweep across the weight space |
+| `compareOutcomes(baseline, scenario, baselineLabel?, scenarioLabel?)` | `ScenarioComparison` | Two finished outcomes as one delta table |
 
 Functions still returning dummy data carry a `// STUB` comment as the first line
 of their body. Anything so marked is not to be trusted for judging, only for
@@ -86,9 +87,28 @@ The interface plots it as given.
 no upper age limit on listing. Every other numeric field is always a finite
 number. The smoke test enforces this.
 
+## Scenario comparison
+
+`compareOutcomes` simulates nothing. Both `Outcome` objects are already in hand,
+so it is instant and safe to call on every render. It returns one row per metric
+in display order, each with `before`, `after`, `delta`, `deltaPct` and
+`betterDirection`.
+
+`deltaPct` is zero when the baseline is zero — read `delta` in that case.
+`betterDirection` is `"neutral"` for `overSixtyRatePct`, deliberately: whether
+transplanting more or fewer older patients is an improvement is the argument the
+platform refuses to settle, so it is not coloured like a score.
+
 ## Changelog
 
 <!-- One line per contract change: version, date, what moved, who agreed. -->
+
+1.2.0 — 2026-09-07 — added a sixth export, `compareOutcomes`, with the
+`ScenarioComparison`, `MetricDelta` and `MetricDirection` types. The interface
+may not compute a difference (R4) and nothing on the contract returned one,
+which left the preset comparisons — the Round 4 demo — with no legitimate route
+to the screen. It re-runs nothing. The five existing signatures are untouched.
+Agreed by Vignesh, raised by Ranga.
 
 1.1.0 — 2026-09-07 — added `overSixtyRatePct` to `Metrics`. It is the share of
 listed patients aged 60 or over who were transplanted, and it is the headline
