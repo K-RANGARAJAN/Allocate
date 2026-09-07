@@ -1,8 +1,8 @@
-// Scaffold only. Owned by the interface half (Ranga).
-
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { App } from "./ui/App";
+
+import "./styles/tokens.css";
 
 const container = document.getElementById("root");
 if (container === null) {

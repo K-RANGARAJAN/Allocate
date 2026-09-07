@@ -1,0 +1,54 @@
+/* Design tokens. Every colour, type step and spacing step in the interface
+   resolves to a variable declared here. Nothing downstream hard-codes a hex. */
+
+:root {
+  /* Surfaces and text. Paper is the page, panel is anything raised off it. */
+  --ink: #1A1D21;
+  --soft-ink: #5C6470;
+  --paper: #FBFAF8;
+  --panel: #FFFFFF;
+  --line: #DFE1E4;
+
+  /* The two accents. Teal carries the primary series and the current policy.
+     Burnt orange carries the comparison series and anything flagged. */
+  --teal: #2F5D62;
+  --burnt-orange: #A65E2E;
+
+  /* Tints of the same two, for chart fills and table row washes. */
+  --teal-wash: #EDF2F2;
+  --burnt-orange-wash: #F7EFE9;
+
+  --font-sans: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Helvetica, Arial, sans-serif;
+
+  /* Type scale. */
+  --text-xs: 0.6875rem;
+  --text-sm: 0.8125rem;
+  --text-base: 0.9375rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.5rem;
+  --text-metric: 1.75rem;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+
+  /* Spacing, a 4px base. */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+
+  --radius: 4px;
+  --radius-lg: 6px;
+
+  --border: 1px solid var(--line);
+  --shadow-panel: 0 1px 2px rgba(26, 29, 33, 0.04);
+
+  /* Every number in this interface is set with tabular figures, so a column of
+     them lines up and a changing digit never shifts the row it sits in. */
+  --numeric: tabular-nums lining-nums;
+}

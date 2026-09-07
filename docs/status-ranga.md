@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-07 22:12 IST / 870e4d4
+Updated: 2026-09-07 23:04 IST / 8fc622d
 Building against contract version: 1.2.0
 
 ## Public surface I currently provide
@@ -18,6 +18,12 @@ interface side is wired yet, so no engine export is being consumed by real UI.
 
 ## Done since last update
 
+- Started the interface. `src/styles/tokens.css` holds every colour, type step
+  and spacing step the UI will use, and nothing downstream hard-codes a hex.
+  IBM Plex Sans is linked in `index.html` with a system fallback stack, and
+  `--numeric` carries the tabular figures that every number on screen is set in.
+- Confirmed the seam before writing anything: contract is 1.2.0 and the six
+  exports import cleanly, `compareOutcomes` among them.
 - Rebased onto `870e4d4` and read the handover in `docs/status-vignesh.md` end
   to end, along with `ARCHITECTURE.md`, `docs/CONTRACT.md` and `CONTRIBUTING.md`.
 - Verified the toolchain against the current engine. `npm run smoke` exits 0 and
