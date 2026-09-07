@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-07 23:25 IST / c5f189c
+Updated: 2026-09-07 23:31 IST / fccd552
 Building against contract version: 1.2.0
 
 ## Public surface I currently provide
@@ -18,6 +18,9 @@ interface side is wired yet, so no engine export is being consumed by real UI.
 
 ## Done since last update
 
+- `src/ui/components/Slider.tsx` is the labelled range primitive the policy
+  panel is built from. It shows its current value in tabular figures exactly as
+  the config holds it, and it derives nothing.
 - `src/styles/controls.css` styles the policy panel's controls — the range
   track, its thumb, and the label-and-value row above it.
 - `src/ui/state/usePolicyRun.ts` holds the live `PolicyConfig`, seeded from
