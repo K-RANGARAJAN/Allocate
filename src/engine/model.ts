@@ -33,6 +33,15 @@ export const URGENT_LIST_THRESHOLD = 8.5;
 // Share of a zone's transplant centres that are government run.
 export const GOVERNMENT_CENTRE_SHARE = 0.4;
 
+// Pareto sweep labelling. A weight vector is named by how lopsided it is: one
+// weight at or above the pure share carries the point on its own, a spread
+// narrower than the balanced spread means no weight is really in charge, and
+// two weights within the tie spread of each other are sharing the lead.
+export const PARETO_PURE_SHARE = 0.95;
+export const PARETO_HEAVY_SHARE = 0.55;
+export const PARETO_BALANCED_SPREAD = 0.15;
+export const PARETO_TIE_SPREAD = 0.05;
+
 // Discard reasons. Exact strings, because they reach the UI as table rows.
 export const DISCARD_NO_ELIGIBLE = "no eligible recipient";
 export const DISCARD_DECLINED = "declined by all centres";

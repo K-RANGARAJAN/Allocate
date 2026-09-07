@@ -1,5 +1,5 @@
 # Status — Vignesh (Engine)
-Updated: 2026-09-07 21:26 IST / edc9a29
+Updated: 2026-09-07 21:24 IST / 0617c04
 Building against contract version: 1.0.0
 
 ## Public surface I currently provide
@@ -10,9 +10,23 @@ Building against contract version: 1.0.0
 | `presets()` | working |
 | `runSimulation(config)` | working |
 | `runSensitivity(config)` | working |
-| `runParetoSweep(config, points)` | stubbed |
+| `runParetoSweep(config, points)` | working |
 
 ## Done since last update
+
+- **`runParetoSweep` is real.** Twenty weight combinations spread across the
+  simplex, one full 730-day simulation each, plotted as `lifeYearsGained`
+  against `regionGapPct` with `waitlistDeaths` riding along. Exactly one point
+  carries `isCurrent` — the swept combination nearest the caller's own weights,
+  compared after normalising both. Domination marking lands in the next commit,
+  so `dominated` is false on every point right now.
+- **Measured runtime: 13.9 seconds for 20 points**, about 0.68 seconds a run.
+  Cost is linear in `points`, so 10 points is roughly 7 seconds and 30 is
+  roughly 21. This one definitely needs a progress indicator.
+- The sweep picks its combinations by farthest-point sampling over a weight
+  lattice, seeded with the three pure corners. No randomness — the same point
+  count always returns the same combinations in the same order, and any point
+  count still spans the whole space instead of clustering on one side.
 
 - **`runSensitivity` is real.** Eight levers, both directions, seventeen full
   simulations. Deltas are a symmetric difference so a lopsided response does not
@@ -74,14 +88,13 @@ Building against contract version: 1.0.0
 
 ## In progress right now
 
-- Nothing. Task 006, the Pareto sweep, is next.
+- Task 006. The sweep runs; domination marking is the next commit.
 
 ## Stubbed or fake, do not trust
 
-- `runParetoSweep`. Every number it returns is invented and none of it responds
-  to config. Do not demo it.
-- Everything else is real. `runSimulation` runs a genuine 730-day allocation
-  loop and all nine metrics plus every breakdown come out of it.
+- Nothing. Every number now comes out of a real simulation. The one incomplete
+  field is `dominated` on a Pareto point, which is false on every point until
+  the next commit — do not shade the frontier yet.
 
 ## I need from the other side
 
@@ -91,6 +104,19 @@ Building against contract version: 1.0.0
   it engine-side rather than have you compute it.
 
 ## Warnings
+
+- **`runParetoSweep` takes about 0.7 seconds per point.** Twenty points is
+  roughly 14 seconds and it will lock the tab. Progress indicator, and probably
+  a Web Worker. Never call it on a slider drag.
+- **The sweep always runs in score mode**, whatever `config.mode` says. Only the
+  weighted-score policy reads weights at all — a cascade allocates by tier and
+  first-come by wait length, so neither has a weight space to sweep and every
+  point would come back identical. Every other setting on the config, including
+  `localFirst`, the seed and the donation rate, is held as passed. If the user is
+  sitting in cascade mode, the frontier is still an honest map of the score
+  policy space under their constraints, but it is not a map of where they are.
+- **`dominated` is false on every point until the next commit.** Real axis
+  values, no domination pass yet.
 
 - **`runSensitivity` takes 10 to 12 seconds.** It runs seventeen simulations.
   It will lock the tab. It needs a progress indicator, and probably a Web
