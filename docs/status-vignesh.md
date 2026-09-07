@@ -1,5 +1,5 @@
 # Status — Vignesh (Engine)
-Updated: 2026-09-07 16:30 IST / f9ce728
+Updated: 2026-09-07 16:52 IST / 8db5cf4
 Building against contract version: 1.0.0
 
 ## Public surface I currently provide
@@ -14,6 +14,11 @@ Building against contract version: 1.0.0
 
 ## Done since last update
 
+- Added `src/engine/policies/score.ts`: `scoreCandidate` and `selectRecipient`.
+  Weights are normalised internally, so all-1.0 means an equal split. Three
+  components each in 0..1: current urgency over 10, expected years over
+  BASE_LIFE_YEARS, and years waited capped at 5. Longest wait breaks ties, so
+  the result does not depend on array order. Nothing in the file mentions age.
 - Added `scripts/distributions.ts`. Run it with
   `npx tsx scripts/distributions.ts`. It builds the world without simulating it
   and prints every distribution, so the inputs can be checked before anything
@@ -51,6 +56,8 @@ Building against contract version: 1.0.0
 
 ## In progress right now
 
+- Task 003, the first real vertical slice: score policy, the day loop, real
+  metrics. `runSimulation` is still stubbed until the last commit of the task.
 - Task 002, the world model: constants and formulas, compatibility rules,
   synthetic patients, synthetic organ arrivals.
 
