@@ -1,6 +1,6 @@
 import type { Dispatch, SetStateAction } from "react";
 
-import type { PolicyConfig } from "../../contract/types";
+import type { PolicyConfig, ZoneId } from "../../contract/types";
 import { Select } from "./Select";
 import { Slider } from "./Slider";
 import { Toggle } from "./Toggle";
@@ -46,6 +46,15 @@ export function ControlsPanel(props: ControlsPanelProps) {
       const constraints = { ...prev.constraints };
       constraints[key] = value;
       return { ...prev, constraints };
+    });
+  }
+
+  function setCentres(zone: ZoneId, next: number) {
+    props.setConfig((prev) => {
+      const perZone = { ...prev.resources.transplantCentresPerZone };
+      perZone[zone] = next;
+      const resources = { ...prev.resources, transplantCentresPerZone: perZone };
+      return { ...prev, resources };
     });
   }
 
@@ -206,6 +215,30 @@ export function ControlsPanel(props: ControlsPanelProps) {
           step={0.1}
           suffix="×"
           onChange={setDonationRate}
+        />
+        <Slider
+          label="Centres, north"
+          value={config.resources.transplantCentresPerZone.north}
+          min={1}
+          max={15}
+          step={1}
+          onChange={(next) => setCentres("north", next)}
+        />
+        <Slider
+          label="Centres, south"
+          value={config.resources.transplantCentresPerZone.south}
+          min={1}
+          max={15}
+          step={1}
+          onChange={(next) => setCentres("south", next)}
+        />
+        <Slider
+          label="Centres, west"
+          value={config.resources.transplantCentresPerZone.west}
+          min={1}
+          max={15}
+          step={1}
+          onChange={(next) => setCentres("west", next)}
         />
       </div>
     </section>

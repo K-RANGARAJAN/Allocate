@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 00:09 IST / 2795f92
+Updated: 2026-09-08 00:16 IST / 482f3dc
 Building against contract version: 1.2.0
 
 ## Public surface I currently provide
@@ -18,6 +18,9 @@ interface side is wired yet, so no engine export is being consumed by real UI.
 
 ## Done since last update
 
+- The three per-zone transplant centre counts finish the controls panel. Noted
+  from your handover that the government/private split moves with these, so the
+  hospital-type table is expected to shift when they are dragged.
 - Resources section added, and the nullable one handled: `maxAgeToList` is a
   toggle that turns the slider off entirely rather than parking it at 90,
   because `null` is the contract's way of saying no upper limit. Donation rate
