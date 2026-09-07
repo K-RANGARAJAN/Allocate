@@ -1,5 +1,5 @@
 # Status — Vignesh (Engine)
-Updated: 2026-09-07 16:05 IST / 429d9bb
+Updated: 2026-09-07 16:10 IST / 485f5db
 Building against contract version: 1.0.0
 
 ## Public surface I currently provide
@@ -14,6 +14,10 @@ Building against contract version: 1.0.0
 
 ## Done since last update
 
+- Added `src/engine/compatibility.ts`: blood group matching, optional age
+  matching, inter-zone transport hours, and `isEligible`. Same-zone transport is
+  7 hours all in, the worst pair (south to west) is 13, so the default 24 hour
+  cold ischemia ceiling excludes nobody. It starts biting below 13.
 - Added `src/engine/model.ts`. Every biological and behavioural constant and
   formula now lives there as a named export, plus the `Patient` and `Organ`
   entity interfaces so compatibility, population and organ generation can each
