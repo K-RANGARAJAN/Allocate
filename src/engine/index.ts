@@ -1,9 +1,9 @@
 // The engine seam. This module exports exactly five functions and nothing else.
 // The interface half imports only from here.
 //
-// Every function below is currently a stub returning schema-valid dummy data so
-// that the interface can be built against the real API from commit one. Stubs are
-// replaced with real logic progressively. Each stub body opens with a // STUB line.
+// All five are real. Every number they return comes out of a seeded simulation
+// of the same 730 days, and the same config at the same seed always produces the
+// same Outcome, with meta.runtimeMs the one documented exception.
 
 import { CONTRACT_VERSION } from "../contract/types";
 import type { Outcome, ParetoPoint, PolicyConfig, SensitivityRow } from "../contract/types";
@@ -13,7 +13,6 @@ import { buildSensitivity } from "./sensitivity";
 import { simulate } from "./simulate";
 
 export function defaultConfig(): PolicyConfig {
-  // STUB
   return {
     mode: "score",
     weights: {
@@ -49,18 +48,25 @@ export function defaultConfig(): PolicyConfig {
 }
 
 export function presets(): Record<string, PolicyConfig> {
-  // STUB
   // Weights only. No age cap, no age matching, no raised listing threshold.
   // The collapse in older-patient transplants has to come out of the scoring
-  // on its own, or the finding is manufactured and worthless.
+  // on its own, or the finding is manufactured and worthless. At the default
+  // seed this takes the over-60 transplant rate from 10.2% to nothing at all.
   const utilityTrap = defaultConfig();
   utilityTrap.mode = "score";
   utilityTrap.weights = { urgency: 0.05, lifeYears: 0.9, waitingTime: 0.05 };
 
+  // The Tamil Nadu shape of the trap: a cascade, the retrieving hospital
+  // keeping both kidneys, a rota between centres, and organs sealed inside the
+  // zone they were donated in. localFirst was "state", which in this model puts
+  // every zone in one state and so restricts nothing — the preset was named
+  // after a constraint it did not apply. "zone" is the tightened setting the
+  // trap is about, and it moves the regional gap from 1.5% to 10.4% while
+  // cutting both cold ischemia time and discards.
   const localityTrap = defaultConfig();
   localityTrap.mode = "cascade";
   localityTrap.weights = { urgency: 0.5, lifeYears: 0.2, waitingTime: 0.3 };
-  localityTrap.constraints.localFirst = "state";
+  localityTrap.constraints.localFirst = "zone";
   localityTrap.constraints.retrievalHospitalKeeps = 2;
   localityTrap.constraints.rotaEnabled = true;
 

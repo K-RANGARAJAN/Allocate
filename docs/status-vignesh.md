@@ -1,5 +1,5 @@
 # Status — Vignesh (Engine)
-Updated: 2026-09-07 21:33 IST / fe5a657
+Updated: 2026-09-07 21:47 IST / 8118049
 Building against contract version: 1.0.0
 
 ## Public surface I currently provide
@@ -13,6 +13,38 @@ Building against contract version: 1.0.0
 | `runParetoSweep(config, points)` | working |
 
 ## Done since last update
+
+- **Gate C passed, all three checks.** `npx tsx scripts/demo-check.ts` runs both
+  presets against the default config and prints what moved.
+
+  | | default | preset | move |
+  | --- | --- | --- | --- |
+  | utilityTrap — over-60 transplant rate | 10.2% | **0%** | gone entirely |
+  | utilityTrap — lifeYearsGained | 10775 | 15375 | +42.7% |
+  | utilityTrap — waitlistDeaths | 1304 | 1412 | +108 |
+  | localityTrap — regionGapPct | 1.5 | **10.4** | +593% |
+  | localityTrap — organsDiscarded | 38 | 34 | -10.5% |
+  | localityTrap — meanColdIschemiaHours | 10.5 | 7.3 | -30.5% |
+
+  Both findings come out of weights and permitted constraints only. Nothing in
+  the engine knows what a preset is.
+- **`localityTrap` had a real bug: `localFirst` was `"state"`.** In this model
+  every zone is in one state, so `"state"` restricts nothing — the preset was
+  named after a constraint it never applied. It is `"zone"` now, which is the
+  tightened setting the trap is actually about. That single change is the whole
+  tune; the weights, rota and retrieval-hospital settings were already right and
+  I checked the alternatives (keeps 0/1/2, rota on/off) — the existing pair is
+  the strongest of them.
+- **`utilityTrap` needed no tuning at all.** 0.05 / 0.90 / 0.05 already takes the
+  over-60 rate to nothing.
+- **The discard finding is smaller than the roadmap expected, and the reason is
+  worth having ready.** At the default 24 hour cold ischemia ceiling nothing ever
+  hits it — the longest journey in the model is 13 hours — so every discard is a
+  graft that decayed below the viability floor in transit, and local-first can
+  only take that from 38 to 34. Tighten the ceiling to 12 hours and the same
+  lever moves discards from **109 to 36**. `demo-check.ts` prints that pair under
+  a Context heading. The honest version of the claim is that the ceiling decides
+  what geography costs, not the allocation rule.
 
 - **Task 006 complete, all four checks pass.** At the default config, 20 points:
   15 dominated, 5 on the frontier, exactly one current — and **the current point
@@ -105,7 +137,7 @@ Building against contract version: 1.0.0
 
 ## In progress right now
 
-- Nothing. Task 007, preset tuning and the demo check, is next.
+- Nothing. Task 008 is the freeze: fixes, the README, and a deployed build.
 
 ## Stubbed or fake, do not trust
 
@@ -121,6 +153,12 @@ Building against contract version: 1.0.0
   it engine-side rather than have you compute it.
 
 ## Warnings
+
+- **`presets().localityTrap.constraints.localFirst` changed from `"state"` to
+  `"zone"`.** If you cached a preset object or hard-coded the old value in a
+  control's default, it is stale. Nothing else about either preset moved.
+- **`presets()` and `defaultConfig()` no longer carry `// STUB`.** They were real
+  already; the marker was left over. No behaviour change.
 
 - **`runParetoSweep` takes about 0.7 seconds per point.** Twenty points is
   roughly 14 seconds and it will lock the tab. Progress indicator, and probably
