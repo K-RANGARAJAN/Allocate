@@ -1,0 +1,74 @@
+/* The page frame: header, the two-column split, and the shared button. */
+
+.app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-5) var(--space-7);
+}
+
+.app-header {
+  margin-bottom: var(--space-5);
+}
+
+.app-title {
+  font-size: var(--text-xl);
+  letter-spacing: -0.01em;
+}
+
+.app-sub {
+  color: var(--soft-ink);
+  font-size: var(--text-sm);
+  margin: var(--space-2) 0 0;
+  max-width: 62ch;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr);
+  gap: var(--space-5);
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.stack {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.btn {
+  padding: var(--space-2) var(--space-3);
+  border: var(--border);
+  border-radius: var(--radius);
+  background: var(--panel);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+
+.btn:hover {
+  border-color: var(--teal);
+  color: var(--teal);
+}
+
+.btn:disabled {
+  color: var(--soft-ink);
+  cursor: default;
+  opacity: 0.55;
+}
+
+.presets {
+  margin-bottom: var(--space-4);
+}
+
+.preset-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}

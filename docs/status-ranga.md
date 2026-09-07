@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 00:23 IST / e1579ad
+Updated: 2026-09-08 00:30 IST / c075adf
 Building against contract version: 1.2.0
 
 ## Public surface I currently provide
@@ -18,6 +18,8 @@ interface side is wired yet, so no engine export is being consumed by real UI.
 
 ## Done since last update
 
+- `src/styles/app.css` adds the page frame: header, the 320px control column
+  beside the results column, the shared button, and the preset row.
 - `PresetButtons.tsx` calls `presets()` and writes the whole returned config
   back on click, so every control re-reads from the preset instead of holding a
   stale position. It reads the preset objects live rather than caching them, so
