@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 01:46 IST / 1a6c2c3
+Updated: 2026-09-08 01:54 IST / 823f3c2
 Building against contract version: 1.2.0
 
 ## Public surface I currently provide
@@ -18,6 +18,8 @@ on-demand calls are not wired yet.
 
 ## Done since last update
 
+- `ComparisonTable.tsx` renders a `ScenarioComparison`. Every delta and
+  percentage is yours; I subtract nothing.
 - `src/styles/comparison.css` carries the three tones. Teal is better in the
   direction you name, burnt orange is worse, and `tone-neutral` is plain ink
   with no arrow — that one is for `overSixtyRatePct` and for any delta of zero.
