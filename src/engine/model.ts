@@ -3,7 +3,7 @@
 // The domain entities live here too, so compatibility, population and organ
 // generation can all depend on one module without depending on each other.
 
-import type { BloodGroup, HospitalType, ZoneId } from "../contract/types";
+import type { BloodGroup, HospitalType, TimelinePoint, ZoneId } from "../contract/types";
 import type { Rng } from "./rng";
 
 export const BASE_LIFE_YEARS = 22;
@@ -14,6 +14,15 @@ export const ISCHEMIA_PENALTY_PER_HOUR = 0.02;
 export const ISCHEMIA_QUALITY_FLOOR = 0.4;
 export const OFFER_ACCEPTANCE_RATE = 0.85;
 export const RETRIEVAL_PREP_HOURS = 4;
+
+// Every declined offer costs time while the next centre is contacted. This is
+// what makes the ischemia limit reachable after eligibility has already passed.
+export const OFFER_DECLINE_HOURS = 2;
+
+// Discard reasons. Exact strings, because they reach the UI as table rows.
+export const DISCARD_NO_ELIGIBLE = "no eligible recipient";
+export const DISCARD_DECLINED = "declined by all centres";
+export const DISCARD_ISCHEMIA = "exceeded ischemia limit";
 
 // Shared domain vocabulary. Blood group frequencies are the same for donors and
 // recipients. Zone weights are not, and are declared where they are used.
@@ -133,4 +142,54 @@ export function poisson(rng: Rng, lambda: number): number {
       return k;
     }
   }
+}
+
+// The raw event log. simulate.ts produces it, metrics.ts consumes it. Nothing
+// is aggregated here, so conservation can be checked against the raw events.
+
+export interface ListingRecord {
+  patientId: string;
+  age: number;
+  zone: ZoneId;
+  hospitalType: HospitalType;
+  listedDay: number;
+}
+
+export interface TransplantEvent {
+  day: number;
+  patientId: string;
+  organId: string;
+  age: number;
+  zone: ZoneId;
+  hospitalType: HospitalType;
+  waitDays: number;
+  coldHours: number;
+  effectiveQuality: number;
+  lifeYearsGained: number;
+}
+
+export interface DeathEvent {
+  day: number;
+  patientId: string;
+  age: number;
+  zone: ZoneId;
+  hospitalType: HospitalType;
+  waitDays: number;
+}
+
+export interface DiscardEvent {
+  day: number;
+  organId: string;
+  reason: string;
+}
+
+export interface SimulationLog {
+  listings: ListingRecord[];
+  transplants: TransplantEvent[];
+  deaths: DeathEvent[];
+  discards: DiscardEvent[];
+  timeline: TimelinePoint[];
+  organsArrived: number;
+  allocationDecisions: number;
+  stillWaiting: number;
 }

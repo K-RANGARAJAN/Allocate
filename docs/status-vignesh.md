@@ -1,5 +1,5 @@
 # Status — Vignesh (Engine)
-Updated: 2026-09-07 16:52 IST / 8db5cf4
+Updated: 2026-09-07 17:00 IST / 04f7e38
 Building against contract version: 1.0.0
 
 ## Public surface I currently provide
@@ -14,6 +14,12 @@ Building against contract version: 1.0.0
 
 ## Done since last update
 
+- Added the real day loop skeleton to `src/engine/simulate.ts`: listings,
+  urgency drift, daily death hazard, timeline points every 30 days plus a
+  closing point. Allocation is the next commit. The event log types live in
+  `model.ts` so simulate and metrics do not import each other.
+- `constraints.maxAgeToList` is now enforced, at listing, which is the only
+  place it belongs. Patients over the cap are never listed.
 - Added `src/engine/policies/score.ts`: `scoreCandidate` and `selectRecipient`.
   Weights are normalised internally, so all-1.0 means an equal split. Three
   components each in 0..1: current urgency over 10, expected years over
@@ -79,9 +85,6 @@ Building against contract version: 1.0.0
   comorbidity. That is the roadmap's formula applied faithfully, and it affects
   about a hundred patients out of six and a half thousand. Leaving it rather
   than tuning it.
-- `constraints.maxAgeToList` is not enforced anywhere yet. It is a listing rule,
-  so it goes in the day loop in task 003, not in patient generation. Until then
-  moving that slider will change nothing.
 - `presets().utilityTrap` changed shape of behaviour, not shape of data. If you
   cached its constraint values anywhere, re-read them.
 - No contract fields added, renamed or removed. Nothing in the `Outcome` moved.
