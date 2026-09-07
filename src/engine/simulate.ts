@@ -6,9 +6,13 @@
 
 import { CONTRACT_VERSION } from "../contract/types";
 import type { Outcome, PolicyConfig, TimelinePoint } from "../contract/types";
+import { isEligible, transportHours } from "./compatibility";
 import {
+  actualLifeYearsGained,
   currentUrgency,
   dailyDeathProbability,
+  ischemiaMultiplier,
+  OFFER_DECLINE_HOURS,
   type DeathEvent,
   type DiscardEvent,
   type ListingRecord,
@@ -18,6 +22,7 @@ import {
   type TransplantEvent
 } from "./model";
 import { generateOrganArrivals } from "./organs";
+import { selectRecipient } from "./policies/score";
 import { generateInitialWaitlist, generateNewListings } from "./population";
 import { createRng } from "./rng";
 import {
@@ -128,6 +133,31 @@ export function simulate(config: PolicyConfig): SimulationLog {
   const organs = generateOrganArrivals(config, rng);
   const arrivals = organsByArrivalDay(organs);
 
+  // Cold time is travel plus whatever the declined offers cost. Graft quality
+  // is the donor's quality after ischemia damage, and the life years actually
+  // delivered are the estimate at listing scaled by that quality — deliberately
+  // a smaller number than the one the policy scored on.
+  function transplant(recipient: Patient, organ: Organ, day: number, declines: number): void {
+    const coldHours = transportHours(organ.zone, recipient.zone) + declines * OFFER_DECLINE_HOURS;
+    const effectiveQuality = organ.quality * ischemiaMultiplier(coldHours);
+    recipient.status = "transplanted";
+    transplants.push({
+      day,
+      patientId: recipient.id,
+      organId: organ.id,
+      age: recipient.age,
+      zone: recipient.zone,
+      hospitalType: recipient.hospitalType,
+      waitDays: day - recipient.listedDay,
+      coldHours,
+      effectiveQuality,
+      lifeYearsGained: actualLifeYearsGained(recipient.expectedYearsAtListing, effectiveQuality)
+    });
+    waiting = waiting.filter((patient) => {
+      return patient.status === "waiting";
+    });
+  }
+
   function recordTimelinePoint(day: number): void {
     timeline.push({
       day,
@@ -172,7 +202,13 @@ export function simulate(config: PolicyConfig): SimulationLog {
     if (arrivingToday !== undefined) {
       for (const organ of arrivingToday) {
         allocationDecisions = allocationDecisions + 1;
-        void organ;
+        const eligible = waiting.filter((patient) => {
+          return isEligible(patient, organ, config);
+        });
+        const recipient = selectRecipient(eligible, organ, config, day);
+        if (recipient !== null) {
+          transplant(recipient, organ, day, 0);
+        }
       }
     }
 

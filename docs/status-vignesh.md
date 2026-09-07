@@ -1,5 +1,5 @@
 # Status — Vignesh (Engine)
-Updated: 2026-09-07 17:00 IST / 04f7e38
+Updated: 2026-09-07 17:08 IST / b586648
 Building against contract version: 1.0.0
 
 ## Public surface I currently provide
@@ -14,6 +14,11 @@ Building against contract version: 1.0.0
 
 ## Done since last update
 
+- Added the allocation step to the day loop. Organs arriving on a day are
+  matched against every waiting patient by `isEligible`, and the score policy
+  picks the recipient. Cold time is travel plus decline delay, graft quality is
+  donor quality after ischemia damage, and life years delivered are the estimate
+  at listing scaled by that quality — a smaller number than the policy scored on.
 - Added the real day loop skeleton to `src/engine/simulate.ts`: listings,
   urgency drift, daily death hazard, timeline points every 30 days plus a
   closing point. Allocation is the next commit. The event log types live in
