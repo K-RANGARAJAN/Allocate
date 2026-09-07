@@ -60,31 +60,109 @@ export function tierOf(
   return TIER_PRIVATE_OTHER_ZONE;
 }
 
-// The organ stops at the first rung with anyone on it. Within a rung, the
-// longest wait wins — no scoring, no comparison of who would benefit more.
+// The rota is state carried across the whole run, so it lives in an object the
+// simulation creates once rather than in module scope. Two runs at the same
+// seed must not be able to see each other's rotation.
+export interface CascadeState {
+  // Tier number to the centre it last served, so the next organ starts after it.
+  lastServed: Map<number, string>;
+  // Centres that jumped the queue via the urgent path and owe a skipped turn.
+  forfeits: Set<string>;
+}
+
+export function createCascadeState(): CascadeState {
+  return { lastServed: new Map(), forfeits: new Set() };
+}
+
+function longestWaiting(patients: Patient[]): Patient {
+  let best = patients[0];
+  for (const candidate of patients) {
+    if (candidate.listedDay < best.listedDay) {
+      best = candidate;
+    }
+  }
+  return best;
+}
+
+// Rotate the centre list so the one after whoever went last comes first.
+function rotatedCentres(centres: string[], lastServed: string | undefined): string[] {
+  if (lastServed === undefined) {
+    return centres;
+  }
+  const position = centres.indexOf(lastServed);
+  if (position < 0) {
+    return centres;
+  }
+  const after = centres.slice(position + 1);
+  const upTo = centres.slice(0, position + 1);
+  return after.concat(upTo);
+}
+
+// The organ stops at the first rung with anyone on it. Within a rung, either
+// the longest wait wins, or the rota decides whose turn it is.
 export function selectRecipient(
+  state: CascadeState,
   eligiblePatients: Patient[],
   organ: Organ,
   config: PolicyConfig,
   currentDay: number
 ): Patient | null {
-  let best: Patient | null = null;
   let bestTier = Number.POSITIVE_INFINITY;
-
   for (const candidate of eligiblePatients) {
     const tier = tierOf(candidate, organ, config, currentDay);
-    if (tier === null) {
-      continue;
-    }
-    if (tier < bestTier) {
-      best = candidate;
+    if (tier !== null && tier < bestTier) {
       bestTier = tier;
-      continue;
-    }
-    if (tier === bestTier && best !== null && candidate.listedDay < best.listedDay) {
-      best = candidate;
     }
   }
+  if (bestTier === Number.POSITIVE_INFINITY) {
+    return null;
+  }
 
-  return best;
+  const inTier = eligiblePatients.filter((candidate) => {
+    return tierOf(candidate, organ, config, currentDay) === bestTier;
+  });
+
+  // Urgent cases ignore the rota, and the centre that gains one pays for it by
+  // losing its next regular turn.
+  if (bestTier === TIER_URGENT) {
+    const chosen = longestWaiting(inTier);
+    if (config.constraints.rotaEnabled) {
+      state.forfeits.add(chosen.centreId);
+    }
+    return chosen;
+  }
+
+  if (!config.constraints.rotaEnabled) {
+    return longestWaiting(inTier);
+  }
+
+  const centres: string[] = [];
+  for (const candidate of inTier) {
+    if (!centres.includes(candidate.centreId)) {
+      centres.push(candidate.centreId);
+    }
+  }
+  centres.sort();
+
+  const order = rotatedCentres(centres, state.lastServed.get(bestTier));
+  let picked: string | null = null;
+  for (const centreId of order) {
+    if (state.forfeits.has(centreId)) {
+      state.forfeits.delete(centreId);
+      continue;
+    }
+    picked = centreId;
+    break;
+  }
+  // Every centre in this tier was owed a skip. They have all now paid it, so
+  // the organ still has to go somewhere.
+  if (picked === null) {
+    picked = order[0];
+  }
+
+  state.lastServed.set(bestTier, picked);
+  const atCentre = inTier.filter((candidate) => {
+    return candidate.centreId === picked;
+  });
+  return longestWaiting(atCentre);
 }

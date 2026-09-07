@@ -1,5 +1,5 @@
 # Status — Vignesh (Engine)
-Updated: 2026-09-07 18:19 IST / 6e4fabd
+Updated: 2026-09-07 18:28 IST / f2ae48a
 Building against contract version: 1.0.0
 
 ## Public surface I currently provide
@@ -125,6 +125,11 @@ Building against contract version: 1.0.0
   you want a number that is not on the `Outcome`.
 
 ## Warnings
+
+- Hospital type is no longer drawn independently at 40/60. It is inherited from
+  the transplant centre a patient is listed at, and roughly 40% of a zone's
+  centres are government. The split stays close to 40/60 but is no longer exact,
+  and it now moves when `transplantCentresPerZone` moves.
 
 - `runSimulation` now takes about 0.7 seconds instead of being instant. If you
   are calling it on every slider drag, debounce it.

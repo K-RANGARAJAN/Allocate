@@ -30,6 +30,9 @@ export const MIN_VIABLE_QUALITY = 0.6;
 // jumps the cascade entirely when urgentSupersedesRota is on.
 export const URGENT_LIST_THRESHOLD = 8.5;
 
+// Share of a zone's transplant centres that are government run.
+export const GOVERNMENT_CENTRE_SHARE = 0.4;
+
 // Discard reasons. Exact strings, because they reach the UI as table rows.
 export const DISCARD_NO_ELIGIBLE = "no eligible recipient";
 export const DISCARD_DECLINED = "declined by all centres";
@@ -51,6 +54,9 @@ export interface Patient {
   age: number;
   zone: ZoneId;
   hospitalType: HospitalType;
+  // The transplant centre this patient is listed at. The rota rotates organs
+  // across these, so how many exist per zone genuinely changes who gets one.
+  centreId: string;
   listedDay: number;
   baseUrgency: number;
   comorbidityIndex: number;

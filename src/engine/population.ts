@@ -1,10 +1,10 @@
 // Synthetic patient generation. No external data, all of it seeded.
 
-import type { PolicyConfig } from "../contract/types";
+import type { HospitalType, PolicyConfig } from "../contract/types";
 import {
   BLOOD_GROUPS,
   BLOOD_WEIGHTS,
-  HOSPITAL_TYPES,
+  GOVERNMENT_CENTRE_SHARE,
   ZONES,
   clamp,
   expectedLifeYearsAtListing,
@@ -15,7 +15,17 @@ import {
 import type { Rng } from "./rng";
 
 const PATIENT_ZONE_WEIGHTS = [45, 33, 22];
-const HOSPITAL_WEIGHTS = [40, 60];
+
+// A centre is government or private, and a patient inherits that from the
+// centre they are listed at rather than drawing it independently. This is what
+// makes transplantCentresPerZone a real lever instead of an unused number.
+function centreTypeOf(index: number, centreCount: number): HospitalType {
+  const governmentCount = Math.max(1, Math.round(centreCount * GOVERNMENT_CENTRE_SHARE));
+  if (index < governmentCount) {
+    return "government";
+  }
+  return "private";
+}
 
 const AGE_MEAN = 48;
 const AGE_SD = 13;
@@ -42,11 +52,19 @@ function drawBaseUrgency(rng: Rng, comorbidityIndex: number): number {
   return clamp(0, 6, raw);
 }
 
-function makePatient(id: string, listedDay: number, rng: Rng): Patient {
+function makePatient(
+  id: string,
+  listedDay: number,
+  config: PolicyConfig,
+  rng: Rng
+): Patient {
   const bloodGroup = rng.weightedPick(BLOOD_GROUPS, BLOOD_WEIGHTS);
   const age = drawAge(rng);
   const zone = rng.weightedPick(ZONES, PATIENT_ZONE_WEIGHTS);
-  const hospitalType = rng.weightedPick(HOSPITAL_TYPES, HOSPITAL_WEIGHTS);
+  const centreCount = config.resources.transplantCentresPerZone[zone];
+  const centreIndex = rng.int(0, centreCount - 1);
+  const centreId = zone + "-c" + centreIndex;
+  const hospitalType = centreTypeOf(centreIndex, centreCount);
   const comorbidityIndex = drawComorbidity(rng, age);
   const baseUrgency = drawBaseUrgency(rng, comorbidityIndex);
   const expectedYearsAtListing = expectedLifeYearsAtListing(age, comorbidityIndex);
@@ -57,6 +75,7 @@ function makePatient(id: string, listedDay: number, rng: Rng): Patient {
     age,
     zone,
     hospitalType,
+    centreId,
     listedDay,
     baseUrgency,
     comorbidityIndex,
@@ -71,7 +90,7 @@ export function generateInitialWaitlist(config: PolicyConfig, rng: Rng): Patient
   const patients: Patient[] = [];
   for (let i = 0; i < config.sim.initialWaitlistSize; i++) {
     const listedDay = -rng.int(1, BACKDATE_DAYS);
-    patients.push(makePatient("p-init-" + i, listedDay, rng));
+    patients.push(makePatient("p-init-" + i, listedDay, config, rng));
   }
   return patients;
 }
@@ -80,7 +99,7 @@ export function generateNewListings(day: number, config: PolicyConfig, rng: Rng)
   const count = poisson(rng, config.sim.newListingsPerDay);
   const patients: Patient[] = [];
   for (let i = 0; i < count; i++) {
-    patients.push(makePatient("p-" + day + "-" + i, day, rng));
+    patients.push(makePatient("p-" + day + "-" + i, day, config, rng));
   }
   return patients;
 }
