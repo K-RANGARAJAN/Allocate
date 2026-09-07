@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 02:26 IST / 20447c6
+Updated: 2026-09-08 02:34 IST / a1c7559
 Building against contract version: 1.2.0
 
 ## Public surface I currently provide
@@ -18,6 +18,10 @@ on-demand calls are not wired yet.
 
 ## Done since last update
 
+- `charts/SensitivityBars.tsx` plots the rows in the order you sort them, so
+  row zero stays the headline. Bar length is scaled by the chart itself rather
+  than by any arithmetic of mine, and the only number displayed is
+  `impactScore` as returned.
 - `ProgressBar.tsx` is the indicator for both long calls. It is indeterminate
   by design: the stripe sweeps, and the caption gives elapsed wall time against
   the expected cost from your handover. There is no percentage because neither
