@@ -49,10 +49,47 @@ export function ControlsPanel(props: ControlsPanelProps) {
     });
   }
 
+  function setDonationRate(next: number) {
+    props.setConfig((prev) => {
+      const resources = { ...prev.resources, donationRateMultiplier: next };
+      return { ...prev, resources };
+    });
+  }
+
+  // null is the contract's way of saying no upper age limit on listing, so the
+  // toggle turns the slider off entirely rather than parking it at 90.
+  function toggleAgeLimit(enabled: boolean) {
+    if (enabled) {
+      setConstraint("maxAgeToList", 70);
+      return;
+    }
+    setConstraint("maxAgeToList", null);
+  }
+
   function setMode(next: string) {
     props.setConfig((prev) => {
       return { ...prev, mode: next as PolicyConfig["mode"] };
     });
+  }
+
+  const maxAge = config.constraints.maxAgeToList;
+  let ageLimitOn = false;
+  if (maxAge !== null) {
+    ageLimitOn = true;
+  }
+
+  let ageSlider = null;
+  if (maxAge !== null) {
+    ageSlider = (
+      <Slider
+        label="Upper age to list"
+        value={maxAge}
+        min={50}
+        max={90}
+        step={1}
+        onChange={(next) => setConstraint("maxAgeToList", next)}
+      />
+    );
   }
 
   return (
@@ -150,6 +187,25 @@ export function ControlsPanel(props: ControlsPanelProps) {
           label="Urgent supersedes rota"
           checked={config.constraints.urgentSupersedesRota}
           onChange={(next) => setConstraint("urgentSupersedesRota", next)}
+        />
+        <Toggle
+          label="Upper age limit on listing"
+          checked={ageLimitOn}
+          onChange={toggleAgeLimit}
+        />
+        {ageSlider}
+      </div>
+
+      <div className="control-group">
+        <span className="label">Resources</span>
+        <Slider
+          label="Donation rate"
+          value={config.resources.donationRateMultiplier}
+          min={0.5}
+          max={3}
+          step={0.1}
+          suffix="×"
+          onChange={setDonationRate}
         />
       </div>
     </section>
