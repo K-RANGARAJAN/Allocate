@@ -48,12 +48,12 @@ export function defaultConfig(): PolicyConfig {
 
 export function presets(): Record<string, PolicyConfig> {
   // STUB
+  // Weights only. No age cap, no age matching, no raised listing threshold.
+  // The collapse in older-patient transplants has to come out of the scoring
+  // on its own, or the finding is manufactured and worthless.
   const utilityTrap = defaultConfig();
   utilityTrap.mode = "score";
-  utilityTrap.weights = { urgency: 0.1, lifeYears: 0.85, waitingTime: 0.05 };
-  utilityTrap.constraints.ageMatchingOn = true;
-  utilityTrap.constraints.maxAgeToList = 65;
-  utilityTrap.constraints.minUrgencyToList = 3;
+  utilityTrap.weights = { urgency: 0.05, lifeYears: 0.9, waitingTime: 0.05 };
 
   const localityTrap = defaultConfig();
   localityTrap.mode = "cascade";

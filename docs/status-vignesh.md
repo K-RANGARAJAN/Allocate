@@ -1,41 +1,34 @@
 # Status — Vignesh (Engine)
-Updated: 2026-09-07 15:41 IST / f94cef8
+Updated: 2026-09-07 16:00 IST / d1d0e4f
 Building against contract version: 1.0.0
 
 ## Public surface I currently provide
 
 | Export | State |
 | --- | --- |
-| `defaultConfig()` | stubbed |
-| `presets()` | stubbed |
+| `defaultConfig()` | working |
+| `presets()` | working |
 | `runSimulation(config)` | stubbed |
 | `runSensitivity(config)` | stubbed |
 | `runParetoSweep(config, points)` | stubbed |
 
 ## Done since last update
 
-- Repository scaffolded: Vite, React, TypeScript, Recharts, single tsconfig.
-- `src/contract/types.ts` written at version 1.0.0.
-- `src/engine/rng.ts` — seeded Mulberry32. Real, deterministic, verified.
-- `src/engine/index.ts` — the five-function seam, all five stubbed.
-- `scripts/smoke.ts` — validates the Outcome and prints the nine metrics.
-- Minimal app shell proving the import path end to end.
+- Corrected `utilityTrap`. It was setting `maxAgeToList: 65`, `ageMatchingOn:
+  true` and `minUrgencyToList: 3`, which hard-coded the finding it is supposed
+  to demonstrate. It is now weights only: urgency 0.05, lifeYears 0.90,
+  waitingTime 0.05, everything else at default. The age cap is not coming back.
 
 ## In progress right now
 
-- Nothing yet. Next up is synthetic population and organ arrival generation.
+- Task 002, the world model: constants and formulas, compatibility rules,
+  synthetic patients, synthetic organ arrivals.
 
 ## Stubbed or fake, do not trust
 
-- All five exported functions. Every number they return is invented.
-- `defaultConfig()` and `presets()` return real, valid configs, but they are
-  still marked `// STUB` because the preset weightings are not yet tuned against
-  a working simulation.
-- `runSimulation` metrics are fixed dummies. Only `waitlistDeaths` and
-  `lifeYearsGained` move, and they move crudely with `weights.urgency` so the
-  interface can see a slider bite. Nothing else reacts to config yet.
-- `runParetoSweep` domination is computed honestly over invented numbers.
-- `meta.runtimeMs` is a constant.
+- `runSimulation`, `runSensitivity`, `runParetoSweep`. Every number they return
+  is invented. Only the shapes are real.
+- `meta.runtimeMs` is the constant 12.
 
 ## I need from the other side
 
@@ -44,7 +37,6 @@ Building against contract version: 1.0.0
 
 ## Warnings
 
-- `src/engine/rng.ts` is the only source of randomness in the engine. If you ever
-  see `Math.random` in an engine file, that is a bug, tell me.
-- The five exports are stable. I will not change their signatures without
-  messaging you and bumping `CONTRACT_VERSION`.
+- `presets().utilityTrap` changed shape of behaviour, not shape of data. If you
+  cached its constraint values anywhere, re-read them.
+- No contract fields added, renamed or removed. Nothing in the `Outcome` moved.
