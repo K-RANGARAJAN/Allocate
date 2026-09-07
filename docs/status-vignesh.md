@@ -1,5 +1,5 @@
 # Status — Vignesh (Engine)
-Updated: 2026-09-07 21:47 IST / 8118049
+Updated: 2026-09-07 21:55 IST / 1157834
 Building against contract version: 1.0.0
 
 ## Public surface I currently provide
@@ -11,6 +11,84 @@ Building against contract version: 1.0.0
 | `runSimulation(config)` | working |
 | `runSensitivity(config)` | working |
 | `runParetoSweep(config, points)` | working |
+
+## Handover — what to call and where every number lives
+
+Everything below is real and none of it needs anything from me first. Import
+only from `src/engine/index.ts`.
+
+### The five calls
+
+| call | returns | cost | call it when |
+| --- | --- | --- | --- |
+| `defaultConfig()` | `PolicyConfig` | instant | on mount, to seed your controls |
+| `presets()` | `{ utilityTrap, localityTrap }` | instant | preset buttons |
+| `runSimulation(config)` | `Outcome` | ~0.65s | on config change, debounced |
+| `runSensitivity(config)` | `SensitivityRow[]` | 10-12s | on demand only, never on a drag |
+| `runParetoSweep(config, points)` | `ParetoPoint[]` | ~0.7s per point | on demand only |
+
+`presets()` returns whole `PolicyConfig` objects. Set one as your live config and
+every control should read back the preset's values.
+
+### Outcome
+
+- `metrics` — the nine headline numbers. `transplants`, `lifeYearsGained`,
+  `waitlistDeaths`, `medianWaitDays`, `p90WaitDays`, `organsDiscarded`,
+  `meanColdIschemiaHours`, `meanGraftQuality`, `regionGapPct`. All rounded
+  already, all always present, never null.
+- `breakdowns.byAgeBand` — four rows, always all four, always in this order:
+  `18-39`, `40-59`, `60-69`, `70+`. Each row is `{ band, listed, transplanted,
+  ratePct }`.
+- `breakdowns.byZone` — three rows, `north` / `south` / `west`, same shape with
+  `zone` instead of `band`. `regionGapPct` is the widest `ratePct` gap between
+  any two of these rows, so this table is the evidence for that metric.
+- `breakdowns.byHospitalType` — two rows, `government` / `private`.
+- `breakdowns.discardReasons` — four rows, always all four even at zero, so the
+  table never changes shape: `no eligible recipient`, `declined by all centres`,
+  `exceeded ischemia limit`, `graft quality too low`.
+- `timeline` — 26 points at the default duration, one per 30 days plus a closing
+  point. Each is `{ day, waitlistSize, cumulativeTransplants, cumulativeDeaths }`.
+- `meta` — `runtimeMs`, `organsArrived`, `allocationDecisions`. `organsArrived`
+  is the denominator if you want a discard rate.
+- `config` — the config that produced this Outcome, echoed back. Use it to label
+  a scenario rather than trusting your own state to still match.
+
+### SensitivityRow
+
+`{ lever, label, deltaPct, impactScore }`, already sorted by `impactScore`
+descending, so row zero is the headline. `label` is display-ready. `deltaPct` is
+a partial map keyed by metric name — a signed percentage move for a one-step
+increase in that lever. Eight rows.
+
+### ParetoPoint
+
+`{ label, weights, lifeYearsGained, regionGapPct, waitlistDeaths, dominated,
+isCurrent }`. Plot `lifeYearsGained` on x and `regionGapPct` on y. Exactly one
+point has `isCurrent`. Scale the gap axis to the data — it spans about two
+points at the default config, and a 0-to-100 axis will make a real effect look
+flat.
+
+### Which field proves which Round 4 claim
+
+1. **Over-60 collapse** — `breakdowns.byAgeBand`, the `60-69` and `70+` rows,
+   under `presets().utilityTrap` against `defaultConfig()`. See the open question
+   below, this one needs a decision.
+2. **Locality trap** — `metrics.regionGapPct` and `metrics.organsDiscarded`
+   under `presets().localityTrap` against `defaultConfig()`.
+3. **A dominated current point** — `runParetoSweep(defaultConfig(), 20)`. At the
+   default config the current point is already dominated by two others.
+4. **Donation rate outranks every weight** — `runSensitivity(...)`, row zero.
+
+### Open question for both of us
+
+The over-60 transplant rate is the single most important number in the demo and
+**it is not on the contract.** It spans two age bands, so producing it means
+adding `60-69` and `70+` together and weighting by `listed` — which is the UI
+computing a metric, and R4 says the UI never does that. Three ways out: add
+`overSixtyRatePct` to `Metrics` and bump the contract to 1.1.0, collapse the two
+bands into one `60+` row, or accept the UI doing this one sum. I would add the
+field. It needs Ranga's agreement and a contract version bump, so it is not mine
+to decide alone. `scripts/demo-check.ts` has the exact calculation.
 
 ## Done since last update
 
