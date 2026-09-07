@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 02:10 IST / ed384c6
+Updated: 2026-09-08 02:18 IST / f7c5d29
 Building against contract version: 1.2.0
 
 ## Public surface I currently provide
@@ -18,6 +18,8 @@ on-demand calls are not wired yet.
 
 ## Done since last update
 
+- `state/useEngineWorker.ts` owns the worker and tracks elapsed wall time.
+  Neither long call reports progress, so the indicator is indeterminate.
 - `src/ui/worker.ts` is the Web Worker for the two long calls, importing
   through the same seam as everything else. One note for you: the project
   tsconfig carries the DOM lib and not WebWorker, and tsconfig is not a file I
