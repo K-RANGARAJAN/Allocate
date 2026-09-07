@@ -7,6 +7,8 @@ import type {
   DiscardRow,
   HospitalType,
   HospitalTypeRow,
+  Metrics,
+  PolicyConfig,
   ZoneId,
   ZoneRow
 } from "../contract/types";
@@ -77,4 +79,35 @@ export function widestZoneGapPct(rows: ZoneRow[]): number {
     }
   }
   return round1(best - worst);
+}
+
+function clamp01(value: number): number {
+  if (value < 0) {
+    return 0;
+  }
+  if (value > 1) {
+    return 1;
+  }
+  return value;
+}
+
+export function buildStubMetrics(config: PolicyConfig, breakdowns: Breakdowns): Metrics {
+  // Two metrics lean on the urgency weight so the interface can see a slider bite.
+  // Leaning hard on urgency saves people from dying on the list, and buys fewer
+  // life-years, because the sickest recipients are not the longest-lived ones.
+  const urgencyLean = clamp01(config.weights.urgency);
+  const waitlistDeaths = Math.round(340 - 120 * urgencyLean);
+  const lifeYearsGained = round1(9600 - 2400 * urgencyLean);
+
+  return {
+    transplants: STUB_TRANSPLANTS,
+    lifeYearsGained,
+    waitlistDeaths,
+    medianWaitDays: 412,
+    p90WaitDays: 690,
+    organsDiscarded: STUB_ORGANS_DISCARDED,
+    meanColdIschemiaHours: 11.4,
+    meanGraftQuality: 0.78,
+    regionGapPct: widestZoneGapPct(breakdowns.byZone)
+  };
 }
