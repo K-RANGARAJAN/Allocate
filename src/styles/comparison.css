@@ -1,0 +1,52 @@
+/* The comparison table. Colour here is a judgement, so it is only ever applied
+   where the engine states a direction. */
+
+.compare-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.scenario-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  border: var(--border);
+  border-radius: var(--radius);
+  font-size: var(--text-sm);
+}
+
+.scenario-chip button {
+  border: none;
+  background: none;
+  color: var(--soft-ink);
+  cursor: pointer;
+  font-size: var(--text-sm);
+  padding: 0;
+}
+
+/* Better in the direction the engine names. */
+.tone-good {
+  color: var(--teal);
+}
+
+/* Worse in the direction the engine names. */
+.tone-bad {
+  color: var(--burnt-orange);
+}
+
+/* Used for metrics the engine marks "neutral", and for a delta of zero. These
+   are printed in plain ink with no arrow: the over-60 rate is the argument this
+   platform refuses to settle, and colouring it would be the tool taking a side. */
+.tone-neutral {
+  color: var(--ink);
+}
+
+.compare-note {
+  color: var(--soft-ink);
+  font-size: var(--text-xs);
+  margin: var(--space-3) 0 0;
+}

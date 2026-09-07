@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 01:38 IST / 8736634
+Updated: 2026-09-08 01:46 IST / 1a6c2c3
 Building against contract version: 1.2.0
 
 ## Public surface I currently provide
@@ -18,6 +18,9 @@ on-demand calls are not wired yet.
 
 ## Done since last update
 
+- `src/styles/comparison.css` carries the three tones. Teal is better in the
+  direction you name, burnt orange is worse, and `tone-neutral` is plain ink
+  with no arrow — that one is for `overSixtyRatePct` and for any delta of zero.
 - `state/useScenarios.ts` holds saved scenarios in memory for the session and
   exports them as JSON. Nothing is persisted, per `ARCHITECTURE.md`. Each saved
   scenario is labelled from the config echoed back on its own `Outcome` rather
