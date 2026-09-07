@@ -4,6 +4,7 @@
 // generation can all depend on one module without depending on each other.
 
 import type { BloodGroup, HospitalType, ZoneId } from "../contract/types";
+import type { Rng } from "./rng";
 
 export const BASE_LIFE_YEARS = 22;
 export const URGENCY_DRIFT_PER_YEAR = 1.2;
@@ -13,6 +14,13 @@ export const ISCHEMIA_PENALTY_PER_HOUR = 0.02;
 export const ISCHEMIA_QUALITY_FLOOR = 0.4;
 export const OFFER_ACCEPTANCE_RATE = 0.85;
 export const RETRIEVAL_PREP_HOURS = 4;
+
+// Shared domain vocabulary. Blood group frequencies are the same for donors and
+// recipients. Zone weights are not, and are declared where they are used.
+export const BLOOD_GROUPS: BloodGroup[] = ["O", "B", "A", "AB"];
+export const BLOOD_WEIGHTS = [37, 32, 23, 8];
+export const ZONES: ZoneId[] = ["north", "south", "west"];
+export const HOSPITAL_TYPES: HospitalType[] = ["government", "private"];
 
 export type PatientStatus = "waiting" | "transplanted" | "died";
 
@@ -92,4 +100,37 @@ export function actualLifeYearsGained(
   effectiveQuality: number
 ): number {
   return expectedYearsAtListing * effectiveQuality;
+}
+
+// Approximate standard normal from twelve uniforms. Sum of twelve has mean 6
+// and standard deviation 1, so subtracting 6 gives a usable z with no logs or
+// trig and no chance of a degenerate draw.
+function standardNormal(rng: Rng): number {
+  let total = 0;
+  for (let i = 0; i < 12; i++) {
+    total = total + rng.next();
+  }
+  return total - 6;
+}
+
+export function normal(rng: Rng, mean: number, sd: number): number {
+  return mean + sd * standardNormal(rng);
+}
+
+// Knuth's method. Arrivals clump the way real referrals and donations do,
+// rather than landing at a flat rate every single day.
+export function poisson(rng: Rng, lambda: number): number {
+  const limit = Math.exp(-lambda);
+  let k = 0;
+  let product = 1;
+  while (true) {
+    product = product * rng.next();
+    if (product <= limit) {
+      return k;
+    }
+    k = k + 1;
+    if (k > 200) {
+      return k;
+    }
+  }
 }

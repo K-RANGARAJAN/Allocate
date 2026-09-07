@@ -1,16 +1,20 @@
 // Synthetic patient generation. No external data, all of it seeded.
 
-import type { BloodGroup, HospitalType, PolicyConfig, ZoneId } from "../contract/types";
-import { clamp, expectedLifeYearsAtListing, type Patient } from "./model";
+import type { PolicyConfig } from "../contract/types";
+import {
+  BLOOD_GROUPS,
+  BLOOD_WEIGHTS,
+  HOSPITAL_TYPES,
+  ZONES,
+  clamp,
+  expectedLifeYearsAtListing,
+  normal,
+  poisson,
+  type Patient
+} from "./model";
 import type { Rng } from "./rng";
 
-const BLOOD_GROUPS: BloodGroup[] = ["O", "B", "A", "AB"];
-const BLOOD_WEIGHTS = [37, 32, 23, 8];
-
-const ZONES: ZoneId[] = ["north", "south", "west"];
 const PATIENT_ZONE_WEIGHTS = [45, 33, 22];
-
-const HOSPITAL_TYPES: HospitalType[] = ["government", "private"];
 const HOSPITAL_WEIGHTS = [40, 60];
 
 const AGE_MEAN = 48;
@@ -19,21 +23,6 @@ const AGE_MIN = 18;
 const AGE_MAX = 78;
 
 const BACKDATE_DAYS = 900;
-
-// Approximate standard normal from twelve uniforms. Sum of twelve has mean 6
-// and standard deviation 1, so subtracting 6 gives a usable z with no logs or
-// trig and no chance of a degenerate draw.
-function standardNormal(rng: Rng): number {
-  let total = 0;
-  for (let i = 0; i < 12; i++) {
-    total = total + rng.next();
-  }
-  return total - 6;
-}
-
-function normal(rng: Rng, mean: number, sd: number): number {
-  return mean + sd * standardNormal(rng);
-}
 
 function drawAge(rng: Rng): number {
   const raw = normal(rng, AGE_MEAN, AGE_SD);
@@ -85,24 +74,6 @@ export function generateInitialWaitlist(config: PolicyConfig, rng: Rng): Patient
     patients.push(makePatient("p-init-" + i, listedDay, rng));
   }
   return patients;
-}
-
-// Knuth's method. Arrivals clump the way real referrals do rather than
-// arriving at a flat rate every single day.
-function poisson(rng: Rng, lambda: number): number {
-  const limit = Math.exp(-lambda);
-  let k = 0;
-  let product = 1;
-  while (true) {
-    product = product * rng.next();
-    if (product <= limit) {
-      return k;
-    }
-    k = k + 1;
-    if (k > 200) {
-      return k;
-    }
-  }
 }
 
 export function generateNewListings(day: number, config: PolicyConfig, rng: Rng): Patient[] {

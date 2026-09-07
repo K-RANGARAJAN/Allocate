@@ -1,5 +1,5 @@
 # Status — Vignesh (Engine)
-Updated: 2026-09-07 16:15 IST / 87293c8
+Updated: 2026-09-07 16:22 IST / 98b6ed5
 Building against contract version: 1.0.0
 
 ## Public surface I currently provide
@@ -14,6 +14,12 @@ Building against contract version: 1.0.0
 
 ## Done since last update
 
+- Added `src/engine/organs.ts`: `generateOrganArrivals`. 0.8 donors a day scaled
+  by `donationRateMultiplier`, two kidneys per donor sharing a donorId. Donor
+  zones are the inverse of patient zones, south 45 north 33 west 22, so
+  geography creates real pressure instead of being decorative.
+- Moved the shared vocabulary and the seeded samplers into `model.ts` so
+  population and organ generation depend on one module rather than each other.
 - Added `src/engine/population.ts`: `generateInitialWaitlist` and
   `generateNewListings`. Blood group, age, zone and hospital type on the
   specified distributions, comorbidity trending with age but with real spread,
