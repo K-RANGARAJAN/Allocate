@@ -1,6 +1,6 @@
 # Status — Vignesh (Engine)
-Updated: 2026-09-07 21:55 IST / 1157834
-Building against contract version: 1.0.0
+Updated: 2026-09-07 22:08 IST / 240d740
+Building against contract version: 1.1.0
 
 ## Public surface I currently provide
 
@@ -32,10 +32,11 @@ every control should read back the preset's values.
 
 ### Outcome
 
-- `metrics` — the nine headline numbers. `transplants`, `lifeYearsGained`,
-  `waitlistDeaths`, `medianWaitDays`, `p90WaitDays`, `organsDiscarded`,
-  `meanColdIschemiaHours`, `meanGraftQuality`, `regionGapPct`. All rounded
-  already, all always present, never null.
+- `metrics` — ten numbers. The nine headline ones — `transplants`,
+  `lifeYearsGained`, `waitlistDeaths`, `medianWaitDays`, `p90WaitDays`,
+  `organsDiscarded`, `meanColdIschemiaHours`, `meanGraftQuality`, `regionGapPct`
+  — plus `overSixtyRatePct`, new in contract 1.1.0. All rounded already, all
+  always present, never null.
 - `breakdowns.byAgeBand` — four rows, always all four, always in this order:
   `18-39`, `40-59`, `60-69`, `70+`. Each row is `{ band, listed, transplanted,
   ratePct }`.
@@ -70,27 +71,42 @@ flat.
 
 ### Which field proves which Round 4 claim
 
-1. **Over-60 collapse** — `breakdowns.byAgeBand`, the `60-69` and `70+` rows,
-   under `presets().utilityTrap` against `defaultConfig()`. See the open question
-   below, this one needs a decision.
+1. **Over-60 collapse** — `metrics.overSixtyRatePct` under
+   `presets().utilityTrap` against `defaultConfig()`. 10.2% to 0%. The
+   `breakdowns.byAgeBand` table is the evidence underneath it.
 2. **Locality trap** — `metrics.regionGapPct` and `metrics.organsDiscarded`
    under `presets().localityTrap` against `defaultConfig()`.
 3. **A dominated current point** — `runParetoSweep(defaultConfig(), 20)`. At the
    default config the current point is already dominated by two others.
 4. **Donation rate outranks every weight** — `runSensitivity(...)`, row zero.
 
-### Open question for both of us
+### Contract 1.1.0 — one field added
 
-The over-60 transplant rate is the single most important number in the demo and
-**it is not on the contract.** It spans two age bands, so producing it means
-adding `60-69` and `70+` together and weighting by `listed` — which is the UI
-computing a metric, and R4 says the UI never does that. Three ways out: add
-`overSixtyRatePct` to `Metrics` and bump the contract to 1.1.0, collapse the two
-bands into one `60+` row, or accept the UI doing this one sum. I would add the
-field. It needs Ranga's agreement and a contract version bump, so it is not mine
-to decide alone. `scripts/demo-check.ts` has the exact calculation.
+`metrics.overSixtyRatePct`. The share of listed patients aged 60 or over who
+were transplanted, as a percentage. It is the headline number of the utilityTrap
+demo and it spans the `60-69` and `70+` bands, so without it the interface would
+have to sum two breakdown rows and weight them by `listed` — the UI computing a
+metric, which R4 forbids. Additive only: nothing renamed, nothing removed,
+nothing reordered, so anything already written against 1.0.0 still compiles.
+`scripts/demo-check.ts` cross-checks it against the two age band rows on every
+run and fails if they ever disagree.
+
+Ranga — this went in on Vignesh's approval because you had not started yet and
+the field is purely additive. Say if you would rather it came back out.
 
 ## Done since last update
+
+- **Contract bumped to 1.1.0: `metrics.overSixtyRatePct` added.** The utility
+  trap's headline number is now on the contract instead of being something the
+  interface has to derive. Purely additive. `docs/CONTRACT.md` carries the
+  changelog line. `demo-check.ts` gained a check 0 that fails if the metric and
+  the age band rows ever disagree.
+- **`impactScore` is still the mean across the original nine metrics**, not ten.
+  The roadmap defines it that way and adding a tenth would silently move every
+  number in the Task 005 table above.
+- Added the handover reference below — every call, every field, and which one
+  proves which Round 4 claim.
+
 
 - **Gate C passed, all three checks.** `npx tsx scripts/demo-check.ts` runs both
   presets against the default config and prints what moved.
@@ -231,6 +247,10 @@ to decide alone. `scripts/demo-check.ts` has the exact calculation.
   it engine-side rather than have you compute it.
 
 ## Warnings
+
+- **Contract is 1.1.0, not 1.0.0.** One field added to `Metrics`:
+  `overSixtyRatePct`. Nothing else moved. Check `outcome.contractVersion` if you
+  are asserting on it anywhere.
 
 - **`presets().localityTrap.constraints.localFirst` changed from `"state"` to
   `"zone"`.** If you cached a preset object or hard-coded the old value in a

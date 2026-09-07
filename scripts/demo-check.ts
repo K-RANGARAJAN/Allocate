@@ -20,9 +20,10 @@ function pad(text: string, width: number): string {
   return out;
 }
 
-// The over-60 transplant rate is the utilityTrap finding and is not one of the
-// nine headline metrics, so it is recomputed from the age breakdown here.
-function overSixtyRatePct(outcome: Outcome): number {
+// `metrics.overSixtyRatePct` is the number the interface displays. This
+// recomputes it from the age breakdown so the two can be compared — if they ever
+// disagree, the metric and the table on screen are telling different stories.
+function overSixtyFromBands(outcome: Outcome): number {
   let listed = 0;
   let transplanted = 0;
   for (const row of outcome.breakdowns.byAgeBand) {
@@ -98,8 +99,11 @@ const baseline = runSimulation(base);
 const utility = runSimulation(preset.utilityTrap);
 const locality = runSimulation(preset.localityTrap);
 
-const baseOverSixty = overSixtyRatePct(baseline);
-const utilityOverSixty = overSixtyRatePct(utility);
+const baseOverSixty = baseline.metrics.overSixtyRatePct;
+const utilityOverSixty = utility.metrics.overSixtyRatePct;
+const bandsAgree =
+  baseOverSixty === overSixtyFromBands(baseline) &&
+  utilityOverSixty === overSixtyFromBands(utility);
 
 header("utilityTrap");
 line("over-60 transplant rate %", baseOverSixty, utilityOverSixty);
@@ -146,6 +150,12 @@ const gapPass = locality.metrics.regionGapPct >= localityFloor;
 const discardPass = locality.metrics.organsDiscarded < baseline.metrics.organsDiscarded;
 
 console.log("");
+console.log("CHECK 0 — overSixtyRatePct agrees with the 60-69 and 70+ rows");
+if (bandsAgree) {
+  console.log("  PASS. The metric and the age breakdown are the same number.");
+} else {
+  console.log("  FAIL. The headline number disagrees with the table under it.");
+}
 console.log("CHECK 1 — utilityTrap collapses the over-60 transplant rate");
 console.log(
   "  " + baseOverSixty + "% to " + utilityOverSixty + "%, needed " + utilityCeiling + "% or lower"
@@ -183,7 +193,7 @@ if (discardPass) {
 }
 
 console.log("");
-if (utilityPass && gapPass && discardPass) {
+if (bandsAgree && utilityPass && gapPass && discardPass) {
   console.log("GATE C PASSED");
   console.log("Both presets earn their finding. Neither is told what to produce.");
 } else {

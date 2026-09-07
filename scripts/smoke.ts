@@ -16,7 +16,8 @@ const METRIC_ORDER: MetricKey[] = [
   "organsDiscarded",
   "meanColdIschemiaHours",
   "meanGraftQuality",
-  "regionGapPct"
+  "regionGapPct",
+  "overSixtyRatePct"
 ];
 
 function inspect(path: string, value: unknown, problems: string[]): void {

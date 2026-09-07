@@ -17,6 +17,7 @@ import {
   DISCARD_ISCHEMIA,
   DISCARD_NO_ELIGIBLE,
   DISCARD_QUALITY,
+  OVER_SIXTY_AGE,
   type SimulationLog
 } from "./model";
 
@@ -115,8 +116,22 @@ export function buildMetrics(log: SimulationLog): Metrics {
     organsDiscarded: log.discards.length,
     meanColdIschemiaHours: round1(meanOf(coldTotal, count)),
     meanGraftQuality: round2(meanOf(qualityTotal, count)),
-    regionGapPct: widestZoneGapPct(buildZoneRows(log))
+    regionGapPct: widestZoneGapPct(buildZoneRows(log)),
+    overSixtyRatePct: overSixtyRate(log)
   };
+}
+
+// The utility trap in one number. Counted straight off the age line rather than
+// summed from the 60-69 and 70+ rows, but it agrees with them exactly, because
+// those two bands are precisely the patients at or above OVER_SIXTY_AGE.
+function overSixtyRate(log: SimulationLog): number {
+  const listed = log.listings.filter((row) => {
+    return row.age >= OVER_SIXTY_AGE;
+  }).length;
+  const transplanted = log.transplants.filter((row) => {
+    return row.age >= OVER_SIXTY_AGE;
+  }).length;
+  return ratePct(transplanted, listed);
 }
 
 // Exactly these four strings, in exactly this order. Person B's UI orders and

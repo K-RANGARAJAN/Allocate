@@ -1,4 +1,4 @@
-export const CONTRACT_VERSION = "1.0.0";
+export const CONTRACT_VERSION = "1.1.0";
 
 export type BloodGroup = "A" | "B" | "AB" | "O";
 export type ZoneId = "north" | "south" | "west";
@@ -45,6 +45,9 @@ export interface Metrics {
   meanColdIschemiaHours: number;
   meanGraftQuality: number;
   regionGapPct: number;
+  // Share of listed patients aged 60 or over who were transplanted. It spans
+  // two age bands, so it lives here rather than being summed interface-side.
+  overSixtyRatePct: number;
 }
 
 export interface AgeBandRow {

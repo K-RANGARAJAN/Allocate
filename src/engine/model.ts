@@ -33,6 +33,10 @@ export const URGENT_LIST_THRESHOLD = 8.5;
 // Share of a zone's transplant centres that are government run.
 export const GOVERNMENT_CENTRE_SHARE = 0.4;
 
+// The age at which a patient counts as an older recipient. The whole utility
+// trap is measured against this line, so it is named rather than inlined.
+export const OVER_SIXTY_AGE = 60;
+
 // Pareto sweep labelling. A weight vector is named by how lopsided it is: one
 // weight at or above the pure share carries the point on its own, a spread
 // narrower than the balanced spread means no weight is really in charge, and

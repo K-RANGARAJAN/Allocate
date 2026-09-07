@@ -1,6 +1,6 @@
 # Contract
 
-**Version 1.0.0**
+**Version 1.1.0**
 
 This document is the prose companion to `src/contract/types.ts`. The types file is
 the machine-readable truth. This file explains what the fields mean.
@@ -39,7 +39,7 @@ reproducible, that is a bug in the engine, not a quirk of the model.
 | `lifeYearsGained` | years, summed across recipients |
 | `maxColdIschemiaHours`, `meanColdIschemiaHours` | hours |
 | `meanGraftQuality` | 0 to 1 |
-| `regionGapPct`, `ratePct` | percentage points, 0 to 100 |
+| `regionGapPct`, `ratePct`, `overSixtyRatePct` | percentage points, 0 to 100 |
 | `durationDays` | days |
 | `donationRateMultiplier` | multiplier, 1.0 is baseline |
 | `urgency`, `minUrgencyToList` | 0 to 10 |
@@ -89,3 +89,9 @@ number. The smoke test enforces this.
 ## Changelog
 
 <!-- One line per contract change: version, date, what moved, who agreed. -->
+
+1.1.0 — 2026-09-07 — added `overSixtyRatePct` to `Metrics`. It is the share of
+listed patients aged 60 or over who were transplanted, and it is the headline
+number of the utilityTrap demo. It spans the `60-69` and `70+` age bands, so
+without it the interface would have to sum two breakdown rows and weight them,
+which R4 forbids. Additive only, nothing renamed or removed. Agreed by Vignesh.
