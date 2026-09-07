@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 01:54 IST / 823f3c2
+Updated: 2026-09-08 02:02 IST / a23b50a
 Building against contract version: 1.2.0
 
 ## Public surface I currently provide
@@ -18,6 +18,9 @@ on-demand calls are not wired yet.
 
 ## Done since last update
 
+- `ScenarioPanel.tsx` ties it together: save the current policy, pick a saved
+  one as the baseline, export the set as JSON. `compareOutcomes` re-runs
+  nothing, so it is called straight through on render with no worker.
 - `ComparisonTable.tsx` renders a `ScenarioComparison`. Every delta and
   percentage is yours; I subtract nothing.
 - `src/styles/comparison.css` carries the three tones. Teal is better in the

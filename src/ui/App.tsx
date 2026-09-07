@@ -1,12 +1,15 @@
 import { BreakdownTables } from "./components/BreakdownTables";
 import { ControlsPanel } from "./components/ControlsPanel";
 import { MetricGrid } from "./components/MetricGrid";
+import { ScenarioPanel } from "./components/ScenarioPanel";
 import { TimelineChart } from "./charts/TimelineChart";
 import { PresetButtons } from "./components/PresetButtons";
 import { usePolicyRun } from "./state/usePolicyRun";
+import { useScenarios } from "./state/useScenarios";
 
 export function App() {
   const run = usePolicyRun();
+  const scenarios = useScenarios();
 
   let status = "Simulating two years of allocation…";
   if (run.running === false) {
@@ -16,6 +19,7 @@ export function App() {
   let results = null;
   let tables = null;
   let timeline = null;
+  let compare = null;
   if (run.outcome !== null) {
     results = (
       <section className="panel">
@@ -24,6 +28,8 @@ export function App() {
         <MetricGrid metrics={run.outcome.metrics} stale={run.running} />
       </section>
     );
+
+    compare = <ScenarioPanel outcome={run.outcome} store={scenarios} />;
 
     timeline = (
       <section className="panel">
@@ -78,6 +84,7 @@ export function App() {
         <div className="stack">
           {placeholder}
           {results}
+          {compare}
           {timeline}
           {tables}
         </div>
