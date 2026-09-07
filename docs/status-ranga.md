@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 01:00 IST / fea1371
+Updated: 2026-09-08 01:07 IST / 8f41f68
 Building against contract version: 1.2.0
 
 ## Public surface I currently provide
@@ -18,6 +18,9 @@ on-demand calls are not wired yet.
 
 ## Done since last update
 
+- `src/styles/tables.css` styles the breakdown tables. Figures are right
+  aligned and tabular, row labels are not, and the row count is fixed so the
+  layout never jumps when a count goes to zero.
 - The grid is wired into the results column and verified against a real run:
   all ten values render identically to what `npm run smoke` prints, 1132
   transplants and 10775.4 life-years among them.
