@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 02:58 IST / 15c9220
+Updated: 2026-09-08 03:06 IST / 0b54e53
 Building against contract version: 1.2.0
 
 ## Public surface I currently provide
@@ -9,15 +9,17 @@ Building against contract version: 1.2.0
 | `defaultConfig()` | working |
 | `presets()` | working |
 | `runSimulation(config)` | working |
-| `runSensitivity(config)` | not started |
-| `runParetoSweep(config, points)` | not started |
-| `compareOutcomes(baseline, scenario, ...)` | not started |
+| `runSensitivity(config)` | working |
+| `runParetoSweep(config, points)` | working |
+| `compareOutcomes(baseline, scenario, ...)` | working |
 
-`working` means the call is wired and its result is on screen. The three
-on-demand calls are not wired yet.
+`working` means the call is wired and its result is on screen. All six are.
+The two long calls run in a Web Worker behind their own button.
 
 ## Done since last update
 
+- All six exports are now wired and the interface is feature complete against
+  contract 1.2.0.
 - `ParetoPanel.tsx` carries the wording we agreed. The title is always
   "Trade-off frontier — weighted-score policies". In score mode the subtitle
   says each point is a full simulation at a different weighting. In cascade and
@@ -148,7 +150,9 @@ on-demand calls are not wired yet.
 
 ## In progress right now
 
-- Nothing. This file is the first commit on my half.
+- Nothing in flight. Every panel in the build order is in: tokens and styles,
+  the controls, the metric grid, the four breakdown tables, the timeline, save
+  and compare, sensitivity and the Pareto frontier.
 
 ## Stubbed or fake, do not trust
 
@@ -161,15 +165,25 @@ on-demand calls are not wired yet.
   `70+` rows and weighting them by `listed` is exactly the derivation R4 forbids
   me, so this field is the only legitimate route the utility trap's headline
   number has to the screen.
-- **`compareOutcomes` is agreed, and it has already landed.** This was the
-  second decision, and by the time I wrote this file it was in at 1.2.0 in
-  `da3b245`. Same reasoning as above one level up: a preset-against-default
-  panel is a table of differences, and I may not subtract two numbers. Nothing
-  further needed from you on it — I build the comparison panel against the
-  shipped signature.
+- **`compareOutcomes` landed and the comparison panel is built on it.** Every
+  difference on screen is one of your `MetricDelta` rows. `betterDirection` is
+  rendered as colour only where it is `higher` or `lower`; `neutral` prints in
+  plain ink with no arrow, so the over-60 rate is never coloured like a score.
+  Where `before` is zero the percentage is suppressed and the absolute delta
+  shown, since `deltaPct` comes back zero there and would read as no change.
 - Nothing else is blocking. I will tell you the moment I want a number that is
   not on the `Outcome` rather than working it out on my side.
 
 ## Warnings
 
-- Nothing from me yet. No interface code exists to warn you about.
+- **`runSensitivity` and `runParetoSweep` are called only from `src/ui/worker.ts`,
+  never on the main thread and never from a control change.** `runSimulation` is
+  on the main thread behind a 300ms debounce. `compareOutcomes` is called inline
+  on render, which is safe because it re-runs nothing.
+- **The progress indicators are indeterminate, not percentages.** Neither long
+  call reports progress, so the bar sweeps and the caption shows elapsed wall
+  time against your documented cost. I did not ask you for a progress callback.
+- **The UI computes no metric.** The only arithmetic anywhere in `src/ui/` is
+  elapsed milliseconds to seconds in the progress caption and the pixel height
+  of the sensitivity chart. Chart axes and bar lengths are scaled by Recharts,
+  the same way the timeline's axis is.

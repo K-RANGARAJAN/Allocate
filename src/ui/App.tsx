@@ -1,6 +1,7 @@
 import { BreakdownTables } from "./components/BreakdownTables";
 import { ControlsPanel } from "./components/ControlsPanel";
 import { MetricGrid } from "./components/MetricGrid";
+import { ParetoPanel } from "./components/ParetoPanel";
 import { ScenarioPanel } from "./components/ScenarioPanel";
 import { SensitivityPanel } from "./components/SensitivityPanel";
 import { TimelineChart } from "./charts/TimelineChart";
@@ -24,6 +25,7 @@ export function App() {
   let timeline = null;
   let compare = null;
   let sensitivity = null;
+  let pareto = null;
   if (run.outcome !== null) {
     results = (
       <section className="panel">
@@ -32,6 +34,8 @@ export function App() {
         <MetricGrid metrics={run.outcome.metrics} stale={run.running} />
       </section>
     );
+
+    pareto = <ParetoPanel config={run.config} worker={worker} />;
 
     sensitivity = <SensitivityPanel config={run.config} worker={worker} />;
 
@@ -94,6 +98,7 @@ export function App() {
           {timeline}
           {tables}
           {sensitivity}
+          {pareto}
         </div>
       </div>
     </div>
