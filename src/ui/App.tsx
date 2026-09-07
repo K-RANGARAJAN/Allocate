@@ -1,25 +1,50 @@
-// Scaffold only. This exists to prove the engine import path works end to end.
-// The interface half (Ranga) replaces this file entirely.
-
-import { defaultConfig, runSimulation } from "../engine/index";
+import { ControlsPanel } from "./components/ControlsPanel";
+import { PresetButtons } from "./components/PresetButtons";
+import { usePolicyRun } from "./state/usePolicyRun";
 
 export function App() {
-  const outcome = runSimulation(defaultConfig());
-  const metrics = outcome.metrics;
+  const run = usePolicyRun();
+
+  let status = "Simulating two years of allocation…";
+  if (run.running === false) {
+    status = "Two years of allocation under the current policy.";
+  }
+
+  let results = null;
+  if (run.outcome !== null) {
+    results = (
+      <section className="panel">
+        <h2 className="panel-title">Outcome</h2>
+        <p className="panel-note">{status}</p>
+        <p className="num">
+          Contract {run.outcome.contractVersion}, {run.outcome.meta.organsArrived}{" "}
+          organs arrived, {run.outcome.meta.allocationDecisions} allocation
+          decisions.
+        </p>
+      </section>
+    );
+  }
 
   return (
-    <div>
-      <h1>Resonance</h1>
-      <p>Engine contract version {outcome.contractVersion}. Stub data.</p>
-      <p>transplants: {metrics.transplants}</p>
-      <p>lifeYearsGained: {metrics.lifeYearsGained}</p>
-      <p>waitlistDeaths: {metrics.waitlistDeaths}</p>
-      <p>medianWaitDays: {metrics.medianWaitDays}</p>
-      <p>p90WaitDays: {metrics.p90WaitDays}</p>
-      <p>organsDiscarded: {metrics.organsDiscarded}</p>
-      <p>meanColdIschemiaHours: {metrics.meanColdIschemiaHours}</p>
-      <p>meanGraftQuality: {metrics.meanGraftQuality}</p>
-      <p>regionGapPct: {metrics.regionGapPct}</p>
+    <div className="app">
+      <header className="app-header">
+        <h1 className="app-title">Resonance</h1>
+        <p className="app-sub">
+          Set an allocation policy and see what it costs. There is no correct
+          policy here — the point is to make the trade-offs visible.
+        </p>
+      </header>
+
+      <div className="layout">
+        <div className="stack">
+          <section className="panel">
+            <PresetButtons onPick={run.setConfig} />
+          </section>
+          <ControlsPanel config={run.config} setConfig={run.setConfig} />
+        </div>
+
+        <div className="stack">{results}</div>
+      </div>
     </div>
   );
 }

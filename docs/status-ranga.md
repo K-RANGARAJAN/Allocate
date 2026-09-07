@@ -1,23 +1,26 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 00:30 IST / c075adf
+Updated: 2026-09-08 00:37 IST / 7357f4f
 Building against contract version: 1.2.0
 
 ## Public surface I currently provide
 
 | Export | State |
 | --- | --- |
-| `defaultConfig()` | not started |
-| `presets()` | not started |
-| `runSimulation(config)` | not started |
+| `defaultConfig()` | working |
+| `presets()` | working |
+| `runSimulation(config)` | working |
 | `runSensitivity(config)` | not started |
 | `runParetoSweep(config, points)` | not started |
 | `compareOutcomes(baseline, scenario, ...)` | not started |
 
-Every row is a call I intend to make, not a call I am making. Nothing on the
-interface side is wired yet, so no engine export is being consumed by real UI.
+`working` means the call is wired and its result is on screen. The three
+on-demand calls are not wired yet.
 
 ## Done since last update
 
+- **The scaffold is gone.** `src/ui/App.tsx` is now the real shell: header, the
+  control column with presets and the policy panel, and a results column fed by
+  the debounced run. `defaultConfig`, `presets` and `runSimulation` are wired.
 - `src/styles/app.css` adds the page frame: header, the 320px control column
   beside the results column, the shared button, and the preset row.
 - `PresetButtons.tsx` calls `presets()` and writes the whole returned config
@@ -81,11 +84,7 @@ interface side is wired yet, so no engine export is being consumed by real UI.
 
 ## Stubbed or fake, do not trust
 
-- `src/ui/App.tsx` is still the scaffold that shipped with the repository. It is
-  not interface work and must not be demonstrated as any. It renders nine of the
-  ten metrics as a flat list and its own text still calls them "Stub data",
-  which is now wrong — the numbers behind it are real. I replace the file
-  entirely rather than patching that line.
+- Nothing. The scaffold `App.tsx` is gone, replaced by the real shell.
 
 ## I need from the other side
 
