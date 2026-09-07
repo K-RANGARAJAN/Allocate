@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 02:02 IST / a23b50a
+Updated: 2026-09-08 02:10 IST / ed384c6
 Building against contract version: 1.2.0
 
 ## Public surface I currently provide
@@ -18,6 +18,11 @@ on-demand calls are not wired yet.
 
 ## Done since last update
 
+- `src/ui/worker.ts` is the Web Worker for the two long calls, importing
+  through the same seam as everything else. One note for you: the project
+  tsconfig carries the DOM lib and not WebWorker, and tsconfig is not a file I
+  own, so the worker scope is narrowed inside the worker rather than by
+  changing the lib list. Say if you would rather it were done in tsconfig.
 - `ScenarioPanel.tsx` ties it together: save the current policy, pick a saved
   one as the baseline, export the set as JSON. `compareOutcomes` re-runs
   nothing, so it is called straight through on render with no worker.
