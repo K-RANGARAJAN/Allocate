@@ -1,5 +1,5 @@
 # Status — Vignesh (Engine)
-Updated: 2026-09-07 16:10 IST / 485f5db
+Updated: 2026-09-07 16:15 IST / 87293c8
 Building against contract version: 1.0.0
 
 ## Public surface I currently provide
@@ -14,6 +14,11 @@ Building against contract version: 1.0.0
 
 ## Done since last update
 
+- Added `src/engine/population.ts`: `generateInitialWaitlist` and
+  `generateNewListings`. Blood group, age, zone and hospital type on the
+  specified distributions, comorbidity trending with age but with real spread,
+  base urgency trending with comorbidity. The initial 2000 are backdated across
+  the previous 900 days, so day zero already has people who have waited years.
 - Added `src/engine/compatibility.ts`: blood group matching, optional age
   matching, inter-zone transport hours, and `isEligible`. Same-zone transport is
   7 hours all in, the worst pair (south to west) is 13, so the default 24 hour
@@ -45,6 +50,9 @@ Building against contract version: 1.0.0
 
 ## Warnings
 
+- `constraints.maxAgeToList` is not enforced anywhere yet. It is a listing rule,
+  so it goes in the day loop in task 003, not in patient generation. Until then
+  moving that slider will change nothing.
 - `presets().utilityTrap` changed shape of behaviour, not shape of data. If you
   cached its constraint values anywhere, re-read them.
 - No contract fields added, renamed or removed. Nothing in the `Outcome` moved.
