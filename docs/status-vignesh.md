@@ -1,5 +1,5 @@
 # Status — Vignesh (Engine)
-Updated: 2026-09-07 21:24 IST / 0617c04
+Updated: 2026-09-07 21:33 IST / fe5a657
 Building against contract version: 1.0.0
 
 ## Public surface I currently provide
@@ -14,15 +14,32 @@ Building against contract version: 1.0.0
 
 ## Done since last update
 
-- **`runParetoSweep` is real.** Twenty weight combinations spread across the
-  simplex, one full 730-day simulation each, plotted as `lifeYearsGained`
-  against `regionGapPct` with `waitlistDeaths` riding along. Exactly one point
-  carries `isCurrent` — the swept combination nearest the caller's own weights,
-  compared after normalising both. Domination marking lands in the next commit,
-  so `dominated` is false on every point right now.
-- **Measured runtime: 13.9 seconds for 20 points**, about 0.68 seconds a run.
+- **Task 006 complete, all four checks pass.** At the default config, 20 points:
+  15 dominated, 5 on the frontier, exactly one current — and **the current point
+  is itself dominated, by two others**. That is Round 4 requirement 3 satisfied
+  out of the box, without anyone having to hunt for a config that shows it.
+  Pearson r between the two axes is 0.34, so the frontier is a genuine curve
+  rather than a line. Two sweeps at the same seed are byte-identical.
+- **The two axes are much less coupled than expected, and that is the finding.**
+  Across the whole weight space, `lifeYearsGained` moves 8409 to 15371 — nearly
+  double — while `regionGapPct` moves only 0.2 to 2.4. Turn `localFirst` to
+  `zone` and the gap axis jumps to a 8.9-to-10.6 band and still barely moves
+  with the weights. Weights buy life-years. Geography sets regional disparity.
+  Choosing a different scoring rule does almost nothing about the regional gap,
+  which is a sharper version of the localityTrap point than the frontier's shape
+  alone. Reported, not tuned.
+- **`runParetoSweep` is real.** Weight combinations spread across the simplex,
+  one full 730-day simulation each, plotted as `lifeYearsGained` against
+  `regionGapPct` with `waitlistDeaths` riding along. Exactly one point carries
+  `isCurrent` — the swept combination nearest the caller's own weights, compared
+  after normalising both. A point is `dominated` when another beats it on both
+  plotted axes; deaths are deliberately not part of that test, so a point inside
+  the visible frontier always reads as inside it.
+- **Measured runtime: 14.2 seconds for 20 points**, about 0.7 seconds a run.
   Cost is linear in `points`, so 10 points is roughly 7 seconds and 30 is
-  roughly 21. This one definitely needs a progress indicator.
+  roughly 21. It is faster with `localFirst` set — 5.1 seconds for the same 20
+  points — because a zone-restricted candidate list is much shorter to score.
+  This one definitely needs a progress indicator.
 - The sweep picks its combinations by farthest-point sampling over a weight
   lattice, seeded with the three pure corners. No randomness — the same point
   count always returns the same combinations in the same order, and any point
@@ -88,13 +105,13 @@ Building against contract version: 1.0.0
 
 ## In progress right now
 
-- Task 006. The sweep runs; domination marking is the next commit.
+- Nothing. Task 007, preset tuning and the demo check, is next.
 
 ## Stubbed or fake, do not trust
 
-- Nothing. Every number now comes out of a real simulation. The one incomplete
-  field is `dominated` on a Pareto point, which is false on every point until
-  the next commit — do not shade the frontier yet.
+- Nothing. Every number now comes out of a real simulation. All five exports
+  are real and every field on the Outcome, the sensitivity rows and the Pareto
+  points is computed.
 
 ## I need from the other side
 
@@ -115,8 +132,9 @@ Building against contract version: 1.0.0
   `localFirst`, the seed and the donation rate, is held as passed. If the user is
   sitting in cascade mode, the frontier is still an honest map of the score
   policy space under their constraints, but it is not a map of where they are.
-- **`dominated` is false on every point until the next commit.** Real axis
-  values, no domination pass yet.
+- **`regionGapPct` on the frontier spans about two points, not twenty.** If you
+  scale that axis to the data it will look dramatic; if you scale it 0 to 100 it
+  will look flat. Scale it to the data and label it honestly.
 
 - **`runSensitivity` takes 10 to 12 seconds.** It runs seventeen simulations.
   It will lock the tab. It needs a progress indicator, and probably a Web

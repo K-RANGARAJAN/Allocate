@@ -186,6 +186,37 @@ function markCurrent(result: ParetoPoint[], weights: Weights): void {
   result[best].isCurrent = true;
 }
 
+// Domination is judged on the two plotted axes only: more life-years is better,
+// a smaller regional gap is better. Waitlist deaths ride along on the point for
+// the tooltip but are deliberately kept out of this test — the chart is two
+// dimensional, and a point sitting visibly inside the frontier has to be marked
+// as such or it reads as a rendering bug.
+function dominates(a: ParetoPoint, b: ParetoPoint): boolean {
+  const noWorse = a.lifeYearsGained >= b.lifeYearsGained && a.regionGapPct <= b.regionGapPct;
+  if (!noWorse) {
+    return false;
+  }
+  const strictlyBetter =
+    a.lifeYearsGained > b.lifeYearsGained || a.regionGapPct < b.regionGapPct;
+  return strictlyBetter;
+}
+
+// Two identical points do not dominate each other, so a tie leaves both on the
+// frontier rather than quietly deleting one of them.
+function markDominated(result: ParetoPoint[]): void {
+  for (const candidate of result) {
+    for (const other of result) {
+      if (other === candidate) {
+        continue;
+      }
+      if (dominates(other, candidate)) {
+        candidate.dominated = true;
+        break;
+      }
+    }
+  }
+}
+
 // The runner is injected so this file never imports index.ts.
 export function buildPareto(
   config: PolicyConfig,
@@ -209,5 +240,6 @@ export function buildPareto(
   }
 
   markCurrent(result, config.weights);
+  markDominated(result);
   return result;
 }
