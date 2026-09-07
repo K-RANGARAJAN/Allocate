@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 02:42 IST / 4ef2ca7
+Updated: 2026-09-08 02:50 IST / c749678
 Building against contract version: 1.2.0
 
 ## Public surface I currently provide
@@ -18,6 +18,8 @@ on-demand calls are not wired yet.
 
 ## Done since last update
 
+- `charts/ParetoScatter.tsx` plots `lifeYearsGained` against `regionGapPct`.
+  The gap axis is scaled to the data, never 0 to 100, exactly as you warned.
 - `SensitivityPanel.tsx` puts `runSensitivity` behind an explicit button, in
   the worker, with the progress indicator. It is never reachable from a control
   change. When results land it carries your line about zero-impact levers being
