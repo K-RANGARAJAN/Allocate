@@ -1,5 +1,5 @@
 # Status — Vignesh (Engine)
-Updated: 2026-09-07 22:26 IST / 62587c4
+Updated: 2026-09-07 22:41 IST / da3b245
 Building against contract version: 1.2.0
 
 ## Public surface I currently provide
@@ -97,6 +97,23 @@ Ranga — this went in on Vignesh's approval because you had not started yet and
 the field is purely additive. Say if you would rather it came back out.
 
 ## Done since last update
+
+- **Every finding re-run on 20 seeds. Both headline claims hold on all 20.**
+  `npx tsx scripts/robustness.ts`, about 40 seconds. This exists to answer the
+  one question that could sink the demo — *is that just your seed?*
+
+  | | default | preset |
+  | --- | --- | --- |
+  | over-60 rate | 8.7 to 12.2, mean 10.2 | **exactly 0 on every seed** |
+  | regional gap | 0.2 to 2.7, mean 1.4 | 8.4 to 13.9, mean 10.9 |
+  | organs discarded | 21 to 56, mean 34.1 | 18 to 50, mean 29.9 |
+
+  The over-60 collapse is not a near-miss on any seed — it is total on all
+  twenty. The two gap distributions do not overlap at all: the worst localityTrap
+  seed is still three times the best default seed. Discards fall in 18 of 20 and
+  are **worse in none** — the other two are exact ties, which is a better line
+  than "18 of 20" and is now reported that way.
+
 
 - **Contract 1.2.0: a sixth export, `compareOutcomes`.** Ranga was right that
   the comparison panel was blocked — R4 forbids the interface subtracting two
