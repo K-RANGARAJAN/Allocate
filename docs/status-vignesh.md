@@ -1,5 +1,5 @@
 # Status — Vignesh (Engine)
-Updated: 2026-09-07 18:02 IST / 279767b
+Updated: 2026-09-07 18:08 IST / c0f7b6c
 Building against contract version: 1.0.0
 
 ## Public surface I currently provide
@@ -14,6 +14,9 @@ Building against contract version: 1.0.0
 
 ## Done since last update
 
+- Added `src/engine/policies/fcfs.ts`. Longest wait wins, nothing else
+  considered. It is the null hypothesis the other two policies get measured
+  against.
 - Added a graft quality floor. `MIN_VIABLE_QUALITY` is 0.6, anchored to a donor
   of about 65 with no transport damage. Organs under it are discarded with the
   reason `graft quality too low`. Default discards go from 0 to 38 of 1170,
@@ -93,7 +96,8 @@ Building against contract version: 1.0.0
 
 ## In progress right now
 
-- Stopped at Gate A for review. Task 004 (cascade policy and rota) is next.
+- Task 004: the TRANSTAN cascade and hospital rota, then policy dispatch.
+  Ends at Gate B.
 - Task 003, the first real vertical slice: score policy, the day loop, real
   metrics. `runSimulation` is still stubbed until the last commit of the task.
 - Task 002, the world model: constants and formulas, compatibility rules,
