@@ -18,6 +18,7 @@ export const RETRIEVAL_PREP_HOURS = 4;
 // Every declined offer costs time while the next centre is contacted. This is
 // what makes the ischemia limit reachable after eligibility has already passed.
 export const OFFER_DECLINE_HOURS = 2;
+export const MAX_OFFERS_PER_ORGAN = 5;
 
 // Discard reasons. Exact strings, because they reach the UI as table rows.
 export const DISCARD_NO_ELIGIBLE = "no eligible recipient";

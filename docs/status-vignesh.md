@@ -1,5 +1,5 @@
 # Status — Vignesh (Engine)
-Updated: 2026-09-07 17:08 IST / b586648
+Updated: 2026-09-07 17:16 IST / 5d76c59
 Building against contract version: 1.0.0
 
 ## Public surface I currently provide
@@ -14,6 +14,10 @@ Building against contract version: 1.0.0
 
 ## Done since last update
 
+- Added offer acceptance and the three discard paths. Centres decline at the
+  rate in `OFFER_ACCEPTANCE_RATE`, each refusal costs two hours and sends the
+  organ down the list, up to five offers. Every organ now ends as exactly one
+  transplant or one discard, so organ conservation is structural.
 - Added the allocation step to the day loop. Organs arriving on a day are
   matched against every waiting patient by `isEligible`, and the score policy
   picks the recipient. Cold time is travel plus decline delay, graft quality is
@@ -84,6 +88,19 @@ Building against contract version: 1.0.0
   you want a number that is not on the `Outcome`.
 
 ## Warnings
+
+- At the default config `organsDiscarded` is 0. Every one of the 1170 organs
+  finds a home, because 3800 people are waiting and someone is always
+  compatible. The discard paths are live, not dead code: at
+  `maxColdIschemiaHours` 12 there are 64 ischemia discards, at 8 there are 182,
+  and at 6 nothing is reachable at all so all 1170 are discarded. But task 007
+  wants `localityTrap` to show *lower* discards than default, and nothing is
+  lower than zero. Flagging now rather than at hour 40. The honest cause is that
+  the model has no organ-quality floor, so no organ is ever too poor to use.
+  Not adding one without your say-so — it is not in the roadmap.
+- The "declined by all centres" discard is effectively unreachable: five offers
+  at 85% acceptance is a 1 in 13,000 event, about 0.09 organs across a whole
+  run. Those are the roadmap's numbers and I am not tuning them (R2).
 
 - `expectedLifeYearsAtListing` can exceed `BASE_LIFE_YEARS` slightly for
   patients under 20, topping out at 22.73 for an 18 year old with no

@@ -10,6 +10,11 @@ import { isEligible, transportHours } from "./compatibility";
 import {
   actualLifeYearsGained,
   currentUrgency,
+  DISCARD_DECLINED,
+  DISCARD_ISCHEMIA,
+  DISCARD_NO_ELIGIBLE,
+  MAX_OFFERS_PER_ORGAN,
+  OFFER_ACCEPTANCE_RATE,
   dailyDeathProbability,
   ischemiaMultiplier,
   OFFER_DECLINE_HOURS,
@@ -202,12 +207,43 @@ export function simulate(config: PolicyConfig): SimulationLog {
     if (arrivingToday !== undefined) {
       for (const organ of arrivingToday) {
         allocationDecisions = allocationDecisions + 1;
-        const eligible = waiting.filter((patient) => {
+        let candidates = waiting.filter((patient) => {
           return isEligible(patient, organ, config);
         });
-        const recipient = selectRecipient(eligible, organ, config, day);
-        if (recipient !== null) {
-          transplant(recipient, organ, day, 0);
+        if (candidates.length === 0) {
+          discards.push({ day, organId: organ.id, reason: DISCARD_NO_ELIGIBLE });
+          continue;
+        }
+
+        // Centres decline offers. Each refusal costs time and sends the organ
+        // down the list, until it is placed, refused everywhere, or too cold.
+        let resolved = false;
+        let declines = 0;
+        for (let attempt = 0; attempt < MAX_OFFERS_PER_ORGAN; attempt++) {
+          const recipient = selectRecipient(candidates, organ, config, day);
+          if (recipient === null) {
+            break;
+          }
+          if (rng.next() >= OFFER_ACCEPTANCE_RATE) {
+            declines = declines + 1;
+            candidates = candidates.filter((patient) => {
+              return patient !== recipient;
+            });
+            continue;
+          }
+          const coldHours =
+            transportHours(organ.zone, recipient.zone) + declines * OFFER_DECLINE_HOURS;
+          if (coldHours > config.constraints.maxColdIschemiaHours) {
+            discards.push({ day, organId: organ.id, reason: DISCARD_ISCHEMIA });
+            resolved = true;
+            break;
+          }
+          transplant(recipient, organ, day, declines);
+          resolved = true;
+          break;
+        }
+        if (!resolved) {
+          discards.push({ day, organId: organ.id, reason: DISCARD_DECLINED });
         }
       }
     }
