@@ -7,6 +7,18 @@ import { defaultConfig, runSimulation } from "../src/engine/index";
 // maxAgeToList is legitimately null when no upper age limit is set.
 const NULLABLE_PATHS = ["outcome.config.constraints.maxAgeToList"];
 
+const METRIC_ORDER: MetricKey[] = [
+  "transplants",
+  "lifeYearsGained",
+  "waitlistDeaths",
+  "medianWaitDays",
+  "p90WaitDays",
+  "organsDiscarded",
+  "meanColdIschemiaHours",
+  "meanGraftQuality",
+  "regionGapPct"
+];
+
 function inspect(path: string, value: unknown, problems: string[]): void {
   if (value === undefined) {
     problems.push(path + " is undefined");
@@ -57,6 +69,22 @@ for (const key of ["transplants", "waitlistDeaths", "organsDiscarded"] as Metric
     problems.push("outcome.metrics." + key + " is negative");
   }
 }
+
+console.log("Resonance smoke test");
+console.log("Contract version: " + outcome.contractVersion);
+console.log("");
+console.log("Metrics");
+for (const key of METRIC_ORDER) {
+  console.log("  " + key + ": " + outcome.metrics[key]);
+}
+console.log("");
+console.log("Breakdowns");
+console.log("  byAgeBand rows: " + outcome.breakdowns.byAgeBand.length);
+console.log("  byZone rows: " + outcome.breakdowns.byZone.length);
+console.log("  byHospitalType rows: " + outcome.breakdowns.byHospitalType.length);
+console.log("  discardReasons rows: " + outcome.breakdowns.discardReasons.length);
+console.log("  timeline points: " + outcome.timeline.length);
+console.log("");
 
 if (problems.length > 0) {
   console.error("SMOKE FAILED");
