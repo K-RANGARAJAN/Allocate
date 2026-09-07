@@ -26,7 +26,12 @@ import {
   type TransplantEvent
 } from "./model";
 import { generateOrganArrivals } from "./organs";
-import { selectRecipient } from "./policies/score";
+import {
+  createCascadeState,
+  selectRecipient as selectCascadeRecipient
+} from "./policies/cascade";
+import { selectRecipient as selectFcfsRecipient } from "./policies/fcfs";
+import { selectRecipient as selectScoreRecipient } from "./policies/score";
 import { generateInitialWaitlist, generateNewListings } from "./population";
 import { createRng } from "./rng";
 
@@ -65,6 +70,20 @@ export function simulate(config: PolicyConfig): SimulationLog {
   const timeline: TimelinePoint[] = [];
   let waiting: Patient[] = [];
   let allocationDecisions = 0;
+
+  // The rota carries state across the whole run, so it is created once here and
+  // never shared between runs.
+  const cascadeState = createCascadeState();
+
+  function chooseRecipient(candidates: Patient[], organ: Organ, day: number): Patient | null {
+    if (config.mode === "cascade") {
+      return selectCascadeRecipient(cascadeState, candidates, organ, config, day);
+    }
+    if (config.mode === "fcfs") {
+      return selectFcfsRecipient(candidates, organ, config, day);
+    }
+    return selectScoreRecipient(candidates, organ, config, day);
+  }
 
   function admit(patient: Patient): void {
     if (!passesListingRules(patient, config)) {
@@ -173,7 +192,7 @@ export function simulate(config: PolicyConfig): SimulationLog {
         let resolved = false;
         let declines = 0;
         for (let attempt = 0; attempt < MAX_OFFERS_PER_ORGAN; attempt++) {
-          const recipient = selectRecipient(candidates, organ, config, day);
+          const recipient = chooseRecipient(candidates, organ, day);
           if (recipient === null) {
             break;
           }
