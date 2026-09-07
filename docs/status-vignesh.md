@@ -1,5 +1,5 @@
 # Status — Vignesh (Engine)
-Updated: 2026-09-07 16:22 IST / 98b6ed5
+Updated: 2026-09-07 16:30 IST / f9ce728
 Building against contract version: 1.0.0
 
 ## Public surface I currently provide
@@ -14,6 +14,17 @@ Building against contract version: 1.0.0
 
 ## Done since last update
 
+- Added `scripts/distributions.ts`. Run it with
+  `npx tsx scripts/distributions.ts`. It builds the world without simulating it
+  and prints every distribution, so the inputs can be checked before anything
+  depends on them.
+- Task 002 gate passed. Mean expected life years at listing: 18-39 band 15.23,
+  60-78 band 3.85. The old band is 25.3% of the young band, well under the 50%
+  the gate requires. The age gradient the whole project rests on is real and
+  came out of the formula, not out of a rule.
+- Scarcity is 0.184 organs per patient ever listed: 1198 organs against 6528
+  patients. Roughly one in five gets transplanted, so policy actually has to
+  choose.
 - Added `src/engine/organs.ts`: `generateOrganArrivals`. 0.8 donors a day scaled
   by `donationRateMultiplier`, two kidneys per donor sharing a donorId. Donor
   zones are the inverse of patient zones, south 45 north 33 west 22, so
@@ -56,6 +67,11 @@ Building against contract version: 1.0.0
 
 ## Warnings
 
+- `expectedLifeYearsAtListing` can exceed `BASE_LIFE_YEARS` slightly for
+  patients under 20, topping out at 22.73 for an 18 year old with no
+  comorbidity. That is the roadmap's formula applied faithfully, and it affects
+  about a hundred patients out of six and a half thousand. Leaving it rather
+  than tuning it.
 - `constraints.maxAgeToList` is not enforced anywhere yet. It is a listing rule,
   so it goes in the day loop in task 003, not in patient generation. Until then
   moving that slider will change nothing.
