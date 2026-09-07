@@ -2,14 +2,17 @@ import { BreakdownTables } from "./components/BreakdownTables";
 import { ControlsPanel } from "./components/ControlsPanel";
 import { MetricGrid } from "./components/MetricGrid";
 import { ScenarioPanel } from "./components/ScenarioPanel";
+import { SensitivityPanel } from "./components/SensitivityPanel";
 import { TimelineChart } from "./charts/TimelineChart";
 import { PresetButtons } from "./components/PresetButtons";
 import { usePolicyRun } from "./state/usePolicyRun";
+import { useEngineWorker } from "./state/useEngineWorker";
 import { useScenarios } from "./state/useScenarios";
 
 export function App() {
   const run = usePolicyRun();
   const scenarios = useScenarios();
+  const worker = useEngineWorker();
 
   let status = "Simulating two years of allocation…";
   if (run.running === false) {
@@ -20,6 +23,7 @@ export function App() {
   let tables = null;
   let timeline = null;
   let compare = null;
+  let sensitivity = null;
   if (run.outcome !== null) {
     results = (
       <section className="panel">
@@ -28,6 +32,8 @@ export function App() {
         <MetricGrid metrics={run.outcome.metrics} stale={run.running} />
       </section>
     );
+
+    sensitivity = <SensitivityPanel config={run.config} worker={worker} />;
 
     compare = <ScenarioPanel outcome={run.outcome} store={scenarios} />;
 
@@ -87,6 +93,7 @@ export function App() {
           {compare}
           {timeline}
           {tables}
+          {sensitivity}
         </div>
       </div>
     </div>
