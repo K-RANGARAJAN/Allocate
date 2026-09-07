@@ -1,5 +1,5 @@
 # Status — Vignesh (Engine)
-Updated: 2026-09-07 18:33 IST / 4ce824c
+Updated: 2026-09-07 18:45 IST / 68d7e84
 Building against contract version: 1.0.0
 
 ## Public surface I currently provide
@@ -105,6 +105,7 @@ Building against contract version: 1.0.0
 
 ## In progress right now
 
+- Halted at Gate B pending a decision on `localFirst`. Task 005 not started.
 - Task 004: the TRANSTAN cascade and hospital rota, then policy dispatch.
   Ends at Gate B.
 - Task 003, the first real vertical slice: score policy, the day loop, real
@@ -125,6 +126,18 @@ Building against contract version: 1.0.0
   you want a number that is not on the `Outcome`.
 
 ## Warnings
+
+- **`localFirst` is a dead lever.** It is only consulted inside `cascade.ts`,
+  where it gates the two other-zone tiers. Those tiers are never reached: the
+  smallest zone has roughly 800 people waiting, so a same-zone tier is never
+  empty and the organ always stops before it. Sealing the zone therefore changes
+  nothing. Worse, in `score` and `fcfs` mode `localFirst` is not read at all, and
+  those are the modes where most allocation actually crosses zones. Do not build
+  a control for it yet.
+- The locality effect the demo needs does exist, just not through that lever.
+  Cascade against score: `regionGapPct` 7.2 versus 1.5, `meanColdIschemiaHours`
+  7.8 versus 10.5. The cascade's own tier ordering is what creates the
+  disparity, not the `localFirst` setting.
 
 - Hospital type is no longer drawn independently at 40/60. It is inherited from
   the transplant centre a patient is listed at, and roughly 40% of a zone's
