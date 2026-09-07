@@ -68,6 +68,54 @@ export function BreakdownTables(props: BreakdownTablesProps) {
           </tbody>
         </table>
       </div>
+
+      <div className="table-block">
+        <span className="label">By hospital type</span>
+        <table className="data-table">
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Listed</th>
+              <th>Transplanted</th>
+              <th>Rate %</th>
+            </tr>
+          </thead>
+          <tbody>
+            {b.byHospitalType.map((row) => {
+              return (
+                <tr key={row.hospitalType}>
+                  <td>{row.hospitalType}</td>
+                  <td>{row.listed}</td>
+                  <td>{row.transplanted}</td>
+                  <td>{row.ratePct}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="table-block">
+        <span className="label">Discard reasons</span>
+        <table className="data-table">
+          <thead>
+            <tr>
+              <th>Reason</th>
+              <th>Count</th>
+            </tr>
+          </thead>
+          <tbody>
+            {b.discardReasons.map((row) => {
+              return (
+                <tr key={row.reason}>
+                  <td>{row.reason}</td>
+                  <td>{row.count}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

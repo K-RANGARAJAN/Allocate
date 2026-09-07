@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 01:14 IST / 19afd9c
+Updated: 2026-09-08 01:22 IST / a0280a3
 Building against contract version: 1.2.0
 
 ## Public surface I currently provide
@@ -18,6 +18,12 @@ on-demand calls are not wired yet.
 
 ## Done since last update
 
+- All four breakdown tables are in and wired. Verified against a real run at the
+  default config: four age bands, three zones, two hospital types, and all four
+  discard reasons with three of them sitting at zero and still rendered. The
+  zone spread reads 18.5 against 17.0, which is the 1.5 `regionGapPct` reports,
+  and all 38 discards fall under `graft quality too low` exactly as your
+  handover said they would at a 24 hour ceiling.
 - `BreakdownTables.tsx` opened with the age band and zone tables. Rows are
   rendered in the order you return them, unfiltered and unsorted, and `ratePct`
   is your figure. The zone table carries a note that the regional gap metric is

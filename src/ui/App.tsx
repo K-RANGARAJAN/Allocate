@@ -1,3 +1,4 @@
+import { BreakdownTables } from "./components/BreakdownTables";
 import { ControlsPanel } from "./components/ControlsPanel";
 import { MetricGrid } from "./components/MetricGrid";
 import { PresetButtons } from "./components/PresetButtons";
@@ -12,12 +13,24 @@ export function App() {
   }
 
   let results = null;
+  let tables = null;
   if (run.outcome !== null) {
     results = (
       <section className="panel">
         <h2 className="panel-title">Outcome</h2>
         <p className="panel-note">{status}</p>
         <MetricGrid metrics={run.outcome.metrics} stale={run.running} />
+      </section>
+    );
+
+    tables = (
+      <section className="panel">
+        <h2 className="panel-title">Breakdowns</h2>
+        <p className="panel-note">
+          Every table keeps a fixed set of rows, including rows at zero, so the
+          shape never changes between runs.
+        </p>
+        <BreakdownTables breakdowns={run.outcome.breakdowns} />
       </section>
     );
   }
@@ -53,6 +66,7 @@ export function App() {
         <div className="stack">
           {placeholder}
           {results}
+          {tables}
         </div>
       </div>
     </div>
