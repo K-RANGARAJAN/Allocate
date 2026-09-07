@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 00:16 IST / 482f3dc
+Updated: 2026-09-08 00:23 IST / e1579ad
 Building against contract version: 1.2.0
 
 ## Public surface I currently provide
@@ -18,6 +18,10 @@ interface side is wired yet, so no engine export is being consumed by real UI.
 
 ## Done since last update
 
+- `PresetButtons.tsx` calls `presets()` and writes the whole returned config
+  back on click, so every control re-reads from the preset instead of holding a
+  stale position. It reads the preset objects live rather than caching them, so
+  the `localFirst` retune you shipped arrives on its own.
 - The three per-zone transplant centre counts finish the controls panel. Noted
   from your handover that the government/private split moves with these, so the
   hospital-type table is expected to shift when they are dragged.
