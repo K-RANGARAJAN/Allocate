@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-07 23:04 IST / 8fc622d
+Updated: 2026-09-07 23:11 IST / 2ec7927
 Building against contract version: 1.2.0
 
 ## Public surface I currently provide
@@ -18,6 +18,9 @@ interface side is wired yet, so no engine export is being consumed by real UI.
 
 ## Done since last update
 
+- `src/styles/base.css` adds the reset, the page frame and the primitives the
+  panels are built from — `.panel`, `.panel-title`, `.label` and `.num`. The
+  `.num` class carries the tabular figures and goes on every figure on screen.
 - Started the interface. `src/styles/tokens.css` holds every colour, type step
   and spacing step the UI will use, and nothing downstream hard-codes a hex.
   IBM Plex Sans is linked in `index.html` with a system fallback stack, and
