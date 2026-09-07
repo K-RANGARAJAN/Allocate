@@ -5,7 +5,10 @@
 // that the interface can be built against the real API from commit one. Stubs are
 // replaced with real logic progressively. Each stub body opens with a // STUB line.
 
-import { type PolicyConfig } from "../contract/types";
+import type { Outcome, ParetoPoint, PolicyConfig, SensitivityRow } from "../contract/types";
+import { buildStubPareto } from "./pareto";
+import { buildStubSensitivity } from "./sensitivity";
+import { buildStubOutcome } from "./simulate";
 
 export function defaultConfig(): PolicyConfig {
   // STUB
@@ -60,4 +63,19 @@ export function presets(): Record<string, PolicyConfig> {
   localityTrap.constraints.rotaEnabled = true;
 
   return { utilityTrap, localityTrap };
+}
+
+export function runSimulation(config: PolicyConfig): Outcome {
+  // STUB
+  return buildStubOutcome(config);
+}
+
+export function runSensitivity(config: PolicyConfig): SensitivityRow[] {
+  // STUB
+  return buildStubSensitivity(config);
+}
+
+export function runParetoSweep(config: PolicyConfig, points: number): ParetoPoint[] {
+  // STUB
+  return buildStubPareto(config, points);
 }
