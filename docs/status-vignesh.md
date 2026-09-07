@@ -1,5 +1,5 @@
 # Status — Vignesh (Engine)
-Updated: 2026-09-07 18:08 IST / c0f7b6c
+Updated: 2026-09-07 18:14 IST / 0de35aa
 Building against contract version: 1.0.0
 
 ## Public surface I currently provide
@@ -14,6 +14,12 @@ Building against contract version: 1.0.0
 
 ## Done since last update
 
+- Added cascade tier ordering in `src/engine/policies/cascade.ts`. The organ
+  walks a ladder and stops at the first rung with anyone on it: urgent list,
+  then government in the retrieval zone, private in the retrieval zone,
+  government elsewhere, private elsewhere. Longest wait breaks ties within a
+  rung. Nobody is scored against anybody. `localFirst: "zone"` seals the organ
+  inside its zone by making the last two rungs unreachable.
 - Added `src/engine/policies/fcfs.ts`. Longest wait wins, nothing else
   considered. It is the null hypothesis the other two policies get measured
   against.

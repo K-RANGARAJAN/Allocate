@@ -26,6 +26,10 @@ export const MAX_OFFERS_PER_ORGAN = 5;
 // geography, not just donor age, decides how many organs get thrown away.
 export const MIN_VIABLE_QUALITY = 0.6;
 
+// Current urgency at or above this puts a patient on the urgent list, which
+// jumps the cascade entirely when urgentSupersedesRota is on.
+export const URGENT_LIST_THRESHOLD = 8.5;
+
 // Discard reasons. Exact strings, because they reach the UI as table rows.
 export const DISCARD_NO_ELIGIBLE = "no eligible recipient";
 export const DISCARD_DECLINED = "declined by all centres";
