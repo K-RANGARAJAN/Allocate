@@ -1,5 +1,5 @@
 # Status — Vignesh (Engine)
-Updated: 2026-09-07 17:30 IST / 7f90730
+Updated: 2026-09-07 17:38 IST / f224acf
 Building against contract version: 1.0.0
 
 ## Public surface I currently provide
@@ -8,12 +8,15 @@ Building against contract version: 1.0.0
 | --- | --- |
 | `defaultConfig()` | working |
 | `presets()` | working |
-| `runSimulation(config)` | stubbed |
+| `runSimulation(config)` | working |
 | `runSensitivity(config)` | stubbed |
 | `runParetoSweep(config, points)` | stubbed |
 
 ## Done since last update
 
+- `runSimulation` is real. It runs the day loop, aggregates the event log, and
+  returns genuine numbers. The `// STUB` marker is gone and the dummy builders
+  are deleted. `runSensitivity` and `runParetoSweep` are still stubs.
 - Added the real breakdowns. Age bands are exactly `18-39`, `40-59`, `60-69`,
   `70+`, in that order, always all four. Zones always all three, hospital types
   always both, and all three discard reasons are always returned including at
@@ -87,9 +90,10 @@ Building against contract version: 1.0.0
 
 ## Stubbed or fake, do not trust
 
-- `runSimulation`, `runSensitivity`, `runParetoSweep`. Every number they return
-  is invented. Only the shapes are real.
-- `meta.runtimeMs` is the constant 12.
+- `runSensitivity` and `runParetoSweep`. Every number they return is invented.
+  Only the shapes are real. Do not demo either of them.
+- `meta.runtimeMs` is now a real measurement, and is the one documented
+  exception to byte-identical determinism.
 
 ## I need from the other side
 
@@ -97,6 +101,15 @@ Building against contract version: 1.0.0
   you want a number that is not on the `Outcome`.
 
 ## Warnings
+
+- `runSimulation` now takes about 0.7 seconds instead of being instant. If you
+  are calling it on every slider drag, debounce it.
+- `medianWaitDays` reads 923 at default, larger than the 730 day run. That is
+  correct: the initial 2000 are backdated up to 900 days, so their waits started
+  before day zero.
+- `regionGapPct` is 0.6 at default. Also correct — with `localFirst` off and no
+  geographic preference in the score policy, zones equalise. The regional
+  disparity story is the cascade policy in task 004, not this.
 
 - Age band strings changed from the stub set. They were `18-34`, `35-49`,
   `50-64`, `65+`. They are now `18-39`, `40-59`, `60-69`, `70+`. If you hard

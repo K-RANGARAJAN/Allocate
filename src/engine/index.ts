@@ -5,10 +5,12 @@
 // that the interface can be built against the real API from commit one. Stubs are
 // replaced with real logic progressively. Each stub body opens with a // STUB line.
 
+import { CONTRACT_VERSION } from "../contract/types";
 import type { Outcome, ParetoPoint, PolicyConfig, SensitivityRow } from "../contract/types";
+import { buildBreakdowns, buildMetrics } from "./metrics";
 import { buildStubPareto } from "./pareto";
 import { buildStubSensitivity } from "./sensitivity";
-import { buildStubOutcome } from "./simulate";
+import { simulate } from "./simulate";
 
 export function defaultConfig(): PolicyConfig {
   // STUB
@@ -66,8 +68,24 @@ export function presets(): Record<string, PolicyConfig> {
 }
 
 export function runSimulation(config: PolicyConfig): Outcome {
-  // STUB
-  return buildStubOutcome(config);
+  const startedAt = Date.now();
+  const log = simulate(config);
+  const metrics = buildMetrics(log);
+  const breakdowns = buildBreakdowns(log);
+
+  return {
+    contractVersion: CONTRACT_VERSION,
+    config,
+    metrics,
+    breakdowns,
+    timeline: log.timeline,
+    meta: {
+      // The one documented exception to byte-identical determinism.
+      runtimeMs: Date.now() - startedAt,
+      organsArrived: log.organsArrived,
+      allocationDecisions: log.allocationDecisions
+    }
+  };
 }
 
 export function runSensitivity(config: PolicyConfig): SensitivityRow[] {
