@@ -16,6 +16,7 @@ import {
   DISCARD_DECLINED,
   DISCARD_ISCHEMIA,
   DISCARD_NO_ELIGIBLE,
+  DISCARD_QUALITY,
   type SimulationLog
 } from "./model";
 
@@ -167,7 +168,7 @@ function buildHospitalTypeRows(log: SimulationLog): HospitalTypeRow[] {
 // All three reasons are always returned, including at zero, so the UI has a
 // stable table rather than one that grows and shrinks between runs.
 function buildDiscardRows(log: SimulationLog): DiscardRow[] {
-  const reasons = [DISCARD_NO_ELIGIBLE, DISCARD_DECLINED, DISCARD_ISCHEMIA];
+  const reasons = [DISCARD_NO_ELIGIBLE, DISCARD_DECLINED, DISCARD_ISCHEMIA, DISCARD_QUALITY];
   const rows: DiscardRow[] = [];
   for (const reason of reasons) {
     const count = log.discards.filter((event) => {

@@ -1,5 +1,5 @@
 # Status — Vignesh (Engine)
-Updated: 2026-09-07 17:50 IST / 6acc8a8
+Updated: 2026-09-07 18:02 IST / 279767b
 Building against contract version: 1.0.0
 
 ## Public surface I currently provide
@@ -14,6 +14,10 @@ Building against contract version: 1.0.0
 
 ## Done since last update
 
+- Added a graft quality floor. `MIN_VIABLE_QUALITY` is 0.6, anchored to a donor
+  of about 65 with no transport damage. Organs under it are discarded with the
+  reason `graft quality too low`. Default discards go from 0 to 38 of 1170,
+  3.2%, so there is now a real baseline for policy to move.
 - Added `scripts/conflict-check.ts` and **Gate A passed**. Pure urgency
   transplants 23.2% of over-60s. Pure life-years transplants **0%** of them.
   Not a low rate, zero, across 730 days — and there is no age rule anywhere in
@@ -122,15 +126,13 @@ Building against contract version: 1.0.0
   `50-64`, `65+`. They are now `18-39`, `40-59`, `60-69`, `70+`. If you hard
   coded band names or colours anywhere, update them. These four are final.
 
-- At the default config `organsDiscarded` is 0. Every one of the 1170 organs
-  finds a home, because 3800 people are waiting and someone is always
-  compatible. The discard paths are live, not dead code: at
-  `maxColdIschemiaHours` 12 there are 64 ischemia discards, at 8 there are 182,
-  and at 6 nothing is reachable at all so all 1170 are discarded. But task 007
-  wants `localityTrap` to show *lower* discards than default, and nothing is
-  lower than zero. Flagging now rather than at hour 40. The honest cause is that
-  the model has no organ-quality floor, so no organ is ever too poor to use.
-  Not adding one without your say-so — it is not in the roadmap.
+- `discardReasons` now has **four** rows, not three. The new one is
+  `graft quality too low`. If you sized or coloured that table for three, fix it.
+- The quality discards are almost entirely donor-age driven, not geography
+  driven. `ISCHEMIA_FREE_HOURS` is 12 and the worst journey in the model is 13
+  hours, so transport barely damages anything and shortening it barely helps.
+  Task 007 wants `localityTrap` to cut discards; on this model it may not, and I
+  will report that rather than move the constant (R2).
 - The "declined by all centres" discard is effectively unreachable: five offers
   at 85% acceptance is a 1 in 13,000 event, about 0.09 organs across a whole
   run. Those are the roadmap's numbers and I am not tuning them (R2).

@@ -10,6 +10,8 @@ import {
   DISCARD_DECLINED,
   DISCARD_ISCHEMIA,
   DISCARD_NO_ELIGIBLE,
+  DISCARD_QUALITY,
+  MIN_VIABLE_QUALITY,
   MAX_OFFERS_PER_ORGAN,
   OFFER_ACCEPTANCE_RATE,
   dailyDeathProbability,
@@ -89,9 +91,13 @@ export function simulate(config: PolicyConfig): SimulationLog {
   // is the donor's quality after ischemia damage, and the life years actually
   // delivered are the estimate at listing scaled by that quality — deliberately
   // a smaller number than the one the policy scored on.
-  function transplant(recipient: Patient, organ: Organ, day: number, declines: number): void {
-    const coldHours = transportHours(organ.zone, recipient.zone) + declines * OFFER_DECLINE_HOURS;
-    const effectiveQuality = organ.quality * ischemiaMultiplier(coldHours);
+  function transplant(
+    recipient: Patient,
+    organ: Organ,
+    day: number,
+    coldHours: number,
+    effectiveQuality: number
+  ): void {
     recipient.status = "transplanted";
     transplants.push({
       day,
@@ -185,7 +191,13 @@ export function simulate(config: PolicyConfig): SimulationLog {
             resolved = true;
             break;
           }
-          transplant(recipient, organ, day, declines);
+          const effectiveQuality = organ.quality * ischemiaMultiplier(coldHours);
+          if (effectiveQuality < MIN_VIABLE_QUALITY) {
+            discards.push({ day, organId: organ.id, reason: DISCARD_QUALITY });
+            resolved = true;
+            break;
+          }
+          transplant(recipient, organ, day, coldHours, effectiveQuality);
           resolved = true;
           break;
         }

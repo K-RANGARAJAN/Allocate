@@ -20,10 +20,17 @@ export const RETRIEVAL_PREP_HOURS = 4;
 export const OFFER_DECLINE_HOURS = 2;
 export const MAX_OFFERS_PER_ORGAN = 5;
 
+// Below this effective quality a kidney is not worth the operation. Anchored to
+// a donor of about 65 with no transport damage. Because the check is on quality
+// *after* ischemia, a long journey can push a usable organ under the line — so
+// geography, not just donor age, decides how many organs get thrown away.
+export const MIN_VIABLE_QUALITY = 0.6;
+
 // Discard reasons. Exact strings, because they reach the UI as table rows.
 export const DISCARD_NO_ELIGIBLE = "no eligible recipient";
 export const DISCARD_DECLINED = "declined by all centres";
 export const DISCARD_ISCHEMIA = "exceeded ischemia limit";
+export const DISCARD_QUALITY = "graft quality too low";
 
 // Shared domain vocabulary. Blood group frequencies are the same for donors and
 // recipients. Zone weights are not, and are declared where they are used.
