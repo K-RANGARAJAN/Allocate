@@ -67,6 +67,9 @@ export interface Organ {
   retrievalHospitalType: HospitalType;
   quality: number;
   arrivalDay: number;
+  // 0 or 1. Which of the donor's two kidneys this is, so the retrieving
+  // hospital can be given first claim on a limited number of them.
+  kidneyIndex: number;
 }
 
 export function clamp(low: number, high: number, value: number): number {

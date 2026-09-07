@@ -1,5 +1,5 @@
 # Status — Vignesh (Engine)
-Updated: 2026-09-07 18:14 IST / 0de35aa
+Updated: 2026-09-07 18:19 IST / 6e4fabd
 Building against contract version: 1.0.0
 
 ## Public surface I currently provide
@@ -12,8 +12,11 @@ Building against contract version: 1.0.0
 | `runSensitivity(config)` | stubbed |
 | `runParetoSweep(config, points)` | stubbed |
 
-## Done since last update
-
+- Added retrieval hospital priority, the second rung of the cascade. Organs now
+  carry which of the donor's two kidneys they are, and
+  `retrievalHospitalKeeps` decides how many of them the retrieving hospital
+  claims before the ladder starts. This is the part of the Tamil Nadu model that
+  has nothing to do with need and everything to do with who did the work.
 - Added cascade tier ordering in `src/engine/policies/cascade.ts`. The organ
   walks a ladder and stops at the first rung with anyone on it: urgent list,
   then government in the retrieval zone, private in the retrieval zone,

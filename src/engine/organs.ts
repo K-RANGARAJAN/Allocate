@@ -60,7 +60,8 @@ export function generateOrganArrivals(config: PolicyConfig, rng: Rng): Organ[] {
           zone,
           retrievalHospitalType,
           quality,
-          arrivalDay: day
+          arrivalDay: day,
+          kidneyIndex: k
         });
       }
     }
