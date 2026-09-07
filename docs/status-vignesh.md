@@ -1,5 +1,5 @@
 # Status — Vignesh (Engine)
-Updated: 2026-09-07 16:00 IST / d1d0e4f
+Updated: 2026-09-07 16:05 IST / 429d9bb
 Building against contract version: 1.0.0
 
 ## Public surface I currently provide
@@ -14,6 +14,10 @@ Building against contract version: 1.0.0
 
 ## Done since last update
 
+- Added `src/engine/model.ts`. Every biological and behavioural constant and
+  formula now lives there as a named export, plus the `Patient` and `Organ`
+  entity interfaces so compatibility, population and organ generation can each
+  depend on one module rather than on each other.
 - Corrected `utilityTrap`. It was setting `maxAgeToList: 65`, `ageMatchingOn:
   true` and `minUrgencyToList: 3`, which hard-coded the finding it is supposed
   to demonstrate. It is now weights only: urgency 0.05, lifeYears 0.90,
