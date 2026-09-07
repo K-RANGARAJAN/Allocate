@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 00:52 IST / 8363fbb
+Updated: 2026-09-08 01:00 IST / fea1371
 Building against contract version: 1.2.0
 
 ## Public surface I currently provide
@@ -18,6 +18,9 @@ on-demand calls are not wired yet.
 
 ## Done since last update
 
+- The grid is wired into the results column and verified against a real run:
+  all ten values render identically to what `npm run smoke` prints, 1132
+  transplants and 10775.4 life-years among them.
 - `MetricGrid.tsx` renders all ten fields off `outcome.metrics`, printed exactly
   as you return them — you have already rounded, so nothing here reformats or
   scales. Order and label strings are lifted from the rows `compareOutcomes`

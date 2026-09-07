@@ -1,4 +1,5 @@
 import { ControlsPanel } from "./components/ControlsPanel";
+import { MetricGrid } from "./components/MetricGrid";
 import { PresetButtons } from "./components/PresetButtons";
 import { usePolicyRun } from "./state/usePolicyRun";
 
@@ -16,11 +17,17 @@ export function App() {
       <section className="panel">
         <h2 className="panel-title">Outcome</h2>
         <p className="panel-note">{status}</p>
-        <p className="num">
-          Contract {run.outcome.contractVersion}, {run.outcome.meta.organsArrived}{" "}
-          organs arrived, {run.outcome.meta.allocationDecisions} allocation
-          decisions.
-        </p>
+        <MetricGrid metrics={run.outcome.metrics} stale={run.running} />
+      </section>
+    );
+  }
+
+  let placeholder = null;
+  if (run.outcome === null) {
+    placeholder = (
+      <section className="panel">
+        <h2 className="panel-title">Outcome</h2>
+        <p className="panel-note">{status}</p>
       </section>
     );
   }
@@ -43,7 +50,10 @@ export function App() {
           <ControlsPanel config={run.config} setConfig={run.setConfig} />
         </div>
 
-        <div className="stack">{results}</div>
+        <div className="stack">
+          {placeholder}
+          {results}
+        </div>
       </div>
     </div>
   );
