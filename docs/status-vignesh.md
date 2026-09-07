@@ -1,5 +1,5 @@
 # Status — Vignesh (Engine)
-Updated: 2026-09-07 21:00 IST / 335ad81
+Updated: 2026-09-07 21:14 IST / 4666cf6
 Building against contract version: 1.0.0
 
 ## Public surface I currently provide
@@ -14,6 +14,11 @@ Building against contract version: 1.0.0
 
 ## Done since last update
 
+- Added the sensitivity perturbation harness: eight levers, each knowing how to
+  move itself up and down. The three weights, the cold ischemia ceiling, minimum
+  urgency to list, retrieval hospital keeps, donation rate and total transplant
+  centres. Continuous levers move ±10%, discrete ones by one step. Scoring and
+  ranking is the next commit, so `runSensitivity` is still a stub right now.
 - **Gate B passed, all four checks.** `localFirst` was a dead lever — it only
   gated two cascade tiers the organ never reached, and `score` and `fcfs` never
   read it at all. It is now enforced in `isEligible`, so it binds every mode.
@@ -43,7 +48,7 @@ Building against contract version: 1.0.0
 
 ## In progress right now
 
-- Nothing. Task 005, sensitivity analysis, is next.
+- Task 005, sensitivity analysis. Harness done, scoring next.
 
 ## Stubbed or fake, do not trust
 
