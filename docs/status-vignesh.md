@@ -1,5 +1,5 @@
 # Status — Vignesh (Engine)
-Updated: 2026-09-07 18:45 IST / 68d7e84
+Updated: 2026-09-07 21:00 IST / 335ad81
 Building against contract version: 1.0.0
 
 ## Public surface I currently provide
@@ -12,167 +12,75 @@ Building against contract version: 1.0.0
 | `runSensitivity(config)` | stubbed |
 | `runParetoSweep(config, points)` | stubbed |
 
-- Added retrieval hospital priority, the second rung of the cascade. Organs now
-  carry which of the donor's two kidneys they are, and
-  `retrievalHospitalKeeps` decides how many of them the retrieving hospital
-  claims before the ladder starts. This is the part of the Tamil Nadu model that
-  has nothing to do with need and everything to do with who did the work.
-- Added cascade tier ordering in `src/engine/policies/cascade.ts`. The organ
-  walks a ladder and stops at the first rung with anyone on it: urgent list,
-  then government in the retrieval zone, private in the retrieval zone,
-  government elsewhere, private elsewhere. Longest wait breaks ties within a
-  rung. Nobody is scored against anybody. `localFirst: "zone"` seals the organ
-  inside its zone by making the last two rungs unreachable.
-- Added `src/engine/policies/fcfs.ts`. Longest wait wins, nothing else
-  considered. It is the null hypothesis the other two policies get measured
-  against.
-- Added a graft quality floor. `MIN_VIABLE_QUALITY` is 0.6, anchored to a donor
-  of about 65 with no transport damage. Organs under it are discarded with the
-  reason `graft quality too low`. Default discards go from 0 to 38 of 1170,
-  3.2%, so there is now a real baseline for policy to move.
-- Added `scripts/conflict-check.ts` and **Gate A passed**. Pure urgency
-  transplants 23.2% of over-60s. Pure life-years transplants **0%** of them.
-  Not a low rate, zero, across 730 days — and there is no age rule anywhere in
-  the engine. The weights do it alone, which is exactly the finding the project
-  is built to show. It is not free either: life-years weighting kills 1409 on
-  the list against urgency's 1248.
-- `runSimulation` is real. It runs the day loop, aggregates the event log, and
-  returns genuine numbers. The `// STUB` marker is gone and the dummy builders
-  are deleted. `runSensitivity` and `runParetoSweep` are still stubs.
-- Added the real breakdowns. Age bands are exactly `18-39`, `40-59`, `60-69`,
-  `70+`, in that order, always all four. Zones always all three, hospital types
-  always both, and all three discard reasons are always returned including at
-  zero, so your tables never grow or shrink between runs.
-- Added the real headline metrics to `metrics.ts`. All nine come off the event
-  log. Wait times are measured over transplanted patients, the standard registry
-  reading — people still waiting have no completed wait to report.
-  `regionGapPct` is the widest gap between any two zones' transplant rates.
-  Every mean and percentile returns 0 rather than NaN on an empty series.
-- Added offer acceptance and the three discard paths. Centres decline at the
-  rate in `OFFER_ACCEPTANCE_RATE`, each refusal costs two hours and sends the
-  organ down the list, up to five offers. Every organ now ends as exactly one
-  transplant or one discard, so organ conservation is structural.
-- Added the allocation step to the day loop. Organs arriving on a day are
-  matched against every waiting patient by `isEligible`, and the score policy
-  picks the recipient. Cold time is travel plus decline delay, graft quality is
-  donor quality after ischemia damage, and life years delivered are the estimate
-  at listing scaled by that quality — a smaller number than the policy scored on.
-- Added the real day loop skeleton to `src/engine/simulate.ts`: listings,
-  urgency drift, daily death hazard, timeline points every 30 days plus a
-  closing point. Allocation is the next commit. The event log types live in
-  `model.ts` so simulate and metrics do not import each other.
-- `constraints.maxAgeToList` is now enforced, at listing, which is the only
-  place it belongs. Patients over the cap are never listed.
-- Added `src/engine/policies/score.ts`: `scoreCandidate` and `selectRecipient`.
-  Weights are normalised internally, so all-1.0 means an equal split. Three
-  components each in 0..1: current urgency over 10, expected years over
-  BASE_LIFE_YEARS, and years waited capped at 5. Longest wait breaks ties, so
-  the result does not depend on array order. Nothing in the file mentions age.
-- Added `scripts/distributions.ts`. Run it with
-  `npx tsx scripts/distributions.ts`. It builds the world without simulating it
-  and prints every distribution, so the inputs can be checked before anything
-  depends on them.
-- Task 002 gate passed. Mean expected life years at listing: 18-39 band 15.23,
-  60-78 band 3.85. The old band is 25.3% of the young band, well under the 50%
-  the gate requires. The age gradient the whole project rests on is real and
-  came out of the formula, not out of a rule.
-- Scarcity is 0.184 organs per patient ever listed: 1198 organs against 6528
-  patients. Roughly one in five gets transplanted, so policy actually has to
-  choose.
-- Added `src/engine/organs.ts`: `generateOrganArrivals`. 0.8 donors a day scaled
-  by `donationRateMultiplier`, two kidneys per donor sharing a donorId. Donor
-  zones are the inverse of patient zones, south 45 north 33 west 22, so
-  geography creates real pressure instead of being decorative.
-- Moved the shared vocabulary and the seeded samplers into `model.ts` so
-  population and organ generation depend on one module rather than each other.
-- Added `src/engine/population.ts`: `generateInitialWaitlist` and
-  `generateNewListings`. Blood group, age, zone and hospital type on the
-  specified distributions, comorbidity trending with age but with real spread,
-  base urgency trending with comorbidity. The initial 2000 are backdated across
-  the previous 900 days, so day zero already has people who have waited years.
-- Added `src/engine/compatibility.ts`: blood group matching, optional age
-  matching, inter-zone transport hours, and `isEligible`. Same-zone transport is
-  7 hours all in, the worst pair (south to west) is 13, so the default 24 hour
-  cold ischemia ceiling excludes nobody. It starts biting below 13.
-- Added `src/engine/model.ts`. Every biological and behavioural constant and
-  formula now lives there as a named export, plus the `Patient` and `Organ`
-  entity interfaces so compatibility, population and organ generation can each
-  depend on one module rather than on each other.
-- Corrected `utilityTrap`. It was setting `maxAgeToList: 65`, `ageMatchingOn:
-  true` and `minUrgencyToList: 3`, which hard-coded the finding it is supposed
-  to demonstrate. It is now weights only: urgency 0.05, lifeYears 0.90,
-  waitingTime 0.05, everything else at default. The age cap is not coming back.
+## Done since last update
+
+- **Gate B passed, all four checks.** `localFirst` was a dead lever — it only
+  gated two cascade tiers the organ never reached, and `score` and `fcfs` never
+  read it at all. It is now enforced in `isEligible`, so it binds every mode.
+  A patient outside the organ's zone is simply not eligible when it is set to
+  `zone`. This is the single biggest lever in the model.
+
+  | mode | localFirst | transplants | regionGapPct | coldHrs | discards |
+  | --- | --- | --- | --- | --- | --- |
+  | score | off | 1132 | 1.5 | 10.5 | 38 |
+  | score | zone | 1136 | **9.9** | 7.4 | 34 |
+  | cascade | off | 1134 | 7.2 | 7.8 | 36 |
+  | cascade | zone | 1135 | **10.2** | 7.3 | 35 |
+  | fcfs | off | 1128 | 0.8 | 10.4 | 42 |
+  | fcfs | zone | 1136 | **9.4** | 7.3 | 34 |
+
+  Sealing organs inside their zone multiplies regional disparity roughly sixfold
+  in score mode while cutting cold time and discards. Nobody is made worse off
+  in aggregate, which is exactly why it is a trap.
+- Task 004 complete: `fcfs` baseline, the TRANSTAN cascade with its six tiers,
+  retrieval hospital priority, the hospital rota, and `config.mode` dispatch.
+  All three modes run and produce different results.
+- Task 003 complete and Gate A passed. Pure urgency transplants 23.2% of
+  over-60s. Pure life-years transplants **0%** of them, across 730 days, with no
+  age rule anywhere in the engine. It costs 1409 waitlist deaths against 1248.
+- Task 002 complete: the world model, seeded synthetic patients and organs, and
+  `scripts/distributions.ts`.
 
 ## In progress right now
 
-- Halted at Gate B pending a decision on `localFirst`. Task 005 not started.
-- Task 004: the TRANSTAN cascade and hospital rota, then policy dispatch.
-  Ends at Gate B.
-- Task 003, the first real vertical slice: score policy, the day loop, real
-  metrics. `runSimulation` is still stubbed until the last commit of the task.
-- Task 002, the world model: constants and formulas, compatibility rules,
-  synthetic patients, synthetic organ arrivals.
+- Nothing. Task 005, sensitivity analysis, is next.
 
 ## Stubbed or fake, do not trust
 
-- `runSensitivity` and `runParetoSweep`. Every number they return is invented.
-  Only the shapes are real. Do not demo either of them.
-- `meta.runtimeMs` is now a real measurement, and is the one documented
-  exception to byte-identical determinism.
+- `runSensitivity` and `runParetoSweep`. Every number they return is invented
+  and none of it responds to config. Do not demo either of them.
+- Everything else is real. `runSimulation` runs a genuine 730-day allocation
+  loop and all nine metrics plus every breakdown come out of it.
 
 ## I need from the other side
 
-- Nothing blocking. Build against `src/engine/index.ts` and tell me the moment
-  you want a number that is not on the `Outcome`.
+- Nothing blocking. Your status file is still the empty template — fill in what
+  you have wired so I know what is actually being called.
+- Tell me the moment you want a number that is not on the `Outcome`. I will add
+  it engine-side rather than have you compute it.
 
 ## Warnings
 
-- **`localFirst` is a dead lever.** It is only consulted inside `cascade.ts`,
-  where it gates the two other-zone tiers. Those tiers are never reached: the
-  smallest zone has roughly 800 people waiting, so a same-zone tier is never
-  empty and the organ always stops before it. Sealing the zone therefore changes
-  nothing. Worse, in `score` and `fcfs` mode `localFirst` is not read at all, and
-  those are the modes where most allocation actually crosses zones. Do not build
-  a control for it yet.
-- The locality effect the demo needs does exist, just not through that lever.
-  Cascade against score: `regionGapPct` 7.2 versus 1.5, `meanColdIschemiaHours`
-  7.8 versus 10.5. The cascade's own tier ordering is what creates the
-  disparity, not the `localFirst` setting.
-
-- Hospital type is no longer drawn independently at 40/60. It is inherited from
-  the transplant centre a patient is listed at, and roughly 40% of a zone's
-  centres are government. The split stays close to 40/60 but is no longer exact,
-  and it now moves when `transplantCentresPerZone` moves.
-
-- `runSimulation` now takes about 0.7 seconds instead of being instant. If you
-  are calling it on every slider drag, debounce it.
-- `medianWaitDays` reads 923 at default, larger than the 730 day run. That is
-  correct: the initial 2000 are backdated up to 900 days, so their waits started
-  before day zero.
-- `regionGapPct` is 0.6 at default. Also correct — with `localFirst` off and no
-  geographic preference in the score policy, zones equalise. The regional
-  disparity story is the cascade policy in task 004, not this.
-
-- Age band strings changed from the stub set. They were `18-34`, `35-49`,
-  `50-64`, `65+`. They are now `18-39`, `40-59`, `60-69`, `70+`. If you hard
-  coded band names or colours anywhere, update them. These four are final.
-
-- `discardReasons` now has **four** rows, not three. The new one is
-  `graft quality too low`. If you sized or coloured that table for three, fix it.
-- The quality discards are almost entirely donor-age driven, not geography
-  driven. `ISCHEMIA_FREE_HOURS` is 12 and the worst journey in the model is 13
-  hours, so transport barely damages anything and shortening it barely helps.
-  Task 007 wants `localityTrap` to cut discards; on this model it may not, and I
-  will report that rather than move the constant (R2).
-- The "declined by all centres" discard is effectively unreachable: five offers
-  at 85% acceptance is a 1 in 13,000 event, about 0.09 organs across a whole
-  run. Those are the roadmap's numbers and I am not tuning them (R2).
-
-- `expectedLifeYearsAtListing` can exceed `BASE_LIFE_YEARS` slightly for
-  patients under 20, topping out at 22.73 for an 18 year old with no
-  comorbidity. That is the roadmap's formula applied faithfully, and it affects
-  about a hundred patients out of six and a half thousand. Leaving it rather
-  than tuning it.
-- `presets().utilityTrap` changed shape of behaviour, not shape of data. If you
-  cached its constraint values anywhere, re-read them.
-- No contract fields added, renamed or removed. Nothing in the `Outcome` moved.
+- **`runSimulation` takes about 0.65 seconds.** It is no longer instant. Debounce
+  it if you are calling it on slider drag.
+- **Age band strings changed** from the stub set. They were `18-34`, `35-49`,
+  `50-64`, `65+`. They are now `18-39`, `40-59`, `60-69`, `70+`. These four are
+  final and always all four are returned.
+- **`discardReasons` has four rows now, not three.** The fourth is
+  `graft quality too low`. All four are always returned, including at zero, so
+  the table never changes shape between runs.
+- **`localFirst` moved from cascade-only to a global constraint.** It now
+  affects every mode. If you built the control assuming it only mattered in
+  cascade mode, it matters everywhere.
+- **`medianWaitDays` reads larger than the 730 day run** — 934 at default. That
+  is correct. The initial 2000 patients are backdated up to 900 days, so their
+  waits started before day zero.
+- **Hospital type is no longer an independent 40/60 draw.** A patient inherits
+  it from the transplant centre they are listed at, and about 40% of a zone's
+  centres are government. The split stays near 40/60 but moves with
+  `transplantCentresPerZone`.
+- `meta.runtimeMs` is a real measurement and is the one documented exception to
+  byte-identical determinism. Everything else is identical run to run at a given
+  seed.
+- Task 007 wants `localityTrap` to cut `organsDiscarded`. It now does — 38 down
+  to 34 in score mode. That was not true before this change.

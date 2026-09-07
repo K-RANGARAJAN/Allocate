@@ -1,6 +1,6 @@
 // Who may receive which organ, and how long it takes to get there.
 
-import type { BloodGroup, PolicyConfig, ZoneId } from "../contract/types";
+import type { BloodGroup, LocalFirst, PolicyConfig, ZoneId } from "../contract/types";
 import { RETRIEVAL_PREP_HOURS, currentUrgency, type Organ, type Patient } from "./model";
 
 const DONATES_TO: Record<BloodGroup, BloodGroup[]> = {
@@ -37,6 +37,21 @@ export function ageCompatible(
   return donorAge < 65;
 }
 
+// The locality rule. It is a constraint, not a policy detail, so it binds every
+// allocation mode rather than living inside one of them. "zone" seals an organ
+// inside the zone it was retrieved in. "off" and "state" both let it travel,
+// because every zone in this model is one state.
+export function zoneReachable(
+  donorZone: ZoneId,
+  recipientZone: ZoneId,
+  localFirst: LocalFirst
+): boolean {
+  if (localFirst !== "zone") {
+    return true;
+  }
+  return donorZone === recipientZone;
+}
+
 export function transportHours(donorZone: ZoneId, recipientZone: ZoneId): number {
   if (donorZone === recipientZone) {
     return 3 + RETRIEVAL_PREP_HOURS;
@@ -53,6 +68,9 @@ export function isEligible(patient: Patient, organ: Organ, config: PolicyConfig)
     return false;
   }
   if (patient.listedDay > organ.arrivalDay) {
+    return false;
+  }
+  if (!zoneReachable(organ.zone, patient.zone, config.constraints.localFirst)) {
     return false;
   }
   if (!bloodCompatible(organ.bloodGroup, patient.bloodGroup)) {

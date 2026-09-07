@@ -49,11 +49,8 @@ export function tierOf(
     return TIER_PRIVATE_SAME_ZONE;
   }
 
-  // "zone" seals the organ inside the zone it was retrieved in. "off" and
-  // "state" both let it travel, because every zone here is one state.
-  if (config.constraints.localFirst === "zone") {
-    return null;
-  }
+  // Locality is enforced by isEligible now, for every mode rather than this one.
+  // By the time a patient reaches here they are already allowed to travel.
   if (patient.hospitalType === "government") {
     return TIER_GOVERNMENT_OTHER_ZONE;
   }
