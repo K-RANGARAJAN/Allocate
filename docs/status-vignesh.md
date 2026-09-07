@@ -1,5 +1,5 @@
 # Status — Vignesh (Engine)
-Updated: 2026-09-07 17:38 IST / f224acf
+Updated: 2026-09-07 17:50 IST / 6acc8a8
 Building against contract version: 1.0.0
 
 ## Public surface I currently provide
@@ -14,6 +14,12 @@ Building against contract version: 1.0.0
 
 ## Done since last update
 
+- Added `scripts/conflict-check.ts` and **Gate A passed**. Pure urgency
+  transplants 23.2% of over-60s. Pure life-years transplants **0%** of them.
+  Not a low rate, zero, across 730 days — and there is no age rule anywhere in
+  the engine. The weights do it alone, which is exactly the finding the project
+  is built to show. It is not free either: life-years weighting kills 1409 on
+  the list against urgency's 1248.
 - `runSimulation` is real. It runs the day loop, aggregates the event log, and
   returns genuine numbers. The `// STUB` marker is gone and the dummy builders
   are deleted. `runSensitivity` and `runParetoSweep` are still stubs.
@@ -83,6 +89,7 @@ Building against contract version: 1.0.0
 
 ## In progress right now
 
+- Stopped at Gate A for review. Task 004 (cascade policy and rota) is next.
 - Task 003, the first real vertical slice: score policy, the day loop, real
   metrics. `runSimulation` is still stubbed until the last commit of the task.
 - Task 002, the world model: constants and formulas, compatibility rules,
