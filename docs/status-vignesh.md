@@ -1,5 +1,5 @@
 # Status — Vignesh (Engine)
-Updated: 2026-09-07 21:14 IST / 4666cf6
+Updated: 2026-09-07 21:26 IST / edc9a29
 Building against contract version: 1.0.0
 
 ## Public surface I currently provide
@@ -9,11 +9,37 @@ Building against contract version: 1.0.0
 | `defaultConfig()` | working |
 | `presets()` | working |
 | `runSimulation(config)` | working |
-| `runSensitivity(config)` | stubbed |
+| `runSensitivity(config)` | working |
 | `runParetoSweep(config, points)` | stubbed |
 
 ## Done since last update
 
+- **`runSensitivity` is real.** Eight levers, both directions, seventeen full
+  simulations. Deltas are a symmetric difference so a lopsided response does not
+  read as a bigger effect than it is. `impactScore` is the mean absolute
+  percentage move across all nine metrics, sorted descending.
+- **Measured runtime: 10.7 seconds** in score mode, 12.1 in cascade. Under the
+  20 second ceiling so the full 730 days is kept, but this needs a progress
+  indicator or a Web Worker — it will freeze the tab otherwise.
+- Verification is a partial pass, reported rather than tuned. Donation rate
+  ranks **first in both modes**, which is the Round 4 talking point. But "well
+  above any individual weight" only holds in cascade mode:
+
+  | lever | score mode | cascade mode |
+  | --- | --- | --- |
+  | donationRateMultiplier | **4.8** | **5.4** |
+  | weights.lifeYears | 4.4 | 0 |
+  | weights.urgency | 3.8 | 0 |
+  | weights.waitingTime | 1.9 | 0 |
+  | minUrgencyToList | 1.2 | 0.6 |
+  | retrievalHospitalKeeps | 0 | 1.7 |
+  | transplantCentresPerZone | 0 | 1.3 |
+  | maxColdIschemiaHours | 0 | 0 |
+
+  In score mode donation rate beats the life-years weight by 9%, which is first
+  place but not a landslide. In cascade mode it is 3.2 times the next lever and
+  every weight is exactly zero, because a cascade never scores anyone against
+  anyone. That is a stronger version of the same point.
 - Added the sensitivity perturbation harness: eight levers, each knowing how to
   move itself up and down. The three weights, the cold ischemia ceiling, minimum
   urgency to list, retrieval hospital keeps, donation rate and total transplant
@@ -48,12 +74,12 @@ Building against contract version: 1.0.0
 
 ## In progress right now
 
-- Task 005, sensitivity analysis. Harness done, scoring next.
+- Nothing. Task 006, the Pareto sweep, is next.
 
 ## Stubbed or fake, do not trust
 
-- `runSensitivity` and `runParetoSweep`. Every number they return is invented
-  and none of it responds to config. Do not demo either of them.
+- `runParetoSweep`. Every number it returns is invented and none of it responds
+  to config. Do not demo it.
 - Everything else is real. `runSimulation` runs a genuine 730-day allocation
   loop and all nine metrics plus every breakdown come out of it.
 
@@ -65,6 +91,15 @@ Building against contract version: 1.0.0
   it engine-side rather than have you compute it.
 
 ## Warnings
+
+- **`runSensitivity` takes 10 to 12 seconds.** It runs seventeen simulations.
+  It will lock the tab. It needs a progress indicator, and probably a Web
+  Worker. Do not call it on a slider drag.
+- **Three levers read exactly 0 in score mode**, and it is not a bug.
+  `retrievalHospitalKeeps` and `transplantCentresPerZone` are only consulted by
+  the cascade, and the cold ischemia ceiling has slack at 24 hours when the
+  longest journey in the model is 13. They wake up in cascade mode. If you grey
+  out zero-impact levers, they are honestly zero for that config.
 
 - **`runSimulation` takes about 0.65 seconds.** It is no longer instant. Debounce
   it if you are calling it on slider drag.

@@ -9,7 +9,7 @@ import { CONTRACT_VERSION } from "../contract/types";
 import type { Outcome, ParetoPoint, PolicyConfig, SensitivityRow } from "../contract/types";
 import { buildBreakdowns, buildMetrics } from "./metrics";
 import { buildStubPareto } from "./pareto";
-import { buildStubSensitivity } from "./sensitivity";
+import { buildSensitivity } from "./sensitivity";
 import { simulate } from "./simulate";
 
 export function defaultConfig(): PolicyConfig {
@@ -89,8 +89,9 @@ export function runSimulation(config: PolicyConfig): Outcome {
 }
 
 export function runSensitivity(config: PolicyConfig): SensitivityRow[] {
-  // STUB
-  return buildStubSensitivity(config);
+  return buildSensitivity(config, (perturbed) => {
+    return runSimulation(perturbed).metrics;
+  });
 }
 
 export function runParetoSweep(config: PolicyConfig, points: number): ParetoPoint[] {
