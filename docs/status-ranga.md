@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 02:50 IST / c749678
+Updated: 2026-09-08 02:58 IST / 15c9220
 Building against contract version: 1.2.0
 
 ## Public surface I currently provide
@@ -18,6 +18,12 @@ on-demand calls are not wired yet.
 
 ## Done since last update
 
+- `ParetoPanel.tsx` carries the wording we agreed. The title is always
+  "Trade-off frontier — weighted-score policies". In score mode the subtitle
+  says each point is a full simulation at a different weighting. In cascade and
+  first-come mode it says plainly that the mode has no weight space to sweep,
+  that the chart maps the score-policy space under the current constraints, and
+  that the marked point is the nearest weighting rather than where the user is.
 - `charts/ParetoScatter.tsx` plots `lifeYearsGained` against `regionGapPct`.
   The gap axis is scaled to the data, never 0 to 100, exactly as you warned.
 - `SensitivityPanel.tsx` puts `runSensitivity` behind an explicit button, in
