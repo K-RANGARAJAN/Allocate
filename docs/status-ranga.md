@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 01:30 IST / 19a3708
+Updated: 2026-09-08 01:38 IST / 8736634
 Building against contract version: 1.2.0
 
 ## Public surface I currently provide
@@ -18,6 +18,11 @@ on-demand calls are not wired yet.
 
 ## Done since last update
 
+- `state/useScenarios.ts` holds saved scenarios in memory for the session and
+  exports them as JSON. Nothing is persisted, per `ARCHITECTURE.md`. Each saved
+  scenario is labelled from the config echoed back on its own `Outcome` rather
+  than from live control state, which by then may have moved on — that is the
+  use for the echo you suggested in the handover.
 - `charts/TimelineChart.tsx` plots `outcome.timeline` with Recharts — waitlist
   size, cumulative transplants and cumulative deaths against day. You sample the
   series yourself, so it is plotted as given, with no resampling on my side.
