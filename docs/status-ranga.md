@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 01:07 IST / 8f41f68
+Updated: 2026-09-08 01:14 IST / 19afd9c
 Building against contract version: 1.2.0
 
 ## Public surface I currently provide
@@ -18,6 +18,11 @@ on-demand calls are not wired yet.
 
 ## Done since last update
 
+- `BreakdownTables.tsx` opened with the age band and zone tables. Rows are
+  rendered in the order you return them, unfiltered and unsorted, and `ratePct`
+  is your figure. The zone table carries a note that the regional gap metric is
+  the widest rate difference between two of its rows — your handover called it
+  the evidence underneath that number.
 - `src/styles/tables.css` styles the breakdown tables. Figures are right
   aligned and tabular, row labels are not, and the row count is fixed so the
   layout never jumps when a count goes to zero.
