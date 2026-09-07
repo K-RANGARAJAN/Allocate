@@ -77,3 +77,38 @@
   width: 100%;
   margin-top: var(--space-3);
 }
+
+.progress {
+  margin: var(--space-4) 0;
+}
+
+.progress-track {
+  height: 3px;
+  border-radius: 2px;
+  background: var(--line);
+  overflow: hidden;
+}
+
+/* Indeterminate: the stripe sweeps because there is no real fraction to show. */
+.progress-stripe {
+  width: 34%;
+  height: 100%;
+  border-radius: 2px;
+  background: var(--teal);
+  animation: progress-sweep 1.15s ease-in-out infinite;
+}
+
+@keyframes progress-sweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(340%);
+  }
+}
+
+.progress-note {
+  color: var(--soft-ink);
+  font-size: var(--text-xs);
+  margin: var(--space-2) 0 0;
+}

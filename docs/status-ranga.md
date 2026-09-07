@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 02:18 IST / f7c5d29
+Updated: 2026-09-08 02:26 IST / 20447c6
 Building against contract version: 1.2.0
 
 ## Public surface I currently provide
@@ -18,6 +18,10 @@ on-demand calls are not wired yet.
 
 ## Done since last update
 
+- `ProgressBar.tsx` is the indicator for both long calls. It is indeterminate
+  by design: the stripe sweeps, and the caption gives elapsed wall time against
+  the expected cost from your handover. There is no percentage because neither
+  call reports progress, and inventing one would be a number that means nothing.
 - `state/useEngineWorker.ts` owns the worker and tracks elapsed wall time.
   Neither long call reports progress, so the indicator is indeterminate.
 - `src/ui/worker.ts` is the Web Worker for the two long calls, importing
