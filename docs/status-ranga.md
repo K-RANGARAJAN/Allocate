@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-07 23:38 IST / bb1ea29
+Updated: 2026-09-07 23:45 IST / bc819a8
 Building against contract version: 1.2.0
 
 ## Public surface I currently provide
@@ -18,6 +18,9 @@ interface side is wired yet, so no engine export is being consumed by real UI.
 
 ## Done since last update
 
+- `ControlsPanel.tsx` opened with the three scoring weights, each seeded from
+  the live config and ranged 0 to 1 step 0.05 per the contract. The panel note
+  says plainly that weights need not sum to 1.
 - `Select.tsx` and `Toggle.tsx` complete the control primitives, for the mode
   and local-first dropdowns and the boolean constraints.
 - `src/ui/components/Slider.tsx` is the labelled range primitive the policy
