@@ -1,0 +1,38 @@
+/* The metric grid: the ten headline numbers off outcome.metrics. */
+
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(168px, 1fr));
+  gap: var(--space-1);
+  border-top: var(--border);
+  border-left: var(--border);
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border-right: var(--border);
+  border-bottom: var(--border);
+  margin: 0 -1px -1px 0;
+}
+
+.metric-label {
+  color: var(--soft-ink);
+  font-size: var(--text-xs);
+  line-height: 1.3;
+}
+
+.metric-value {
+  color: var(--ink);
+  font-size: var(--text-metric);
+  font-weight: var(--weight-medium);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+/* Dimmed while a run is in flight, so a stale number never reads as current. */
+.metric-grid.is-stale .metric-value {
+  color: var(--soft-ink);
+}

@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 00:37 IST / 7357f4f
+Updated: 2026-09-08 00:45 IST / e001f83
 Building against contract version: 1.2.0
 
 ## Public surface I currently provide
@@ -18,6 +18,9 @@ on-demand calls are not wired yet.
 
 ## Done since last update
 
+- `src/styles/metrics.css` styles the metric grid. It carries an `is-stale`
+  state that greys the figures while a run is in flight, so a number from the
+  previous config never reads as the current one.
 - **The scaffold is gone.** `src/ui/App.tsx` is now the real shell: header, the
   control column with presets and the policy panel, and a results column fed by
   the debounced run. `defaultConfig`, `presets` and `runSimulation` are wired.
