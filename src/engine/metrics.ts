@@ -1,5 +1,8 @@
-// Dummy metrics and breakdowns for the stub engine.
-// Replaced by real aggregation over simulation events in a later task.
+// Aggregation over the raw event log. Nothing here simulates anything, and
+// nothing in the simulation aggregates, so conservation stays checkable.
+//
+// The buildStub* functions below are the old dummy path, still used by the
+// public API until the last commit of task 003.
 
 import type {
   AgeBandRow,
@@ -12,6 +15,7 @@ import type {
   ZoneId,
   ZoneRow
 } from "../contract/types";
+import type { SimulationLog } from "./model";
 
 export const STUB_TRANSPLANTS = 1180;
 export const STUB_ORGANS_DISCARDED = 96;
@@ -109,5 +113,76 @@ export function buildStubMetrics(config: PolicyConfig, breakdowns: Breakdowns): 
     meanColdIschemiaHours: 11.4,
     meanGraftQuality: 0.78,
     regionGapPct: widestZoneGapPct(breakdowns.byZone)
+  };
+}
+
+export function round2(value: number): number {
+  return Math.round(value * 100) / 100;
+}
+
+function meanOf(total: number, count: number): number {
+  if (count === 0) {
+    return 0;
+  }
+  return total / count;
+}
+
+// Nearest-rank on an already sorted array. Returns 0 for an empty series so a
+// run that transplants nobody reports zero rather than NaN.
+function percentileOf(sorted: number[], fraction: number): number {
+  if (sorted.length === 0) {
+    return 0;
+  }
+  const index = Math.floor(fraction * (sorted.length - 1));
+  return sorted[index];
+}
+
+export function buildZoneRows(log: SimulationLog): ZoneRow[] {
+  const zones: ZoneId[] = ["north", "south", "west"];
+  const rows: ZoneRow[] = [];
+  for (const zone of zones) {
+    const listed = log.listings.filter((row) => {
+      return row.zone === zone;
+    }).length;
+    const transplanted = log.transplants.filter((row) => {
+      return row.zone === zone;
+    }).length;
+    rows.push({ zone, listed, transplanted, ratePct: ratePct(transplanted, listed) });
+  }
+  return rows;
+}
+
+// Wait times are measured over transplanted patients, the standard registry
+// reading. People still waiting have no completed wait to report.
+export function buildMetrics(log: SimulationLog): Metrics {
+  const waitDays = log.transplants
+    .map((event) => {
+      return event.waitDays;
+    })
+    .sort((a, b) => {
+      return a - b;
+    });
+
+  let lifeYearsTotal = 0;
+  let coldTotal = 0;
+  let qualityTotal = 0;
+  for (const event of log.transplants) {
+    lifeYearsTotal = lifeYearsTotal + event.lifeYearsGained;
+    coldTotal = coldTotal + event.coldHours;
+    qualityTotal = qualityTotal + event.effectiveQuality;
+  }
+
+  const count = log.transplants.length;
+
+  return {
+    transplants: count,
+    lifeYearsGained: round1(lifeYearsTotal),
+    waitlistDeaths: log.deaths.length,
+    medianWaitDays: Math.round(percentileOf(waitDays, 0.5)),
+    p90WaitDays: Math.round(percentileOf(waitDays, 0.9)),
+    organsDiscarded: log.discards.length,
+    meanColdIschemiaHours: round1(meanOf(coldTotal, count)),
+    meanGraftQuality: round2(meanOf(qualityTotal, count)),
+    regionGapPct: widestZoneGapPct(buildZoneRows(log))
   };
 }

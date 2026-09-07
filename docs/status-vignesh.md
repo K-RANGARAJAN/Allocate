@@ -1,5 +1,5 @@
 # Status — Vignesh (Engine)
-Updated: 2026-09-07 17:16 IST / 5d76c59
+Updated: 2026-09-07 17:24 IST / a9562bf
 Building against contract version: 1.0.0
 
 ## Public surface I currently provide
@@ -14,6 +14,11 @@ Building against contract version: 1.0.0
 
 ## Done since last update
 
+- Added the real headline metrics to `metrics.ts`. All nine come off the event
+  log. Wait times are measured over transplanted patients, the standard registry
+  reading — people still waiting have no completed wait to report.
+  `regionGapPct` is the widest gap between any two zones' transplant rates.
+  Every mean and percentile returns 0 rather than NaN on an empty series.
 - Added offer acceptance and the three discard paths. Centres decline at the
   rate in `OFFER_ACCEPTANCE_RATE`, each refusal costs two hours and sends the
   organ down the list, up to five offers. Every organ now ends as exactly one
