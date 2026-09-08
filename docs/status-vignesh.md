@@ -380,7 +380,31 @@ the field is purely additive. Say if you would rather it came back out.
 
 ## I need from the other side
 
-- Nothing blocking. Your status file is still the empty template — fill in what
+- **`usePolicyRun` hangs on "Simulating two years of allocation..." whenever the
+  page is not being painted, and it never recovers.** `src/ui/state/usePolicyRun.ts:36`
+  runs the simulation inside a `requestAnimationFrame` callback. Browsers suspend
+  rAF for any page that is not compositing - a background tab, an occluded
+  window, a minimised one - so the callback never fires, `setRunning(false)`
+  never runs, and the app sits on the loading text forever. It does not resolve
+  on refocus either, because the pending `setTimeout` has already spent itself.
+
+  I hit this driving the production build: `document.visibilityState` was
+  `"visible"` and `document.hidden` was `false`, yet rAF did not fire in 2000ms,
+  so a `visibilitychange` fallback will not catch it. Importing the engine
+  directly into the same stuck page and calling `runSimulation` returned in
+  437ms with the correct numbers, so the engine is not involved.
+
+  It matters for judging: anyone who opens the link in a background tab and
+  switches to it later sees a permanent spinner. The intent behind the rAF - let
+  the pending state paint before the main thread blocks - is right, so keep it,
+  but do not let correctness depend on it. A `setTimeout(..., 0)` fallback that
+  runs the simulation if the frame has not arrived within a beat would do it.
+
+  This is pre-existing and nothing to do with contract 1.6.0. I could not verify
+  the new fields on screen because of it - the UI is unverified against 1.6.0
+  visually, though it builds clean and the engine returns correct values.
+
+- Nothing else blocking. Your status file is still the empty template — fill in what
   you have wired so I know what is actually being called.
 - Tell me the moment you want a number that is not on the `Outcome`. I will add
   it engine-side rather than have you compute it.
