@@ -34,7 +34,13 @@ export function App() {
     const outcome = run.outcome;
 
     if (nav.page === "outcome") {
-      body = <PolicyOutcomePage outcome={outcome} running={run.running} />;
+      body = (
+        <PolicyOutcomePage
+          outcome={outcome}
+          running={run.running}
+          tier={run.tier}
+        />
+      );
     }
     if (nav.page === "reach") {
       body = <WhoItReachesPage outcome={outcome} />;

@@ -1,4 +1,5 @@
 import type { Outcome } from "../../contract/types";
+import type { MotionTier } from "../state/useMotion";
 import { AgeBandTable } from "../components/AgeBandTable";
 import { MetricGrid } from "../components/MetricGrid";
 import { TimelineChart } from "../charts/TimelineChart";
@@ -6,6 +7,7 @@ import { TimelineChart } from "../charts/TimelineChart";
 export interface PolicyOutcomePageProps {
   outcome: Outcome;
   running: boolean;
+  tier: MotionTier;
 }
 
 // Page 1 has to stand alone. A reader who never leaves it should still see the
@@ -28,7 +30,7 @@ export function PolicyOutcomePage(props: PolicyOutcomePageProps) {
         <p className="panel-note">
           Sampled by the engine across the run and plotted as given.
         </p>
-        <TimelineChart timeline={props.outcome.timeline} />
+        <TimelineChart timeline={props.outcome.timeline} tier={props.tier} />
       </section>
 
       <section className="panel">

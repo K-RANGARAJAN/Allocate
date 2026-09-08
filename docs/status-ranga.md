@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 18:28 IST / 36c8f7c
+Updated: 2026-09-08 18:40 IST / 9d8e3a3
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -30,6 +30,9 @@ the five-page restructure, each in the worker behind its own button.
   rate at 12, which renders your finding live: holding that line costs 5103
   life-years, 7 of 12 weightings feasible. Set it to 90 and it says no policy in
   the swept space meets the line, which is the null case as a stated result.
+- The timeline's Recharts animation is driven by the same tier — 800ms on a
+  preset, 300ms on a slider run so the lines ease rather than jump, and disabled
+  outright under reduced motion.
 - **Animation is in.** Full tier on first load and preset clicks: the headline
   counts up over 600ms and the three secondary figures rise in 80ms apart behind
   it. Quiet tier on every slider-driven run: numbers swap directly, no count-up,
