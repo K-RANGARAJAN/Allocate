@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 20:16 IST / f97db4c
+Updated: 2026-09-08 20:30 IST / 123dd34
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -30,6 +30,12 @@ the five-page restructure, each in the worker behind its own button.
   rate at 12, which renders your finding live: holding that line costs 5103
   life-years, 7 of 12 weightings feasible. Set it to 90 and it says no policy in
   the swept space meets the line, which is the null case as a stated result.
+- **The landing page is mounted and the chrome is hidden behind it.** The header
+  and the tabs are not rendered at all on home. The simulator stays mounted so
+  page 1 can fade in rather than pop, but it is `visibility: hidden` and
+  `aria-hidden` while covered — opacity alone would have left the controls
+  focusable by keyboard and read aloud by a screen reader from behind a page
+  that looks empty, which is a worse bug than the one it fixes.
 - `src/styles/home.css` holds the landing layout and the transition. The
   landing page is fixed and overlays the simulator rather than sitting in flow,
   which is what lets it slide up and out over 500ms while page 1 fades in from

@@ -72,13 +72,20 @@
   }
 }
 
+/* visibility, not just opacity: a transparent simulator is still focusable and
+   still read aloud, so on the landing page it must be genuinely hidden. It is
+   kept mounted so page 1 can fade in rather than pop. Hiding delays visibility
+   until the fade finishes; revealing applies it at once. */
 .simulator {
   opacity: 1;
-  transition: opacity 500ms ease-out;
+  visibility: visible;
+  transition: opacity 500ms ease-out, visibility 0s;
 }
 
 .simulator.is-behind {
   opacity: 0;
+  visibility: hidden;
+  transition: opacity 500ms ease-out, visibility 0s 500ms;
 }
 
 @media (prefers-reduced-motion: reduce) {

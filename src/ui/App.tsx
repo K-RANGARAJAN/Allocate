@@ -2,10 +2,13 @@ import { AppHeader } from "./components/AppHeader";
 import { ControlsDrawer } from "./components/ControlsDrawer";
 import { PageNav } from "./components/PageNav";
 import { ComparePage } from "./pages/ComparePage";
+import { HomePage } from "./pages/HomePage";
 import { PolicyOutcomePage } from "./pages/PolicyOutcomePage";
 import { TradeOffsPage } from "./pages/TradeOffsPage";
 import { WhatMovesItPage } from "./pages/WhatMovesItPage";
 import { WhoItReachesPage } from "./pages/WhoItReachesPage";
+import { useState } from "react";
+
 import { PAGES, useActivePage } from "./state/useActivePage";
 import { useEngineWorker } from "./state/useEngineWorker";
 import { usePolicyRun } from "./state/usePolicyRun";
@@ -16,6 +19,44 @@ export function App() {
   const scenarios = useScenarios();
   const worker = useEngineWorker();
   const nav = useActivePage();
+  const [leaving, setLeaving] = useState(false);
+
+  const onHome = nav.page === "home";
+
+  // The landing page starts its slide first and the switch follows, so page 1
+  // is already rendered underneath and fades in as the cover leaves.
+  function openSimulator() {
+    setLeaving(true);
+    setTimeout(() => {
+      nav.setPage("outcome");
+    }, 30);
+  }
+
+  let home = null;
+  if (onHome || leaving) {
+    home = <HomePage onOpen={openSimulator} leaving={leaving} />;
+  }
+
+  let chrome = null;
+  if (onHome === false) {
+    chrome = (
+      <header className="shell-header">
+        <AppHeader
+          outcome={run.outcome}
+          running={run.running}
+          tier={run.tier}
+          config={run.config}
+          setConfig={run.setConfig}
+        />
+        <PageNav pages={PAGES} active={nav.page} onPick={nav.setPage} />
+      </header>
+    );
+  }
+
+  let simulatorClass = "simulator";
+  if (onHome) {
+    simulatorClass = "simulator is-behind";
+  }
 
   let claim = "";
   for (const page of PAGES) {
@@ -67,26 +108,19 @@ export function App() {
 
   return (
     <div className="app-shell">
-      <header className="shell-header">
-        <AppHeader
-          outcome={run.outcome}
-          running={run.running}
-          tier={run.tier}
-          config={run.config}
-          setConfig={run.setConfig}
-        />
-        <PageNav pages={PAGES} active={nav.page} onPick={nav.setPage} />
-      </header>
-
-      <div className="app">
-        <p className="page-claim">{claim}</p>
-        <div className="layout">
-          <ControlsDrawer
-            config={run.config}
-            setConfig={run.setConfig}
-            setWholeConfig={run.setWholeConfig}
-          />
-          {body}
+      {home}
+      <div className={simulatorClass} aria-hidden={onHome}>
+        {chrome}
+        <div className="app">
+          <p className="page-claim">{claim}</p>
+          <div className="layout">
+            <ControlsDrawer
+              config={run.config}
+              setConfig={run.setConfig}
+              setWholeConfig={run.setWholeConfig}
+            />
+            {body}
+          </div>
         </div>
       </div>
     </div>
