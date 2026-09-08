@@ -1,16 +1,43 @@
 import { useEffect, useRef, useState } from "react";
 
-import type { ParetoPoint, SensitivityRow } from "../../contract/types";
-import type { WorkerRequest, WorkerResponse } from "../worker";
+import type {
+  ConstrainedFrontierReport,
+  CounterfactualReport,
+  ParetoPoint,
+  RobustnessReport,
+  SensitivityRow
+} from "../../contract/types";
+import type {
+  CounterfactualRequest,
+  FrontierRequest,
+  ParetoRequest,
+  RobustnessRequest,
+  SensitivityRequest,
+  WorkerRequest,
+  WorkerResponse
+} from "../worker";
 
-export type TaskKind = "sensitivity" | "pareto";
-type SensitivityRequest = Extract<WorkerRequest, { kind: "sensitivity" }>;
-type ParetoRequest = Extract<WorkerRequest, { kind: "pareto" }>;
-export type StartRequest = Omit<SensitivityRequest, "id"> | Omit<ParetoRequest, "id">;
+export type TaskKind =
+  | "sensitivity"
+  | "pareto"
+  | "robustness"
+  | "counterfactual"
+  | "frontier";
+// Spelled out rather than Omit<WorkerRequest, "id">, because Omit does not
+// distribute over a union and would collapse these to their shared keys.
+export type StartRequest =
+  | Omit<SensitivityRequest, "id">
+  | Omit<ParetoRequest, "id">
+  | Omit<RobustnessRequest, "id">
+  | Omit<CounterfactualRequest, "id">
+  | Omit<FrontierRequest, "id">;
 
 export interface EngineWorker {
   sensitivity: SensitivityRow[] | null;
   pareto: ParetoPoint[] | null;
+  robustness: RobustnessReport | null;
+  counterfactual: CounterfactualReport | null;
+  frontier: ConstrainedFrontierReport | null;
   busy: TaskKind | null;
   elapsedMs: number;
   error: string | null;
@@ -20,6 +47,13 @@ export interface EngineWorker {
 export function useEngineWorker(): EngineWorker {
   const [sensitivity, setSensitivity] = useState<SensitivityRow[] | null>(null);
   const [pareto, setPareto] = useState<ParetoPoint[] | null>(null);
+  const [robustness, setRobustness] = useState<RobustnessReport | null>(null);
+  const [counterfactual, setCounterfactual] =
+    useState<CounterfactualReport | null>(null);
+  const [frontier, setFrontier] = useState<ConstrainedFrontierReport | null>(
+    null
+  );
+
   const [busy, setBusy] = useState<TaskKind | null>(null);
   const [elapsedMs, setElapsedMs] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -41,6 +75,15 @@ export function useEngineWorker(): EngineWorker {
       }
       if (data.kind === "pareto") {
         setPareto(data.points);
+      }
+      if (data.kind === "robustness") {
+        setRobustness(data.report);
+      }
+      if (data.kind === "counterfactual") {
+        setCounterfactual(data.report);
+      }
+      if (data.kind === "frontier") {
+        setFrontier(data.report);
       }
       if (data.kind === "error") {
         setError(data.message);
@@ -81,5 +124,15 @@ export function useEngineWorker(): EngineWorker {
     worker.postMessage({ ...request, id } as WorkerRequest);
   }
 
-  return { sensitivity, pareto, busy, elapsedMs, error, start };
+  return {
+    sensitivity,
+    pareto,
+    robustness,
+    counterfactual,
+    frontier,
+    busy,
+    elapsedMs,
+    error,
+    start
+  };
 }

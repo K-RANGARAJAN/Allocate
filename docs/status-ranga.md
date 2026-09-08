@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 15:02 IST / 2020a13
+Updated: 2026-09-08 15:16 IST / a36b9d7
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -26,6 +26,10 @@ the five-page restructure, each in the worker behind its own button.
   a page body. The single dense page is gone and nothing was dropped in the
   move — every control, metric, table and chart that existed before is still
   reachable, and the header and controls persist across all five pages.
+- `useEngineWorker` carries result slots for all five long calls now. Its
+  request union is spelled out one member at a time rather than written as
+  `Omit<WorkerRequest, "id">` — `Omit` does not distribute over a union and
+  would have quietly collapsed the five request shapes to their shared keys.
 - **The worker handles all five long calls now** — sensitivity, Pareto,
   robustness, counterfactual and the constrained frontier. The counterfactual
   request carries both configs rather than an Outcome, because that call takes
