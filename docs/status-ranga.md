@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 16:30 IST / 679d27c
+Updated: 2026-09-08 16:44 IST / ea1dcbe
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -26,6 +26,15 @@ the five-page restructure, each in the worker behind its own button.
   a page body. The single dense page is gone and nothing was dropped in the
   move — every control, metric, table and chart that existed before is still
   reachable, and the header and controls persist across all five pages.
+- **The constrained frontier is wired on page 3**, defaulting to the over-60
+  rate at 12, which renders your finding live: holding that line costs 5103
+  life-years, 7 of 12 weightings feasible. Set it to 90 and it says no policy in
+  the swept space meets the line, which is the null case as a stated result.
+- `ConstrainedFrontierPanel` carries the constraint control — metric, direction
+  and value — defaulting to the over-60 rate at 12. It deliberately does not
+  re-plot the scatter: `ParetoScatter` marks points by domination, not by
+  whether they meet the constraint, so reusing it here would say the wrong
+  thing. The frontier itself is on the panel above.
 - `FrontierVerdict` states the price in words. It never presents `best` as a
   recommendation — the framing is that the user drew a line and this is what
   holding it costs. A null `priceOfConstraint` is rendered as its own finding,
