@@ -13,7 +13,7 @@ export interface ControlsPanelProps {
 type WeightKey = keyof PolicyConfig["weights"];
 type Constraints = PolicyConfig["constraints"];
 
-const MODE_OPTIONS = [
+export const MODE_OPTIONS = [
   { value: "score", label: "Weighted score" },
   { value: "cascade", label: "Cascade (TRANSTAN)" },
   { value: "fcfs", label: "First come, first served" }

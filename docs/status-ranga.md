@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 11:16 IST / 95896d9
+Updated: 2026-09-08 11:26 IST / feed33c
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -22,6 +22,10 @@ the five-page restructure, each in the worker behind its own button.
 
 ## Done since last update
 
+- `AppHeader.tsx` is the persistent header, on every page: transplants as the
+  headline figure, life-years, waitlist deaths and the over-60 rate beside it,
+  the allocation mode selector, and the activity dot. The over-60 rate is
+  printed plain — it is `neutral` on the contract, so it is not coloured here.
 - `src/ui/metricList.ts` reads the engine's own metric order and labels off
   `outcome.steadyState`, which carries one row per metric in the same order
   `compareOutcomes` uses. The header, the grid and the comparison table will

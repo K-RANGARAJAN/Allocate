@@ -107,3 +107,11 @@
   max-width: 68ch;
   margin: 0 0 var(--space-5);
 }
+
+.header-mode {
+  min-width: 190px;
+}
+
+.header-mode .control {
+  margin-bottom: 0;
+}
