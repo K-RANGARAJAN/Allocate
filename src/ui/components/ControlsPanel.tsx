@@ -2,6 +2,7 @@ import type { Dispatch, SetStateAction } from "react";
 
 import type { PolicyConfig, ZoneId } from "../../contract/types";
 import { Select } from "./Select";
+import { NumberField } from "./NumberField";
 import { Slider } from "./Slider";
 import { Toggle } from "./Toggle";
 
@@ -267,6 +268,14 @@ export function ControlsPanel(props: ControlsPanelProps) {
           max={5000}
           step={100}
           onChange={(next) => setSim("initialWaitlistSize", next)}
+        />
+        <NumberField
+          label="Seed"
+          value={config.sim.seed}
+          min={1}
+          max={999999}
+          hint="Same seed, same synthetic people. Change it to test whether a finding is the policy or the draw."
+          onChange={(next) => setSim("seed", next)}
         />
         <Slider
           label="New listings per day"

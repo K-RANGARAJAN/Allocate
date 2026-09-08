@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 11:56 IST / a08ac42
+Updated: 2026-09-08 12:06 IST / 978e40f
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -22,6 +22,11 @@ the five-page restructure, each in the worker behind its own button.
 
 ## Done since last update
 
+- **The seed is a control now**, as a typed number rather than a slider — it is
+  an identifier, not a magnitude, so dragging it along a range is the wrong
+  gesture. Its hint says what changing it actually tests: same seed means the
+  same synthetic people, so a finding that survives a seed change is the policy
+  rather than the draw. That is your robustness argument, reachable by hand.
 - **Weight slider step corrected, 0.05 to 0.01**, per the 1.3.0 changelog. You
   were right about the symptom: 0.33 is not reachable on a 0.05 step, so the
   thumb sat at 0.35 while the label read 0.33 off the config, and the first drag

@@ -115,3 +115,21 @@
 .group-body {
   padding: var(--space-2) 0 var(--space-4);
 }
+
+.control-number {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: var(--border);
+  border-radius: var(--radius);
+  background: var(--panel);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+}
+
+.field-hint {
+  display: block;
+  color: var(--soft-ink);
+  font-size: var(--text-xs);
+  margin-top: var(--space-2);
+}
