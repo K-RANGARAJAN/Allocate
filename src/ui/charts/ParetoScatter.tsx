@@ -10,6 +10,11 @@ import {
 } from "recharts";
 
 import type { ParetoPoint } from "../../contract/types";
+import {
+  CurrentDiamond,
+  DominatedDot,
+  FrontierDot
+} from "./ScatterShapes";
 
 export interface ParetoScatterProps {
   points: ParetoPoint[];
@@ -63,19 +68,16 @@ export function ParetoScatter(props: ParetoScatterProps) {
           />
           <Tooltip cursor={{ strokeDasharray: "3 3" }} />
           <Legend wrapperStyle={{ fontSize: 12 }} />
-          <Scatter name="On the frontier" data={frontier} fill="#2F5D62" />
           <Scatter
-            name="Dominated"
-            data={dominated}
-            fill="none"
-            stroke="#5C6470"
-            shape="circle"
+            name="On the frontier"
+            data={frontier}
+            shape={<FrontierDot />}
           />
+          <Scatter name="Dominated" data={dominated} shape={<DominatedDot />} />
           <Scatter
             name="Your current policy"
             data={current}
-            fill="#A65E2E"
-            shape="diamond"
+            shape={<CurrentDiamond />}
           />
         </ScatterChart>
       </ResponsiveContainer>

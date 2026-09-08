@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 19:30 IST / 1e64566
+Updated: 2026-09-08 19:44 IST / dad63d6
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -30,6 +30,16 @@ the five-page restructure, each in the worker behind its own button.
   rate at 12, which renders your finding live: holding that line costs 5103
   life-years, 7 of 12 weightings feasible. Set it to 90 and it says no policy in
   the swept space meets the line, which is the null case as a stated result.
+- **Fixed the Pareto hover target.** The tooltip only fired on the exact pixel
+  of a dot. Each of the three marks now draws a transparent `r=14` circle with
+  `pointer-events="all"` underneath the visible one, which is itself unchanged —
+  the target got wider, the chart did not get redrawn.
+- **Kept `r=14` rather than dropping to 11, and the geometry says why.** Across
+  the 20 swept points at the default config there are 190 pairs, and exactly one
+  sits closer than 28px. That pair is 5.2px apart — two points almost coincident
+  in the data, which no radius fixes; `r=11` still leaves it overlapping. Every
+  other pair is at least 29.3px apart and clear at 14. Dropping the radius would
+  cost hit area everywhere to fix nothing.
 - **The grid carries the notes and the disclaimer.** Verified: eleven tiles,
   exactly five notes on the mapped metrics, six tiles with nothing, and the
   disclaimer rendered once above the grid rather than per tile. It renders
