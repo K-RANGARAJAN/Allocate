@@ -1,4 +1,5 @@
 import type { Breakdowns } from "../../contract/types";
+import { AgeBandTable } from "./AgeBandTable";
 
 export interface BreakdownTablesProps {
   breakdowns: Breakdowns;
@@ -13,31 +14,7 @@ export function BreakdownTables(props: BreakdownTablesProps) {
 
   return (
     <div className="table-grid">
-      <div className="table-block">
-        <span className="label">By age band</span>
-        <table className="data-table">
-          <thead>
-            <tr>
-              <th>Band</th>
-              <th>Listed</th>
-              <th>Transplanted</th>
-              <th>Rate %</th>
-            </tr>
-          </thead>
-          <tbody>
-            {b.byAgeBand.map((row) => {
-              return (
-                <tr key={row.band}>
-                  <td>{row.band}</td>
-                  <td>{row.listed}</td>
-                  <td>{row.transplanted}</td>
-                  <td>{row.ratePct}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+      <AgeBandTable rows={b.byAgeBand} withNote={false} />
 
       <div className="table-block">
         <span className="label">By zone</span>

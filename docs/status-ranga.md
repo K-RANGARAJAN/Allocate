@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 12:40 IST / af3b21b
+Updated: 2026-09-08 12:50 IST / dab6c18
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -22,6 +22,10 @@ the five-page restructure, each in the worker behind its own button.
 
 ## Done since last update
 
+- `AgeBandTable.tsx` is pulled out of the breakdowns so page 1 can carry it on
+  its own. Page 1 has to make the over-60 argument without the reader visiting
+  another page, so it shows the table with a note pointing at the last two rows;
+  page 2 shows the same table beside three others and drops the note.
 - **The missing zone inequality tile is fixed** — you reported it and you were
   right. The grid held a ten-entry list I hardcoded back at 1.1.0, so
   `zoneGiniPct` was being dropped silently. It now reads the order and labels
