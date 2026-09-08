@@ -26,29 +26,41 @@
 }
 
 /* Fixed, so the drawer's own scrolling cannot clip it, and pointer-events none
-   so it can never swallow a drag on the slider it is describing. */
+   so it can never swallow a drag on the slider it is describing.
+
+   The fade is on the transform, never on opacity. A bubble faded in with
+   opacity is translucent for the whole transition and chart gridlines and axis
+   labels read straight through it, so its resting state is fully opaque and it
+   is hidden with `visibility` instead. z-index sits above every chart: a
+   Recharts SVG must never paint over it. */
 .hint-bubble {
   position: fixed;
-  z-index: 40;
+  z-index: 200;
   width: 260px;
   padding: var(--space-3);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--panel);
+  box-shadow: 0 2px 8px rgba(26, 29, 33, 0.08);
   color: var(--soft-ink);
   font-size: var(--text-xs);
   line-height: 1.45;
   pointer-events: none;
-  opacity: 0;
-  transition: opacity 120ms ease-out;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition: transform 120ms ease-out, visibility 0s 120ms;
 }
 
 .hint-bubble.is-open {
-  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  transition: transform 120ms ease-out, visibility 0s;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hint-bubble {
+  .hint-bubble,
+  .hint-bubble.is-open {
+    transform: none;
     transition: none;
   }
 }

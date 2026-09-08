@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 22:02 IST / a148250
+Updated: 2026-09-08 22:26 IST / 33ff345
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -30,6 +30,19 @@ the five-page restructure, each in the worker behind its own button.
   rate at 12, which renders your finding live: holding that line costs 5103
   life-years, 7 of 12 weightings feasible. Set it to 90 and it says no policy in
   the swept space meets the line, which is the null case as a stated result.
+- **The hint bubble was translucent over charts, and the cause was the fade.**
+  It faded in on `opacity`, which meant the bubble was partly transparent for
+  the whole 120ms and gridlines and axis labels read straight through it. The
+  fade is now on `transform` only and the bubble is hidden with `visibility`,
+  so its resting state is fully opaque. `background` stays `var(--panel)`, which
+  resolves to solid `#FFFFFF` with no alpha anywhere — no `rgba` fraction and no
+  `backdrop-filter`.
+- Added the raised shadow so it reads as sitting above the page rather than
+  punched into it, and raised `z-index` from 40 to 200 so a Recharts SVG can
+  never paint over it. The hairline border is unchanged.
+- Reduced motion now clears the transform as well as the transition, so that
+  reader gets the bubble in its final position instantly rather than parked
+  four pixels high.
 - **Every control in the drawer now carries a hint, plus the presets heading and
   the mode selector in the header.** All nineteen keys are wired and none is
   orphaned. Only four icons render at rest because a collapsed group does not
