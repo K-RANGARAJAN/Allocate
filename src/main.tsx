@@ -12,6 +12,7 @@ import "./styles/comparison.css";
 import "./styles/equity.css";
 import "./styles/animation.css";
 import "./styles/home.css";
+import "./styles/hint.css";
 
 const container = document.getElementById("root");
 if (container === null) {

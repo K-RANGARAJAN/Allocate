@@ -1,0 +1,54 @@
+/* The circled "i" beside a control label, and the bubble it opens. */
+
+.hint-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  margin-left: var(--space-2);
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: var(--soft-ink);
+  cursor: help;
+  font-size: 9px;
+  font-style: normal;
+  font-weight: var(--weight-semibold);
+  line-height: 1;
+  vertical-align: middle;
+}
+
+.hint-icon:hover,
+.hint-icon:focus-visible {
+  border-color: var(--teal);
+  color: var(--teal);
+  outline: none;
+}
+
+/* Fixed, so the drawer's own scrolling cannot clip it, and pointer-events none
+   so it can never swallow a drag on the slider it is describing. */
+.hint-bubble {
+  position: fixed;
+  z-index: 40;
+  width: 260px;
+  padding: var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel);
+  color: var(--soft-ink);
+  font-size: var(--text-xs);
+  line-height: 1.45;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 120ms ease-out;
+}
+
+.hint-bubble.is-open {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hint-bubble {
+    transition: none;
+  }
+}

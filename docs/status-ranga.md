@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 21:02 IST / 2dabc78
+Updated: 2026-09-08 21:12 IST / a815206
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -30,6 +30,10 @@ the five-page restructure, each in the worker behind its own button.
   rate at 12, which renders your finding live: holding that line costs 5103
   life-years, 7 of 12 weightings feasible. Set it to 90 and it says no policy in
   the swept space meets the line, which is the null case as a stated result.
+- `src/styles/hint.css` styles the icon and the bubble. The bubble is
+  `position: fixed` so the drawer's own scrolling cannot clip it, and
+  `pointer-events: none` so it can never swallow a drag on the slider it is
+  describing. Fades over 120ms, instant under reduced motion.
 - **Explanatory hints on every control.** `src/ui/data/controlHints.ts` holds
   the copy as static text — nothing here reads an Outcome or reacts to a result.
   Started with priorities and constraints. The wording says what each lever
