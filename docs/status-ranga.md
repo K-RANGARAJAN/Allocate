@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 20:06 IST / f754d1f
+Updated: 2026-09-08 20:16 IST / f97db4c
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -30,6 +30,11 @@ the five-page restructure, each in the worker behind its own button.
   rate at 12, which renders your finding live: holding that line costs 5103
   life-years, 7 of 12 weightings feasible. Set it to 90 and it says no policy in
   the swept space meets the line, which is the null case as a stated result.
+- `src/styles/home.css` holds the landing layout and the transition. The
+  landing page is fixed and overlays the simulator rather than sitting in flow,
+  which is what lets it slide up and out over 500ms while page 1 fades in from
+  underneath — CSS `transform` and `opacity` only, no library.
+  `prefers-reduced-motion` drops both transitions so it simply switches.
 - `HomeBackground` is the landing artwork, inline SVG with no image files and
   no external assets: a sparse node-and-link network for hospitals and organ
   movement, and an ECG-style trace across the lower third. Line work in the

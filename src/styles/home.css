@@ -1,0 +1,88 @@
+/* The landing page. It sits above the simulator and slides up out of the way,
+   which is why it is fixed rather than in flow: page 1 is already rendered
+   underneath and fades in as this leaves. */
+
+.home {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: var(--paper);
+  transform: translateY(0);
+  opacity: 1;
+  transition: transform 500ms ease-out, opacity 500ms ease-out;
+}
+
+.home.is-leaving {
+  transform: translateY(-100%);
+  opacity: 0;
+}
+
+.home-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.home-inner {
+  position: relative;
+  text-align: center;
+  padding: var(--space-5);
+}
+
+.home-title {
+  color: var(--ink);
+  font-size: clamp(3.5rem, 12vw, 8rem);
+  font-weight: var(--weight-semibold);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  margin: 0;
+}
+
+.home-sub {
+  color: var(--soft-ink);
+  font-size: var(--text-lg);
+  margin: var(--space-4) 0 var(--space-6);
+}
+
+.home-button {
+  padding: var(--space-3) var(--space-5);
+  border: 1px solid var(--teal);
+  border-radius: var(--radius);
+  background: var(--teal);
+  color: var(--paper);
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+}
+
+.home-button:hover {
+  background: var(--ink);
+  border-color: var(--ink);
+}
+
+/* The reader's setting wins: no slide, no fade, it simply goes. */
+@media (prefers-reduced-motion: reduce) {
+  .home {
+    transition: none;
+  }
+}
+
+.simulator {
+  opacity: 1;
+  transition: opacity 500ms ease-out;
+}
+
+.simulator.is-behind {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .simulator {
+    transition: none;
+  }
+}
