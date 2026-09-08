@@ -7,6 +7,7 @@ import {
   CounterfactualSample
 } from "./CounterfactualPanel";
 import { ProgressBar } from "./ProgressBar";
+import { StaleNotice, panelClass, runLabel } from "./StaleNotice";
 
 export interface CounterfactualSectionProps {
   baseline: Scenario | null;
@@ -16,6 +17,7 @@ export interface CounterfactualSectionProps {
 
 export function CounterfactualSection(props: CounterfactualSectionProps) {
   const worker = props.worker;
+  const stale = worker.isStale("counterfactual", props.config);
   const report = worker.counterfactual;
   const baseline = props.baseline;
 
@@ -69,13 +71,14 @@ export function CounterfactualSection(props: CounterfactualSectionProps) {
   }
 
   return (
-    <section className="panel">
+    <section className={panelClass(stale)}>
       <h2 className="panel-title">Who the change moved</h2>
       <div className="compare-head">
         <button type="button" className="btn" disabled={disabled} onClick={run}>
-          Run counterfactual
+          {runLabel(stale, "Run counterfactual")}
         </button>
       </div>
+      <StaleNotice stale={stale} />
       {progress}
       {body}
     </section>

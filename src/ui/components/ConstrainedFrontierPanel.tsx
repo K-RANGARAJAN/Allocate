@@ -6,6 +6,7 @@ import { metricList } from "../metricList";
 import { FrontierVerdict } from "./FrontierVerdict";
 import { NumberField } from "./NumberField";
 import { ProgressBar } from "./ProgressBar";
+import { StaleNotice, panelClass, runLabel } from "./StaleNotice";
 import { Select } from "./Select";
 
 const POINTS = 12;
@@ -23,6 +24,7 @@ export interface ConstrainedFrontierPanelProps {
 
 export function ConstrainedFrontierPanel(props: ConstrainedFrontierPanelProps) {
   const worker = props.worker;
+  const stale = worker.isStale("frontier", props.config);
   const [metric, setMetric] = useState<MetricKey>("overSixtyRatePct");
   const [direction, setDirection] = useState("atLeast");
   const [value, setValue] = useState(12);
@@ -66,7 +68,7 @@ export function ConstrainedFrontierPanel(props: ConstrainedFrontierPanelProps) {
   }
 
   return (
-    <section className="panel">
+    <section className={panelClass(stale)}>
       <h2 className="panel-title">What a floor costs</h2>
       <div className="frontier-controls">
         <Select
@@ -83,9 +85,10 @@ export function ConstrainedFrontierPanel(props: ConstrainedFrontierPanelProps) {
         />
         <NumberField label="Value" value={value} min={0} max={100000} onChange={setValue} />
         <button type="button" className="btn" disabled={worker.busy !== null} onClick={run}>
-          Price it
+          {runLabel(stale, "Price it")}
         </button>
       </div>
+      <StaleNotice stale={stale} />
       {progress}
       {body}
     </section>

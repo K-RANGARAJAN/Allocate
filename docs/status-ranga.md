@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 17:18 IST / 0a3842a
+Updated: 2026-09-08 17:30 IST / 2aea153
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -30,6 +30,11 @@ the five-page restructure, each in the worker behind its own button.
   rate at 12, which renders your finding live: holding that line costs 5103
   life-years, 7 of 12 weightings feasible. Set it to 90 and it says no policy in
   the swept space meets the line, which is the null case as a stated result.
+- **All five expensive panels go stale, verified.** Never flagged before a run;
+  false while the config is unchanged; true for all five the moment the user
+  clicks Default after running under the locality trap; true when a single
+  weight moves 0.33 to 0.34; and false again for a freshly built but identical
+  config, so it compares by value rather than object identity.
 - Sensitivity, Pareto and robustness now go stale when the config moves under
   them. This was the case you flagged: run sensitivity under the locality trap,
   click Default, and the cascade ranking used to sit there under a score-mode
