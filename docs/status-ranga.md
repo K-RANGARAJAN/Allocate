@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 15:54 IST / a75b411
+Updated: 2026-09-08 16:04 IST / 2927544
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -26,6 +26,11 @@ the five-page restructure, each in the worker behind its own button.
   a page body. The single dense page is gone and nothing was dropped in the
   move — every control, metric, table and chart that existed before is still
   reachable, and the header and controls persist across all five pages.
+- `CounterfactualSection` runs the call in the worker behind its own button and
+  is disabled until a baseline scenario is chosen, since the comparison has no
+  meaning without two named policies. It passes `baseline.outcome.config` rather
+  than my live state, so the policy it names is the one that produced the saved
+  Outcome.
 - `CounterfactualSample` renders the capped patient list. Its caption quotes
   `lostCount` for the total and `sampleCap` for the cap, and says outright that
   it is a sample — the row count on screen is never presented as a figure.
