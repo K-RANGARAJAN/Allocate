@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 14:06 IST / 5e77dbd
+Updated: 2026-09-08 14:18 IST / 73b6dc0
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -26,6 +26,10 @@ the five-page restructure, each in the worker behind its own button.
   a page body. The single dense page is gone and nothing was dropped in the
   move — every control, metric, table and chart that existed before is still
   reachable, and the header and controls persist across all five pages.
+- **The shell chrome is live.** `App.tsx` now renders the persistent header and
+  the five tabs above a page claim, with the controls drawer beside the body.
+  The old page title and standing subtitle are gone — the header carries the
+  numbers and each tab states its own claim, so a fixed blurb was just noise.
 - Stripped the panels that moved onto pages out of `App.tsx`. Nothing was lost:
   each one is rendered by the page it now belongs to. This is deliberately its
   own commit so the move out and the shell wiring in can be read separately.
