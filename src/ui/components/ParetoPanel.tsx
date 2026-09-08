@@ -2,6 +2,7 @@ import type { PolicyConfig } from "../../contract/types";
 import type { EngineWorker } from "../state/useEngineWorker";
 import { ParetoScatter } from "../charts/ParetoScatter";
 import { ProgressBar } from "./ProgressBar";
+import { StaleNotice, panelClass, runLabel } from "./StaleNotice";
 
 const POINTS = 20;
 
@@ -30,6 +31,7 @@ function subtitleFor(mode: PolicyConfig["mode"]) {
 
 export function ParetoPanel(props: ParetoPanelProps) {
   const worker = props.worker;
+  const stale = worker.isStale("pareto", props.config);
   const running = worker.busy === "pareto";
 
   let chart = null;
@@ -56,14 +58,15 @@ export function ParetoPanel(props: ParetoPanelProps) {
   }
 
   return (
-    <section className="panel">
+    <section className={panelClass(stale)}>
       <h2 className="panel-title">Trade-off frontier — weighted-score policies</h2>
       <p className="panel-note">{subtitleFor(props.config.mode)}</p>
       <div className="compare-head">
         <button type="button" className="btn" disabled={worker.busy !== null} onClick={run}>
-          Run sweep
+          {runLabel(stale, "Run sweep")}
         </button>
       </div>
+      <StaleNotice stale={stale} />
       {progress}
       {chart}
     </section>

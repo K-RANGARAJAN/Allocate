@@ -2,6 +2,7 @@ import type { PolicyConfig } from "../../contract/types";
 import type { EngineWorker } from "../state/useEngineWorker";
 import { SensitivityBars } from "../charts/SensitivityBars";
 import { ProgressBar } from "./ProgressBar";
+import { StaleNotice, panelClass, runLabel } from "./StaleNotice";
 
 export interface SensitivityPanelProps {
   config: PolicyConfig;
@@ -12,6 +13,7 @@ export interface SensitivityPanelProps {
 // in the worker. It is never called from a control change.
 export function SensitivityPanel(props: SensitivityPanelProps) {
   const worker = props.worker;
+  const stale = worker.isStale("sensitivity", props.config);
   const running = worker.busy === "sensitivity";
 
   let body = (
@@ -51,13 +53,14 @@ export function SensitivityPanel(props: SensitivityPanelProps) {
   }
 
   return (
-    <section className="panel">
+    <section className={panelClass(stale)}>
       <h2 className="panel-title">Sensitivity</h2>
       <div className="compare-head">
         <button type="button" className="btn" disabled={worker.busy !== null} onClick={run}>
-          Run sensitivity
+          {runLabel(stale, "Run sensitivity")}
         </button>
       </div>
+      <StaleNotice stale={stale} />
       {progress}
       {body}
       {note}

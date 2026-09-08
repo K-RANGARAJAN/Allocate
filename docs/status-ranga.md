@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 17:08 IST / 45bf104
+Updated: 2026-09-08 17:18 IST / 0a3842a
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -30,6 +30,10 @@ the five-page restructure, each in the worker behind its own button.
   rate at 12, which renders your finding live: holding that line costs 5103
   life-years, 7 of 12 weightings feasible. Set it to 90 and it says no policy in
   the swept space meets the line, which is the null case as a stated result.
+- Sensitivity, Pareto and robustness now go stale when the config moves under
+  them. This was the case you flagged: run sensitivity under the locality trap,
+  click Default, and the cascade ranking used to sit there under a score-mode
+  config with nothing saying it was old.
 - `StaleNotice` and the `.panel.is-stale` state. A stale panel keeps its numbers
   on screen and dims them, rather than clearing them: they are still true of the
   policy that produced them, and what would be dishonest is letting them read as

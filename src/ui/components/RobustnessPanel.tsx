@@ -1,6 +1,7 @@
 import type { PolicyConfig, RobustnessRow } from "../../contract/types";
 import type { EngineWorker } from "../state/useEngineWorker";
 import { ProgressBar } from "./ProgressBar";
+import { StaleNotice, panelClass, runLabel } from "./StaleNotice";
 
 export interface RobustnessPanelProps {
   config: PolicyConfig;
@@ -18,6 +19,7 @@ function bandFor(row: RobustnessRow, seedCount: number) {
 
 export function RobustnessPanel(props: RobustnessPanelProps) {
   const worker = props.worker;
+  const stale = worker.isStale("robustness", props.config);
   const report = worker.robustness;
 
   let progress = null;
@@ -66,13 +68,14 @@ export function RobustnessPanel(props: RobustnessPanelProps) {
   }
 
   return (
-    <section className="panel">
+    <section className={panelClass(stale)}>
       <h2 className="panel-title">Does it survive the seed?</h2>
       <div className="compare-head">
         <button type="button" className="btn" disabled={worker.busy !== null} onClick={run}>
-          Run robustness
+          {runLabel(stale, "Run robustness")}
         </button>
       </div>
+      <StaleNotice stale={stale} />
       {progress}
       {body}
     </section>
