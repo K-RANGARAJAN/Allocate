@@ -338,7 +338,39 @@ the field is purely additive. Say if you would rather it came back out.
 
 ## In progress right now
 
-- Nothing. Task 008 is the freeze: fixes, the README, and a deployed build.
+- Nothing on the engine. Everything below is done and pushed.
+
+## Also done today
+
+- **`npm run smoke` now covers all nine exports**, not just `runSimulation`. It
+  shape-checks the three new calls at their smallest parameters, and it asserts
+  the invariants nobody can see by reading a number: that the zone equity row and
+  `regionGapPct` / `zoneGiniPct` are the same measurements, that exactly the
+  three rate metrics are marked unwindowable and carry zeros, and that the steady
+  state windows are contiguous and end on the last simulated day. It went from
+  about 1 second to 8.
+- **Gate C has a fifth check now** and it still passes. `utilityTrap` gives no
+  transplant back to anyone over 60: 73 over-60 patients lose one, 0 gain one.
+  Zero is the only number that makes that claim true, so it is asserted rather
+  than described. `scripts/demo-check.ts` also prints the age-band swap table and
+  the zone-versus-age inequality comparison.
+- **Rewrote the README.** It still described the project as it was before the
+  interface and before any of the analysis existed. It now covers the three
+  policies, what is measured, the four diagnostic scripts and what each one
+  answers, and keeps the synthetic-data disclaimer. If you were planning to
+  write it, do not - tell me what is wrong with it instead.
+- **Verified the production build in a browser, not just the dev server.** Full
+  demo path: default numbers match `npm run smoke` field for field, both presets
+  rewrite every control including mode and local-first, the Pareto gap axis
+  auto-scales to the data, sensitivity ranks donation rate first in both modes,
+  and the current point on the frontier is drawn as its own series and is
+  dominated. All four Round 4 claims hold on screen.
+- **Did not fold `scripts/robustness.ts` onto `runRobustness`.** Looked at it
+  properly and it is the wrong trade. The script's value is the paired per-seed
+  test - does this finding hold on *this* seed - which the export cannot express
+  because it aggregates one config at a time. Folding it would either double the
+  work to 120 simulations or lose the "20 of 20 seeds" line. The only duplication
+  is a ten-line min/mean/max helper. Left alone deliberately.
 
 ## Stubbed or fake, do not trust
 
