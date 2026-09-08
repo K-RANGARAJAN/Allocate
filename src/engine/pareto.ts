@@ -235,7 +235,10 @@ export function buildPareto(
       regionGapPct: metrics.regionGapPct,
       waitlistDeaths: metrics.waitlistDeaths,
       dominated: false,
-      isCurrent: false
+      isCurrent: false,
+      // The whole metric set, so a user-imposed constraint can be tested against
+      // any of them without sweeping a second time.
+      metrics
     });
   }
 

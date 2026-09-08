@@ -1,6 +1,6 @@
 # Status — Vignesh (Engine)
-Updated: 2026-09-07 22:41 IST / da3b245
-Building against contract version: 1.2.0
+Updated: 2026-09-08 09:10 IST
+Building against contract version: 1.6.0
 
 ## Public surface I currently provide
 
@@ -12,6 +12,28 @@ Building against contract version: 1.2.0
 | `runSensitivity(config)` | working |
 | `runParetoSweep(config, points)` | working |
 | `compareOutcomes(a, b, labelA?, labelB?)` | working |
+| `runRobustness(config, seeds?)` | working |
+| `runCounterfactual(baseline, scenario, labelA?, labelB?)` | working |
+| `runConstrainedFrontier(config, points, constraint, objective?)` | working |
+
+## Contract 1.6.0 — nine exports, and what is new on the Outcome
+
+Read `docs/CONTRACT.md` for the field-level detail. The short version:
+
+- **`metrics.zoneGiniPct`** — a Gini over the three zones' transplant rates.
+  `regionGapPct` reads only the widest pair and throws the third zone away; this
+  reads all three. Both are returned on purpose.
+- **`outcome.equity`** — three rows, `zone` / `ageBand` / `hospitalType`, each
+  with a Gini, a spread, and the best and worst group by name.
+- **`outcome.steadyState`** — one row per metric comparing the last 180 days
+  against the 180 before. `windowable` is false for the three rate metrics and
+  those rows must not be shown as numbers.
+- **`runRobustness`** — every metric as mean/min/max across twenty seeds, with
+  `unanimous` set when every seed agreed.
+- **`runCounterfactual`** — the individual patients transplanted under one policy
+  and dead under the other, same seed so the same people.
+- **`runConstrainedFrontier`** — the user sets a floor, this prices it.
+- **`ParetoPoint.metrics`** — the full metric set on every swept point.
 
 ## Handover — what to call and where every number lives
 
@@ -97,6 +119,46 @@ Ranga — this went in on Vignesh's approval because you had not started yet and
 the field is purely additive. Say if you would rather it came back out.
 
 ## Done since last update
+
+- **Contract 1.6.0. Three new exports and two new Outcome fields, all additive.**
+  Nothing renamed, nothing removed, nothing reordered. Every number that was on
+  screen before is unchanged — smoke still prints 1132 / 10775.4 / 1304 / 934 /
+  1135 / 38 / 10.5 / 0.86 / 1.5 / 10.2.
+- **`runSimulation` still costs what it did.** `equity` and `steadyState` are
+  aggregation over the log it already produces. No extra simulation runs.
+- **Two findings fell out of the new measures immediately.**
+
+  **Age inequality is more than ten times the regional inequality.** At the
+  default config the zone Gini is 1.9 and the age-band Gini is **22.3** — the
+  70+ band transplants at 9.5% against 26% for 18-39. This project has been
+  telling a regional-disparity story while the far larger disparity sat in the
+  age breakdown unmeasured. The locality trap is real, but it is the smaller of
+  the two inequalities in the model.
+
+  **The utility trap costs 373 people their transplant and gives 159 back — and
+  every one of the 159 is under 60.** From `runCounterfactual(default,
+  utilityTrap)`: 373 lost, 159 gained. By band, lost/gained: 18-39 70/140,
+  40-59 230/19, 60-69 **56/0**, 70+ **17/0**. Not one patient over 60 gains
+  anything under the utility preset. The longest-waiting person it drops had
+  been on the list 1516 days.
+
+- **The steady-state check says two metrics have not settled.** Comparing days
+  550-730 against 370-550 at the default config: transplants drift 0.7%, deaths
+  -0.5%, median wait -3.4%, cold ischemia and graft quality 0% — all settled.
+  But life-years gained drifts **+12%** and organs discarded **-50%**, both
+  outside the 10% tolerance. Reported, not tuned. It means a two-year window is
+  long enough for the headline counts and not quite long enough for those two.
+- **Constrained frontier, first real number: insisting the over-60 transplant
+  rate stays at or above 12% costs 5,103 life-years.** Best feasible point is
+  10,268 life-years at a 13% over-60 rate; the unconstrained best is 15,371 at
+  0%. 7 of 12 swept points are feasible. The platform names no winner — the user
+  sets the floor and this prices it.
+- **Corrected the weight slider step, 0.05 to 0.01.** 0.33 is not reachable on a
+  0.05 step, so the browser sanitised the input to 0.35 while the label printed
+  0.33 off the config. The thumb sat a notch right of its own label and the first
+  drag of any weight jumped. Contract error, not an interface one. Ranga changes
+  one number in his `Slider` call and it is gone.
+
 
 - **Every finding re-run on 20 seeds. Both headline claims hold on all 20.**
   `npx tsx scripts/robustness.ts`, about 40 seconds. This exists to answer the
@@ -293,8 +355,34 @@ the field is purely additive. Say if you would rather it came back out.
 
 ## Warnings
 
-- **Contract is 1.2.0 and there are six exports, not five.** `compareOutcomes`
-  is new and additive. Nothing existing changed.
+- **Contract is 1.6.0 and there are nine exports, not six.** All additive.
+  Nothing renamed, removed or reordered, so everything already written still
+  compiles and still shows the same numbers.
+- **`Metrics` has eleven fields now, not ten.** `zoneGiniPct` is new. If you
+  iterate `Object.keys(metrics)` anywhere, you get an extra tile. The
+  `compareOutcomes` row list has a new entry for it too, so the comparison table
+  grows by one row on its own.
+- **`ParetoPoint` carries a `metrics` object now.** Purely additive; the three
+  axis fields the chart reads are untouched.
+- **`Outcome.meta` has two new fields**, `earlyWindowDays` and `lateWindowDays`.
+- **Three `steadyState` rows return zeros and must not be rendered as numbers.**
+  `regionGapPct`, `overSixtyRatePct` and `zoneGiniPct` have `windowable: false`.
+  A rate needs a listed denominator and a window does not have an honest one.
+  Show "not applicable", or drop the row.
+- **`runRobustness` is the most expensive call on the contract — about 13
+  seconds at the default twenty seeds.** It is twenty full simulations. Worker
+  and button only, like the other two.
+- **`runCounterfactual` ignores the scenario config's seed** and forces the
+  baseline's. Different seeds would mean different synthetic people and the whole
+  comparison would be meaningless. If you show the seed anywhere, read it off
+  `report.seed`.
+- **`lost` and `gained` are capped at 100 rows.** `lostCount` and `gainedCount`
+  are the true totals. Never count the array length.
+- **`priceOfConstraint` is `null` when nothing is feasible.** That is a finding,
+  not an empty state — say that no policy in the swept space meets the line.
+- **Weight slider step is 0.01 now, not 0.05** (`docs/CONTRACT.md`). It was a
+  contract error: 0.33 is unreachable on a 0.05 step, so your slider sat at 0.35
+  while its label read 0.33.
 
 - **Contract is 1.1.0, not 1.0.0.** One field added to `Metrics`:
   `overSixtyRatePct`. Nothing else moved. Check `outcome.contractVersion` if you

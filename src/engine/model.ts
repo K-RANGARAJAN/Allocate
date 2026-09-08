@@ -46,6 +46,27 @@ export const PARETO_HEAVY_SHARE = 0.55;
 export const PARETO_BALANCED_SPREAD = 0.15;
 export const PARETO_TIE_SPREAD = 0.05;
 
+// Steady state. The run opens with a backdated waitlist clearing, which is not
+// the policy at rest, so the final window is compared against the one before it
+// rather than against the whole run. A metric that has moved less than the
+// tolerance between those two windows is reported as settled.
+export const STEADY_STATE_WINDOW_DAYS = 180;
+export const STEADY_STATE_DRIFT_TOLERANCE_PCT = 10;
+
+// Robustness. Twenty seeds is enough to say whether a finding is a property of
+// the policy or an accident of one roll, and cheap enough to run in a worker
+// while a judge is watching. These exact seeds are fixed so the answer is the
+// same every time it is asked.
+export const DEFAULT_ROBUSTNESS_SEEDS = [
+  42, 1, 7, 13, 23, 99, 101, 256, 404, 512,
+  777, 1024, 1337, 2024, 3141, 4096, 5150, 6502, 8080, 9001
+];
+
+// Counterfactual. A policy change can move hundreds of patients, and no table
+// wants hundreds of rows, so the sample is capped and the true count is
+// reported alongside it.
+export const COUNTERFACTUAL_SAMPLE_CAP = 100;
+
 // Discard reasons. Exact strings, because they reach the UI as table rows.
 export const DISCARD_NO_ELIGIBLE = "no eligible recipient";
 export const DISCARD_DECLINED = "declined by all centres";

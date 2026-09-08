@@ -1,10 +1,10 @@
-# Architecture
+﻿# Architecture
 
 ## What this is
 
 A decision-simulation and scenario-intelligence platform for kidney allocation
-policy. The user sets an allocation policy — how organs get matched to waiting
-patients — and the platform simulates two years of allocation decisions, then
+policy. The user sets an allocation policy â€” how organs get matched to waiting
+patients â€” and the platform simulates two years of allocation decisions, then
 shows what that policy cost.
 
 The thesis is that there is no correct policy. Maximise total life-years and you
@@ -14,7 +14,7 @@ naming a winner.
 
 Domain grounding: India allocates through NOTTO nationally with state bodies
 below it. Tamil Nadu (TRANSTAN) uses a cascade and a hospital rota rather than a
-score — the retrieving hospital gets first claim, and organs rotate between
+score â€” the retrieving hospital gets first claim, and organs rotate between
 participating hospitals in turn. We model both that cascade and a weighted-score
 policy, and compare them.
 
@@ -30,15 +30,21 @@ scripts/
 src/
   contract/types.ts      the shared contract, changed only by agreement
   engine/
-    index.ts             the seam, exports exactly six functions
+    index.ts             the seam, exports exactly nine functions
     rng.ts               seeded Mulberry32 generator
     population.ts        synthetic waitlist generation
     organs.ts            synthetic donor organ arrivals
     compatibility.ts     blood group, age and ischaemia matching
     simulate.ts          the day-by-day allocation loop
     metrics.ts           metrics and breakdown aggregation
+    equity.ts            Gini and spread over zones, age bands, hospital types
+    steady.ts            windowed re-reading of metrics, drift and settling
     sensitivity.ts       one-lever-at-a-time sensitivity
     pareto.ts            weight-space sweep and domination
+    frontier.ts          user-set constraints priced against the sweep
+    robustness.ts        the same config re-run across many seeds
+    counterfactual.ts    joins two event logs to find who the policy moved
+    compare.ts           two finished outcomes as one delta table
     presets.ts           named policy configurations
     policies/
       score.ts           weighted-score allocation
@@ -81,7 +87,7 @@ These are absolute.
 - No `Math.random()`. All randomness comes from `createRng` in `src/engine/rng.ts`.
 - No `Date.now()`, no `fetch`, no `localStorage`, no file I/O.
 - No DOM access, no React, no imports from `src/ui/`.
-- `src/engine/index.ts` exports exactly six functions and nothing else.
+- `src/engine/index.ts` exports exactly nine functions and nothing else.
 
 ## The interface never computes a metric
 
@@ -99,7 +105,7 @@ what keeps the two halves reviewable independently.
 
 ## Vignesh (Engine) must
 
-- Keep the six exports in `src/engine/index.ts` stable and correctly typed.
+- Keep the nine exports in `src/engine/index.ts` stable and correctly typed.
 - Keep every stub marked with a `// STUB` comment as the first line of its body.
 - Keep `npm run smoke` passing before every commit.
 - Add any metric the interface needs, rather than letting the interface derive it.
@@ -109,7 +115,7 @@ what keeps the two halves reviewable independently.
 
 - Write anything in `src/ui/`, `src/main.tsx`, `index.html` or `src/styles/`.
 - Introduce impurity: randomness outside `rng.ts`, clocks, network, storage.
-- Export anything from `src/engine/index.ts` beyond the six functions.
+- Export anything from `src/engine/index.ts` beyond the nine functions.
 
 ## Ranga (Interface) must
 

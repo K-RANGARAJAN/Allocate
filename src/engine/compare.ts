@@ -22,6 +22,7 @@ export const COMPARISON_ROWS: { metric: MetricKey; label: string; better: Metric
   { metric: "waitlistDeaths", label: "Waitlist deaths", better: "lower" },
   { metric: "overSixtyRatePct", label: "Over-60 transplant rate %", better: "neutral" },
   { metric: "regionGapPct", label: "Regional gap %", better: "lower" },
+  { metric: "zoneGiniPct", label: "Zone inequality (Gini) %", better: "lower" },
   { metric: "medianWaitDays", label: "Median wait, days", better: "lower" },
   { metric: "p90WaitDays", label: "90th percentile wait, days", better: "lower" },
   { metric: "organsDiscarded", label: "Organs discarded", better: "lower" },

@@ -12,6 +12,7 @@ import type {
   ZoneId,
   ZoneRow
 } from "../contract/types";
+import { zoneGiniPct } from "./equity";
 import {
   DISCARD_DECLINED,
   DISCARD_ISCHEMIA,
@@ -106,6 +107,7 @@ export function buildMetrics(log: SimulationLog): Metrics {
   }
 
   const count = log.transplants.length;
+  const zoneRows = buildZoneRows(log);
 
   return {
     transplants: count,
@@ -116,8 +118,9 @@ export function buildMetrics(log: SimulationLog): Metrics {
     organsDiscarded: log.discards.length,
     meanColdIschemiaHours: round1(meanOf(coldTotal, count)),
     meanGraftQuality: round2(meanOf(qualityTotal, count)),
-    regionGapPct: widestZoneGapPct(buildZoneRows(log)),
-    overSixtyRatePct: overSixtyRate(log)
+    regionGapPct: widestZoneGapPct(zoneRows),
+    overSixtyRatePct: overSixtyRate(log),
+    zoneGiniPct: zoneGiniPct(zoneRows)
   };
 }
 
@@ -138,7 +141,7 @@ function overSixtyRate(log: SimulationLog): number {
 // colours by them, so they do not change without a contract conversation.
 export const AGE_BANDS = ["18-39", "40-59", "60-69", "70+"];
 
-function ageBandOf(age: number): string {
+export function ageBandOf(age: number): string {
   if (age < 40) {
     return "18-39";
   }

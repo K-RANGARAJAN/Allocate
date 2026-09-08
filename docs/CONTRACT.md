@@ -1,6 +1,6 @@
 # Contract
 
-**Version 1.2.0**
+**Version 1.6.0**
 
 This document is the prose companion to `src/contract/types.ts`. The types file is
 the machine-readable truth. This file explains what the fields mean.
@@ -8,19 +8,26 @@ the machine-readable truth. This file explains what the fields mean.
 Neither developer changes the contract without messaging the other first. When it
 changes, `CONTRACT_VERSION` changes with it and both status files are updated.
 
-## The six-function API
+## The nine-function API
 
-`src/engine/index.ts` exports exactly these six functions and nothing else. The
+`src/engine/index.ts` exports exactly these nine functions and nothing else. The
 interface imports from this module only, never from engine internals.
 
-| Function | Returns | Purpose |
-| --- | --- | --- |
-| `defaultConfig()` | `PolicyConfig` | The baseline policy the app opens on |
-| `presets()` | `Record<string, PolicyConfig>` | Named policies, currently `utilityTrap` and `localityTrap` |
-| `runSimulation(config)` | `Outcome` | Two years of allocation under one policy |
-| `runSensitivity(config)` | `SensitivityRow[]` | One lever moved at a time, ranked by impact |
-| `runParetoSweep(config, points)` | `ParetoPoint[]` | A sweep across the weight space |
-| `compareOutcomes(baseline, scenario, baselineLabel?, scenarioLabel?)` | `ScenarioComparison` | Two finished outcomes as one delta table |
+| Function | Returns | Cost | Purpose |
+| --- | --- | --- | --- |
+| `defaultConfig()` | `PolicyConfig` | instant | The baseline policy the app opens on |
+| `presets()` | `Record<string, PolicyConfig>` | instant | Named policies, currently `utilityTrap` and `localityTrap` |
+| `runSimulation(config)` | `Outcome` | ~0.65s | Two years of allocation under one policy |
+| `runSensitivity(config)` | `SensitivityRow[]` | 10-12s | One lever moved at a time, ranked by impact |
+| `runParetoSweep(config, points)` | `ParetoPoint[]` | ~0.7s per point | A sweep across the weight space |
+| `compareOutcomes(baseline, scenario, baselineLabel?, scenarioLabel?)` | `ScenarioComparison` | instant | Two finished outcomes as one delta table |
+| `runRobustness(config, seeds?)` | `RobustnessReport` | ~13s at 20 seeds | Every metric as a range across many seeds |
+| `runCounterfactual(baseline, scenario, baselineLabel?, scenarioLabel?)` | `CounterfactualReport` | ~1.5s | The individual patients whose outcome the policy changed |
+| `runConstrainedFrontier(config, points, constraint, objective?)` | `ConstrainedFrontierReport` | one sweep | What holding a user-set constraint costs |
+
+The last three run in a worker, behind an explicit button, never on a control
+change. `runRobustness` is the most expensive call on the contract: it is one
+full simulation per seed.
 
 Functions still returning dummy data carry a `// STUB` comment as the first line
 of their body. Anything so marked is not to be trusted for judging, only for
@@ -50,9 +57,9 @@ reproducible, that is a bug in the engine, not a quirk of the model.
 
 | Control | Range | Default |
 | --- | --- | --- |
-| `weights.urgency` | 0 to 1 step 0.05 | 0.33 |
-| `weights.lifeYears` | 0 to 1 step 0.05 | 0.33 |
-| `weights.waitingTime` | 0 to 1 step 0.05 | 0.33 |
+| `weights.urgency` | 0 to 1 step 0.01 | 0.33 |
+| `weights.lifeYears` | 0 to 1 step 0.01 | 0.33 |
+| `weights.waitingTime` | 0 to 1 step 0.01 | 0.33 |
 | `constraints.maxColdIschemiaHours` | 4 to 36 step 1 | 24 |
 | `constraints.minUrgencyToList` | 0 to 10 step 1 | 2 |
 | `constraints.maxAgeToList` | 50 to 90, or null | null |
@@ -99,9 +106,103 @@ in display order, each with `before`, `after`, `delta`, `deltaPct` and
 transplanting more or fewer older patients is an improvement is the argument the
 platform refuses to settle, so it is not coloured like a score.
 
+## Equity indices
+
+`Outcome.equity` is three rows, always all three, in this order: `zone`,
+`ageBand`, `hospitalType`. Each carries a `giniPct` and a `spreadPct` over that
+dimension's transplant rates, plus the best and worst group by name.
+
+`spreadPct` is the widest gap between two groups — the same measure
+`regionGapPct` uses. `giniPct` reads every group instead of only the extremes.
+They are both returned because they disagree, and the disagreement is the point:
+a spread can sit still while a middle group moves, and the Gini will catch it.
+
+`metrics.zoneGiniPct` is the zone row's `giniPct`, lifted onto `Metrics` so it
+flows through `compareOutcomes` and `runRobustness` like every other metric. It
+is computed by the same function as the equity row, so the two can never
+disagree.
+
+## Steady state
+
+`Outcome.steadyState` answers whether a number is the policy or the opening
+backlog still clearing. The run starts with a backdated waitlist, so the early
+months are that queue draining. Each row compares the metric over the final
+180-day window against the 180 days before it. `meta.earlyWindowDays` and
+`meta.lateWindowDays` say which days those were.
+
+`stabilised` is true when the drift between windows is within 10%.
+
+**`windowable` is false for `regionGapPct`, `overSixtyRatePct` and
+`zoneGiniPct`.** Rates are measured against patients *listed*, and someone listed
+inside a window is often transplanted long after it, so a rate confined to a
+window is not a rate of anything. Those three rows return zeros and the interface
+must not display them as numbers — show "not applicable" or omit the row.
+
+## Robustness
+
+`runRobustness(config, seeds?)` re-runs the whole simulation once per seed and
+returns each metric as a mean, min and max rather than a point. Omit `seeds` for
+the fixed default set of twenty.
+
+`unanimous` is true when every seed returned the identical value. The over-60
+rate under `utilityTrap` is 0 on all twenty seeds, and that is worth saying in
+those words rather than as "mean 0".
+
+## Counterfactual
+
+`runCounterfactual(baseline, scenario)` runs both configs **at the baseline's
+seed**, whatever seed the scenario config carries. That is deliberate: the same
+seed means the same synthetic population, so a patient appearing in the result is
+one person meeting two different rules, not a statistical average.
+
+`lostCount` is patients transplanted under the baseline who died waiting under
+the scenario. `gainedCount` is the reverse. The `lost` and `gained` arrays are
+capped at `sampleCap` and sorted longest-wait first — read the counts for totals,
+never the array lengths.
+
+`byAgeBand` uses the same four band strings as `breakdowns.byAgeBand`.
+
+## Constrained frontier
+
+`runConstrainedFrontier(config, points, constraint, objective?)` sweeps once,
+then reports which swept points satisfy a constraint the **user** set.
+
+The platform names no winner here and the interface must not present `best` as a
+recommendation. The honest framing is: you said you will not go below this line,
+and here is what holding it costs. `priceOfConstraint` is that cost on the
+objective, and it is `null` when no swept point is feasible — which is itself a
+finding and should be shown as one, not as an empty chart.
+
+`objective` defaults to `lifeYearsGained`. Direction is taken from the same table
+`compareOutcomes` uses, so a "lower is better" objective is minimised correctly.
+
 ## Changelog
 
 <!-- One line per contract change: version, date, what moved, who agreed. -->
+
+1.6.0 — 2026-09-08 — added `runConstrainedFrontier` with `FrontierConstraint`
+and `ConstrainedFrontierReport`, and added `metrics: Metrics` to `ParetoPoint` so
+a constraint can be tested against any metric without sweeping twice. The three
+existing `ParetoPoint` axis fields are unchanged and still read directly by the
+chart. Agreed by Vignesh.
+
+1.5.0 — 2026-09-08 — added `runCounterfactual` with `CounterfactualReport`,
+`CounterfactualPatient` and `CounterfactualBandRow`. Both runs are forced onto
+the baseline's seed so the patients are the same people under two rules. No new
+modelling: it is a join between two existing event logs. Agreed by Vignesh.
+
+1.4.0 — 2026-09-08 — added `runRobustness` with `RobustnessReport` and
+`RobustnessRow`. Promotes what was a terminal-only script to the contract so
+every headline number can carry a range instead of a point. Agreed by Vignesh.
+
+1.3.0 — 2026-09-08 — added `Outcome.equity` (`EquityIndex`, `EquityDimension`),
+`Outcome.steadyState` (`SteadyStateRow`), `metrics.zoneGiniPct`, and
+`meta.earlyWindowDays` / `meta.lateWindowDays`. Both new Outcome fields are
+aggregation over the log `runSimulation` already produces, so its cost is
+unchanged. Also corrected the weight slider step from 0.05 to 0.01: 0.33 is not
+reachable on a 0.05 step, so the browser sanitised the input to 0.35 while the
+label read 0.33 and the first drag of any weight jumped. Additive except that
+step, which was a documentation error. Agreed by Vignesh.
 
 1.2.0 — 2026-09-07 — added a sixth export, `compareOutcomes`, with the
 `ScenarioComparison`, `MetricDelta` and `MetricDirection` types. The interface
