@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 13:54 IST / 8be3803
+Updated: 2026-09-08 14:06 IST / 5e77dbd
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -22,6 +22,13 @@ the five-page restructure, each in the worker behind its own button.
 
 ## Done since last update
 
+- **The shell is live.** `App.tsx` is now header, tabs, page claim, drawer and
+  a page body. The single dense page is gone and nothing was dropped in the
+  move — every control, metric, table and chart that existed before is still
+  reachable, and the header and controls persist across all five pages.
+- Stripped the panels that moved onto pages out of `App.tsx`. Nothing was lost:
+  each one is rendered by the page it now belongs to. This is deliberately its
+  own commit so the move out and the shell wiring in can be read separately.
 - **Pages 4 and 5.** What moves it opens with the sensitivity panel and its
   sorted bars, unchanged; robustness joins it next. Compare opens with scenario
   save, the scenario list, JSON export and the comparison table; the
