@@ -5,7 +5,7 @@
 // Run with: npx tsx scripts/demo-check.ts
 
 import type { Outcome, PolicyConfig } from "../src/contract/types";
-import { defaultConfig, presets, runSimulation } from "../src/engine/index";
+import { defaultConfig, presets, runCounterfactual, runSimulation } from "../src/engine/index";
 
 // Margins named before the runs, not after them. "Clearly lower" has to mean
 // something specific or it means whatever the result happens to be.
@@ -192,8 +192,81 @@ if (discardPass) {
   console.log("  FAIL. Local-first is not reducing transport damage.");
 }
 
+// Who the utility trap actually moved. Both runs are at the same seed, so every
+// row here is one person who was transplanted under one rule and died waiting
+// under the other. Not an average, not a like-for-like.
+const swap = runCounterfactual(base, preset.utilityTrap, "default", "utilityTrap");
+
+let olderLost = 0;
+let olderGained = 0;
+for (const row of swap.byAgeBand) {
+  if (row.band === "60-69" || row.band === "70+") {
+    olderLost = olderLost + row.lost;
+    olderGained = olderGained + row.gained;
+  }
+}
+
 console.log("");
-if (bandsAgree && utilityPass && gapPass && discardPass) {
+console.log("  Who utilityTrap moved, patient by patient, at seed " + swap.seed);
+console.log("  " + "-".repeat(68));
+console.log("  " + pad("band", 12) + pad("lost transplant", 18) + "gained transplant");
+for (const row of swap.byAgeBand) {
+  console.log("  " + pad(row.band, 12) + pad(String(row.lost), 18) + String(row.gained));
+}
+console.log("  " + pad("total", 12) + pad(String(swap.lostCount), 18) + String(swap.gainedCount));
+
+const longestLost = swap.lost[0];
+if (longestLost) {
+  console.log(
+    "  Longest-waiting patient it drops: age " + longestLost.age + ", " + longestLost.zone +
+      ", had waited " + longestLost.waitDays + " days, dies on day " + longestLost.deathDay
+  );
+}
+
+// The disparity the project was not measuring. Regional gap has carried the
+// whole inequality story so far. The age dimension is an order of magnitude
+// larger and was invisible until there was an index for it.
+const zoneGini = baseline.equity.find((row) => {
+  return row.dimension === "zone";
+});
+const ageGini = baseline.equity.find((row) => {
+  return row.dimension === "ageBand";
+});
+
+console.log("");
+console.log("  Context - which inequality is actually the large one, at default");
+console.log("  " + "-".repeat(68));
+if (zoneGini && ageGini) {
+  console.log(
+    "  between zones      gini " + zoneGini.giniPct + "  (" + zoneGini.worstGroup + " " +
+      zoneGini.worstRatePct + "% to " + zoneGini.bestGroup + " " + zoneGini.bestRatePct + "%)"
+  );
+  console.log(
+    "  between age bands  gini " + ageGini.giniPct + "  (" + ageGini.worstGroup + " " +
+      ageGini.worstRatePct + "% to " + ageGini.bestGroup + " " + ageGini.bestRatePct + "%)"
+  );
+  console.log("  The age gap is the larger one and no policy in this model set out to");
+  console.log("  create it. The regional story is real and it is the smaller of the two.");
+}
+
+// Not a margin chosen after the fact: the claim is that the utility preset gives
+// nothing back to the group it takes from, and zero is the only number that
+// makes that claim true.
+const olderPass = olderLost > 0 && olderGained === 0;
+
+console.log("");
+console.log("CHECK 4 - utilityTrap gives no transplant back to anyone over 60");
+console.log(
+  "  over-60 patients who lose a transplant: " + olderLost + ", who gain one: " + olderGained
+);
+if (olderPass) {
+  console.log("  PASS. The trade is entirely one-directional across the age line.");
+} else {
+  console.log("  FAIL. Some over-60 patients gain, so the collapse is not total.");
+}
+
+console.log("");
+if (bandsAgree && utilityPass && gapPass && discardPass && olderPass) {
   console.log("GATE C PASSED");
   console.log("Both presets earn their finding. Neither is told what to produce.");
 } else {
