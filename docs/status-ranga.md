@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 19:20 IST / 20c4137
+Updated: 2026-09-08 19:30 IST / 1e64566
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -30,6 +30,11 @@ the five-page restructure, each in the worker behind its own button.
   rate at 12, which renders your finding live: holding that line costs 5103
   life-years, 7 of 12 weightings feasible. Set it to 90 and it says no policy in
   the swept space meets the line, which is the null case as a stated result.
+- **The grid carries the notes and the disclaimer.** Verified: eleven tiles,
+  exactly five notes on the mapped metrics, six tiles with nothing, and the
+  disclaimer rendered once above the grid rather than per tile. It renders
+  whether or not any tile has an anchor, because it is what stops the two
+  numbers reading as measurements of the same thing.
 - `MetricNote` renders one citation as a muted line beneath its tile, smaller
   than the value and in soft ink, so it reads as a reference point rather than a
   second measurement of the same thing. A metric with no entry renders nothing
