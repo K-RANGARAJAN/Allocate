@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 13:44 IST / 7c417c3
+Updated: 2026-09-08 13:54 IST / 8be3803
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -22,6 +22,13 @@ the five-page restructure, each in the worker behind its own button.
 
 ## Done since last update
 
+- **Pages 4 and 5.** What moves it opens with the sensitivity panel and its
+  sorted bars, unchanged; robustness joins it next. Compare opens with scenario
+  save, the scenario list, JSON export and the comparison table; the
+  counterfactual joins it after that.
+- All five pages exist now. Nothing new is wired into them yet — this phase was
+  the shell and the move, so every panel that worked before still works and no
+  engine call changed.
 - **Page 3, Trade-offs.** Opens with the Pareto frontier exactly as it was,
   data-scaled y axis and mode-dependent subtitles untouched. The constrained
   frontier joins it once that call is wired.
