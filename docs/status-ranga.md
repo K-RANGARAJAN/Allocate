@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 20:30 IST / 123dd34
+Updated: 2026-09-08 20:52 IST / 48ba5cc
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -30,6 +30,12 @@ the five-page restructure, each in the worker behind its own button.
   rate at 12, which renders your finding live: holding that line costs 5103
   life-years, 7 of 12 weightings feasible. Set it to 90 and it says no policy in
   the swept space meets the line, which is the null case as a stated result.
+- **Explanatory hints on every control.** `src/ui/data/controlHints.ts` holds
+  the copy as static text — nothing here reads an Outcome or reacts to a result.
+  Started with priorities and constraints. The wording says what each lever
+  costs as well as what it does, which is the point of the tool: raising the
+  urgency weight sends organs to people who gain fewer years, tightening
+  local-first cuts discards and widens the regional gap.
 - **The landing page is mounted and the chrome is hidden behind it.** The header
   and the tabs are not rendered at all on home. The simulator stays mounted so
   page 1 can fade in rather than pop, but it is `visibility: hidden` and
