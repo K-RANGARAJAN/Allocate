@@ -38,3 +38,26 @@
 .metric-grid.is-running .metric-value {
   color: var(--soft-ink);
 }
+
+/* Published context beneath a tile. Deliberately quieter than the value: it is
+   a reference point, not a second reading of the same thing, and it must never
+   look like a target the simulated number is being scored against. */
+.metric-context {
+  color: var(--soft-ink);
+  font-size: var(--text-xs);
+  line-height: 1.4;
+  margin: var(--space-2) 0 0;
+}
+
+.metric-grid.is-running .metric-context {
+  opacity: 0.6;
+}
+
+/* Shown once above the grid, never per tile. */
+.context-disclaimer {
+  color: var(--soft-ink);
+  font-size: var(--text-xs);
+  line-height: 1.4;
+  margin: 0 0 var(--space-4);
+  max-width: 78ch;
+}
