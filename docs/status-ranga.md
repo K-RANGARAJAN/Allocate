@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 12:18 IST / 6c57e2b
+Updated: 2026-09-08 12:28 IST / 0198f23
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -22,6 +22,10 @@ the five-page restructure, each in the worker behind its own button.
 
 ## Done since last update
 
+- `ControlsDrawer.tsx` puts the controls in the shell rather than on a page, so
+  they are reachable from all five. It collapses, which lets a chart take the
+  full width without the reader losing sight of the policy behind it.
+- The preset buttons moved inside Priorities, next to the weights they rewrite.
 - **The controls are three collapsible groups now**: Priorities, Constraints and
   Resources, one open at a time, Priorities open on load. The old Allocation
   group is gone — the mode selector lives in the persistent header where it is

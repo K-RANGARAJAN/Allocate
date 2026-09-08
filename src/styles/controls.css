@@ -133,3 +133,26 @@
   font-size: var(--text-xs);
   margin-top: var(--space-2);
 }
+
+.drawer {
+  position: sticky;
+  top: 132px;
+  align-self: start;
+}
+
+.drawer-toggle {
+  width: 100%;
+  margin-bottom: var(--space-3);
+}
+
+.controls {
+  background: var(--panel);
+  border: var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-panel);
+  padding: 0 var(--space-4);
+}
+
+.controls .group:last-child {
+  border-bottom: none;
+}

@@ -5,6 +5,7 @@ import type { PolicyConfig, ZoneId } from "../../contract/types";
 import { CollapsibleGroup } from "./CollapsibleGroup";
 import { Select } from "./Select";
 import { NumberField } from "./NumberField";
+import { PresetButtons } from "./PresetButtons";
 import { Slider } from "./Slider";
 import { Toggle } from "./Toggle";
 
@@ -122,18 +123,17 @@ export function ControlsPanel(props: ControlsPanelProps) {
   }
 
   return (
-    <section className="panel controls">
-      <h2 className="panel-title">Policy</h2>
-      <p className="panel-note">
-        Weights need not sum to 1. The engine normalises them before scoring, so
-        three equal values mean an equal split.
-      </p>
-
+    <section className="controls">
       <CollapsibleGroup
         title="Priorities"
         open={open === "priorities"}
         onToggle={() => toggle("priorities")}
       >
+        <PresetButtons onPick={props.setConfig} />
+        <p className="panel-note">
+          Weights need not sum to 1. The engine normalises them before scoring,
+          so three equal values mean an equal split.
+        </p>
         <Slider
           label="Urgency"
           value={config.weights.urgency}
