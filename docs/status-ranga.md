@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 11:00 IST / 29b35eb
+Updated: 2026-09-08 11:08 IST / 4a93770
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -22,6 +22,8 @@ the five-page restructure, each in the worker behind its own button.
 
 ## Done since last update
 
+- `PageNav.tsx` is the five-tab navigation, with the active tab underlined in
+  teal and each page's one claim rendered beneath it.
 - `src/styles/shell.css` styles the persistent header: the headline figure, the
   secondary row beside it, and the activity dot. The dot is deliberately not a
   spinner and not an overlay — it pulses in the corner while a run is in flight
