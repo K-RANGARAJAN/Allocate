@@ -10,6 +10,7 @@ import "./styles/metrics.css";
 import "./styles/tables.css";
 import "./styles/comparison.css";
 import "./styles/equity.css";
+import "./styles/animation.css";
 
 const container = document.getElementById("root");
 if (container === null) {

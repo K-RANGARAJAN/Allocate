@@ -2,6 +2,9 @@ import type { Dispatch, SetStateAction } from "react";
 
 import type { MetricKey, Outcome, PolicyConfig } from "../../contract/types";
 import { labelFor } from "../metricList";
+import type { MotionTier } from "../state/useMotion";
+import { usePrefersReducedMotion } from "../state/useMotion";
+import { CountUp } from "./CountUp";
 import { MODE_OPTIONS } from "./ControlsPanel";
 import { Select } from "./Select";
 
@@ -14,16 +17,28 @@ const SECONDARY: MetricKey[] = [
 export interface AppHeaderProps {
   outcome: Outcome | null;
   running: boolean;
+  tier: MotionTier;
   config: PolicyConfig;
   setConfig: Dispatch<SetStateAction<PolicyConfig>>;
 }
 
 export function AppHeader(props: AppHeaderProps) {
   const outcome = props.outcome;
+  const reduced = usePrefersReducedMotion();
+
+  let countUp = false;
+  if (props.tier === "full" && reduced === false) {
+    countUp = true;
+  }
 
   let dot = null;
   if (props.running) {
     dot = <span className="activity-dot" title="Running a simulation" />;
+  }
+
+  let stagger = "";
+  if (countUp) {
+    stagger = "fade-in-stagger";
   }
 
   let headline = null;
@@ -32,14 +47,17 @@ export function AppHeader(props: AppHeaderProps) {
     headline = (
       <div>
         <div className="headline-label">{labelFor(outcome, "transplants")}</div>
-        <div className="headline-value">{outcome.metrics.transplants}</div>
+        <div className="headline-value">
+          <CountUp value={outcome.metrics.transplants} animate={countUp} />
+        </div>
       </div>
     );
+    // Staggered behind the headline on full motion only.
     secondary = (
       <div className="secondary-row">
         {SECONDARY.map((key) => {
           return (
-            <div key={key}>
+            <div key={key} className={stagger}>
               <div className="headline-label">{labelFor(outcome, key)}</div>
               <div className="secondary-value">{outcome.metrics[key]}</div>
             </div>

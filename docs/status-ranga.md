@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 18:16 IST / 5cbfed4
+Updated: 2026-09-08 18:28 IST / 36c8f7c
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -30,6 +30,12 @@ the five-page restructure, each in the worker behind its own button.
   rate at 12, which renders your finding live: holding that line costs 5103
   life-years, 7 of 12 weightings feasible. Set it to 90 and it says no policy in
   the swept space meets the line, which is the null case as a stated result.
+- **Animation is in.** Full tier on first load and preset clicks: the headline
+  counts up over 600ms and the three secondary figures rise in 80ms apart behind
+  it. Quiet tier on every slider-driven run: numbers swap directly, no count-up,
+  no stagger. A page switch animates nothing — switching tabs is navigation, not
+  a result changing. `prefers-reduced-motion` skips both tiers, and the CSS also
+  stills the activity dot and the progress stripe for the same reader.
 - **The two tiers are routed by which setter the change came through.** A preset
   replaces the whole config and goes through `setWholeConfig`, which asks for
   full motion; every other edit goes through `setConfig` and stays quiet. That

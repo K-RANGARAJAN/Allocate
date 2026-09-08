@@ -65,6 +65,7 @@ export function App() {
         <AppHeader
           outcome={run.outcome}
           running={run.running}
+          tier={run.tier}
           config={run.config}
           setConfig={run.setConfig}
         />
