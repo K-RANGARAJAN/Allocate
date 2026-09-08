@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 21:50 IST / 3abb6fd
+Updated: 2026-09-08 22:02 IST / a148250
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -30,6 +30,10 @@ the five-page restructure, each in the worker behind its own button.
   rate at 12, which renders your finding live: holding that line costs 5103
   life-years, 7 of 12 weightings feasible. Set it to 90 and it says no policy in
   the swept space meets the line, which is the null case as a stated result.
+- **Every control in the drawer now carries a hint, plus the presets heading and
+  the mode selector in the header.** All nineteen keys are wired and none is
+  orphaned. Only four icons render at rest because a collapsed group does not
+  render its children at all — they appear as each group opens.
 - All four control primitives take an optional `hint` key. A control without
   copy renders no icon at all, rather than an empty circle.
 - Dropped `NumberField`'s old inline note while doing it. It collided with the

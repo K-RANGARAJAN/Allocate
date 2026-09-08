@@ -1,4 +1,5 @@
 import { defaultConfig, presets } from "../../engine/index";
+import { ControlHint } from "./ControlHint";
 import type { PolicyConfig } from "../../contract/types";
 
 // presets() is instant, and it hands back whole PolicyConfig objects. Picking
@@ -28,7 +29,10 @@ export function PresetButtons(props: PresetButtonsProps) {
 
   return (
     <div className="presets">
-      <span className="label">Presets</span>
+      <span className="label">
+        Presets
+        <ControlHint hint="presets" />
+      </span>
       <div className="preset-row">
         <button
           type="button"

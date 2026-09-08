@@ -82,6 +82,7 @@ export function AppHeader(props: AppHeaderProps) {
       <div className="header-mode">
         <Select
           label="Allocation mode"
+          hint="mode"
           value={props.config.mode}
           options={MODE_OPTIONS}
           onChange={setMode}

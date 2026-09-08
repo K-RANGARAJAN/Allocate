@@ -114,6 +114,7 @@ export function ControlsPanel(props: ControlsPanelProps) {
     ageSlider = (
       <Slider
         label="Upper age to list"
+          hint="maxAgeToList"
         value={maxAge}
         min={50}
         max={90}
@@ -137,6 +138,7 @@ export function ControlsPanel(props: ControlsPanelProps) {
         </p>
         <Slider
           label="Urgency"
+          hint="weights.urgency"
           value={config.weights.urgency}
           min={0}
           max={1}
@@ -145,6 +147,7 @@ export function ControlsPanel(props: ControlsPanelProps) {
         />
         <Slider
           label="Life-years"
+          hint="weights.lifeYears"
           value={config.weights.lifeYears}
           min={0}
           max={1}
@@ -153,6 +156,7 @@ export function ControlsPanel(props: ControlsPanelProps) {
         />
         <Slider
           label="Waiting time"
+          hint="weights.waitingTime"
           value={config.weights.waitingTime}
           min={0}
           max={1}
@@ -168,6 +172,7 @@ export function ControlsPanel(props: ControlsPanelProps) {
       >
         <Select
           label="Local first"
+          hint="localFirst"
           value={config.constraints.localFirst}
           options={LOCAL_FIRST_OPTIONS}
           onChange={(next) =>
@@ -176,6 +181,7 @@ export function ControlsPanel(props: ControlsPanelProps) {
         />
         <Slider
           label="Max cold ischemia"
+          hint="maxColdIschemiaHours"
           value={config.constraints.maxColdIschemiaHours}
           min={4}
           max={36}
@@ -185,6 +191,7 @@ export function ControlsPanel(props: ControlsPanelProps) {
         />
         <Slider
           label="Minimum urgency to list"
+          hint="minUrgencyToList"
           value={config.constraints.minUrgencyToList}
           min={0}
           max={10}
@@ -193,6 +200,7 @@ export function ControlsPanel(props: ControlsPanelProps) {
         />
         <Slider
           label="Retrieval hospital keeps"
+          hint="retrievalHospitalKeeps"
           value={config.constraints.retrievalHospitalKeeps}
           min={0}
           max={2}
@@ -201,21 +209,25 @@ export function ControlsPanel(props: ControlsPanelProps) {
         />
         <Toggle
           label="Age matching"
+          hint="ageMatchingOn"
           checked={config.constraints.ageMatchingOn}
           onChange={(next) => setConstraint("ageMatchingOn", next)}
         />
         <Toggle
           label="Hospital rota"
+          hint="rotaEnabled"
           checked={config.constraints.rotaEnabled}
           onChange={(next) => setConstraint("rotaEnabled", next)}
         />
         <Toggle
           label="Urgent supersedes rota"
+          hint="urgentSupersedesRota"
           checked={config.constraints.urgentSupersedesRota}
           onChange={(next) => setConstraint("urgentSupersedesRota", next)}
         />
         <Toggle
           label="Upper age limit on listing"
+          hint="maxAgeToList"
           checked={ageLimitOn}
           onChange={toggleAgeLimit}
         />
@@ -229,6 +241,7 @@ export function ControlsPanel(props: ControlsPanelProps) {
       >
         <Slider
           label="Donation rate"
+          hint="donationRateMultiplier"
           value={config.resources.donationRateMultiplier}
           min={0.5}
           max={3}
@@ -238,6 +251,7 @@ export function ControlsPanel(props: ControlsPanelProps) {
         />
         <Slider
           label="Centres, north"
+          hint="transplantCentresPerZone"
           value={config.resources.transplantCentresPerZone.north}
           min={1}
           max={15}
@@ -246,6 +260,7 @@ export function ControlsPanel(props: ControlsPanelProps) {
         />
         <Slider
           label="Centres, south"
+          hint="transplantCentresPerZone"
           value={config.resources.transplantCentresPerZone.south}
           min={1}
           max={15}
@@ -254,6 +269,7 @@ export function ControlsPanel(props: ControlsPanelProps) {
         />
         <Slider
           label="Centres, west"
+          hint="transplantCentresPerZone"
           value={config.resources.transplantCentresPerZone.west}
           min={1}
           max={15}
@@ -262,6 +278,7 @@ export function ControlsPanel(props: ControlsPanelProps) {
         />
         <Slider
           label="Run length"
+          hint="sim.durationDays"
           value={config.sim.durationDays}
           min={90}
           max={1460}
@@ -271,6 +288,7 @@ export function ControlsPanel(props: ControlsPanelProps) {
         />
         <Slider
           label="Initial waitlist"
+          hint="sim.initialWaitlistSize"
           value={config.sim.initialWaitlistSize}
           min={0}
           max={5000}
@@ -279,6 +297,7 @@ export function ControlsPanel(props: ControlsPanelProps) {
         />
         <NumberField
           label="Seed"
+          hint="sim.seed"
           value={config.sim.seed}
           min={1}
           max={999999}
@@ -286,6 +305,7 @@ export function ControlsPanel(props: ControlsPanelProps) {
         />
         <Slider
           label="New listings per day"
+          hint="sim.newListingsPerDay"
           value={config.sim.newListingsPerDay}
           min={0}
           max={20}
