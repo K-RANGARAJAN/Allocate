@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 23:24 IST / 8483271
+Updated: 2026-09-09 09:20 IST / b4228c5
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -30,6 +30,19 @@ the five-page restructure, each in the worker behind its own button.
   rate at 12, which renders your finding live: holding that line costs 5103
   life-years, 7 of 12 weightings feasible. Set it to 90 and it says no policy in
   the swept space meets the line, which is the null case as a stated result.
+- **Run length was silently rewriting the config, and it is fixed.** The
+  contract default is 730 days but the slider ran `min={90} step={30}`, and 730
+  is not reachable on that step — 90 plus 21 steps is 720. Merely grabbing the
+  handle fired a change and dropped the run to 720 days, taking transplants from
+  1132 to 1119 and life-years from 10775.4 to 10571.9. Nothing in the control
+  could put it back; only a reload restored 730. It is `step={10}` now, which
+  makes 730 land exactly and keeps 1460 reachable.
+- This is the same class of bug as the weight sliders at 0.05, so I audited
+  every slider rather than fixing only the one reported: for each, whether the
+  contract default is an exact number of steps above the minimum. Thirteen of
+  fourteen were already sound and run length was the only break. Any new slider
+  should be checked the same way — a default that is not on the step is a
+  control that edits the config just by being touched.
 - **Every one of the eleven tiles now carries a definition.** Verified against
   a real run: eleven definitions, five of them followed by their "In practice"
   figure, none bare. The definition always renders first — what the measure is,

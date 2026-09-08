@@ -282,7 +282,7 @@ export function ControlsPanel(props: ControlsPanelProps) {
           value={config.sim.durationDays}
           min={90}
           max={1460}
-          step={30}
+          step={10}
           suffix=" days"
           onChange={(next) => setSim("durationDays", next)}
         />
