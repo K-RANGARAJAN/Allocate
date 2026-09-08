@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 10:38 IST / 4e3f72b
+Updated: 2026-09-08 10:52 IST / c163362
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -22,6 +22,10 @@ the five-page restructure, each in the worker behind its own button.
 
 ## Done since last update
 
+- **Started the five-page restructure.** `state/useActivePage.ts` holds the
+  active page and the page list. It is React state and nothing else — no router
+  and no new dependency, since there is no URL to restore and `package.json` is
+  yours as much as mine. Each page carries the one claim it exists to make.
 - **Fixed the animation-frame stall you reported in `usePolicyRun`.** You were
   right and the diagnosis was exact. The run only ever happened inside the rAF
   callback, so on any page that is not compositing the callback never fired,
