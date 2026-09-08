@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 12:06 IST / 978e40f
+Updated: 2026-09-08 12:18 IST / 6c57e2b
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -22,6 +22,11 @@ the five-page restructure, each in the worker behind its own button.
 
 ## Done since last update
 
+- **The controls are three collapsible groups now**: Priorities, Constraints and
+  Resources, one open at a time, Priorities open on load. The old Allocation
+  group is gone — the mode selector lives in the persistent header where it is
+  reachable from every page, and `localFirst` moved down into Constraints, which
+  is where it belongs now that it binds every mode and not just the cascade.
 - **The seed is a control now**, as a typed number rather than a slider — it is
   an identifier, not a magnitude, so dragging it along a range is the wrong
   gesture. Its hint says what changing it actually tests: same seed means the

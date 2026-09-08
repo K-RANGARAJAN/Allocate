@@ -1,6 +1,8 @@
+import { useState } from "react";
 import type { Dispatch, SetStateAction } from "react";
 
 import type { PolicyConfig, ZoneId } from "../../contract/types";
+import { CollapsibleGroup } from "./CollapsibleGroup";
 import { Select } from "./Select";
 import { NumberField } from "./NumberField";
 import { Slider } from "./Slider";
@@ -28,8 +30,20 @@ const LOCAL_FIRST_OPTIONS = [
 
 // The policy panel. Every control is seeded from the live config, which starts
 // as defaultConfig(). Ranges come from docs/CONTRACT.md.
+type GroupId = "priorities" | "constraints" | "resources" | "none";
+
 export function ControlsPanel(props: ControlsPanelProps) {
   const config = props.config;
+  const [open, setOpen] = useState<GroupId>("priorities");
+
+  function toggle(group: GroupId) {
+    setOpen((prev) => {
+      if (prev === group) {
+        return "none";
+      }
+      return group;
+    });
+  }
 
   function setWeight(key: WeightKey, value: number) {
     props.setConfig((prev) => {
@@ -87,12 +101,6 @@ export function ControlsPanel(props: ControlsPanelProps) {
     setConstraint("maxAgeToList", null);
   }
 
-  function setMode(next: string) {
-    props.setConfig((prev) => {
-      return { ...prev, mode: next as PolicyConfig["mode"] };
-    });
-  }
-
   const maxAge = config.constraints.maxAgeToList;
   let ageLimitOn = false;
   if (maxAge !== null) {
@@ -121,8 +129,11 @@ export function ControlsPanel(props: ControlsPanelProps) {
         three equal values mean an equal split.
       </p>
 
-      <div className="control-group">
-        <span className="label">Scoring weights</span>
+      <CollapsibleGroup
+        title="Priorities"
+        open={open === "priorities"}
+        onToggle={() => toggle("priorities")}
+      >
         <Slider
           label="Urgency"
           value={config.weights.urgency}
@@ -147,16 +158,13 @@ export function ControlsPanel(props: ControlsPanelProps) {
           step={0.01}
           onChange={(next) => setWeight("waitingTime", next)}
         />
-      </div>
+      </CollapsibleGroup>
 
-      <div className="control-group">
-        <span className="label">Allocation</span>
-        <Select
-          label="Mode"
-          value={config.mode}
-          options={MODE_OPTIONS}
-          onChange={setMode}
-        />
+      <CollapsibleGroup
+        title="Constraints"
+        open={open === "constraints"}
+        onToggle={() => toggle("constraints")}
+      >
         <Select
           label="Local first"
           value={config.constraints.localFirst}
@@ -165,10 +173,6 @@ export function ControlsPanel(props: ControlsPanelProps) {
             setConstraint("localFirst", next as Constraints["localFirst"])
           }
         />
-      </div>
-
-      <div className="control-group">
-        <span className="label">Constraints</span>
         <Slider
           label="Max cold ischemia"
           value={config.constraints.maxColdIschemiaHours}
@@ -215,10 +219,13 @@ export function ControlsPanel(props: ControlsPanelProps) {
           onChange={toggleAgeLimit}
         />
         {ageSlider}
-      </div>
+      </CollapsibleGroup>
 
-      <div className="control-group">
-        <span className="label">Resources</span>
+      <CollapsibleGroup
+        title="Resources"
+        open={open === "resources"}
+        onToggle={() => toggle("resources")}
+      >
         <Slider
           label="Donation rate"
           value={config.resources.donationRateMultiplier}
@@ -285,7 +292,7 @@ export function ControlsPanel(props: ControlsPanelProps) {
           step={1}
           onChange={(next) => setSim("newListingsPerDay", next)}
         />
-      </div>
+      </CollapsibleGroup>
     </section>
   );
 }
