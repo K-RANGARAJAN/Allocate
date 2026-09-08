@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 15:28 IST / 73d7851
+Updated: 2026-09-08 15:42 IST / 8bf40fb
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -26,6 +26,13 @@ the five-page restructure, each in the worker behind its own button.
   a page body. The single dense page is gone and nothing was dropped in the
   move — every control, metric, table and chart that existed before is still
   reachable, and the header and controls persist across all five pages.
+- **Counterfactual headline and band table.** `lostCount` and `gainedCount` are
+  the headline figures and the capped arrays are never counted — their length is
+  not a total and using it would be both wrong and arithmetic on my side. The
+  seed shown is `report.seed`, the baseline's own, which the engine forces so
+  both worlds hold the same synthetic people; the scenario config's seed is
+  never displayed beside a counterfactual. Direction is stated in words, so a
+  reader never has to guess which policy lost and which gained.
 - **Robustness is wired, on page 4 under sensitivity.** A `unanimous` row is
   rendered as "0 on all 20 seeds" with no mean shown at all, because it is not
   an average and printing "mean 0" would throw away the point. Other rows read

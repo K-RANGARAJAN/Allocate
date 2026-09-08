@@ -50,3 +50,20 @@
   font-size: var(--text-xs);
   margin: var(--space-3) 0 0;
 }
+
+.cf-headline {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-5);
+  margin-bottom: var(--space-5);
+}
+
+.cf-headline .headline-value {
+  color: var(--burnt-orange);
+}
+
+.cf-sample {
+  color: var(--soft-ink);
+  font-size: var(--text-xs);
+  margin: var(--space-4) 0 var(--space-2);
+}
