@@ -1,7 +1,9 @@
+import type { CSSProperties } from "react";
+
 // Abstract and medical-adjacent: an ECG-style trace across the lower third and
 // a sparse network of nodes and thin links standing for hospitals and the
 // movement of organs between them. Inline SVG, no image files and no external
-// assets. Nothing anatomical — the subject is allocation policy, not surgery.
+// assets. Nothing anatomical â€” the subject is allocation policy, not surgery.
 const NODES = [
   [140, 120],
   [330, 78],
@@ -45,8 +47,8 @@ export function HomeBackground() {
       aria-hidden="true"
       focusable="false"
     >
-      <g stroke="#DFE1E4" strokeWidth="1" fill="none">
-        {LINKS.map((link) => {
+      <g className="bg-links" stroke="#DFE1E4" strokeWidth="1" fill="none">
+        {LINKS.map((link, index) => {
           const a = NODES[link[0]];
           const b = NODES[link[1]];
           return (
@@ -56,20 +58,47 @@ export function HomeBackground() {
               y1={a[1]}
               x2={b[0]}
               y2={b[1]}
+              // Staggered so the network breathes in a wave rather than pulsing
+              // as one block, which would read as a flash.
+              style={{ animationDelay: `${index * 320}ms` }}
             />
           );
         })}
       </g>
 
-      <g fill="#2F5D62" opacity="0.28">
-        {NODES.map((node) => {
-          return <circle key={`${node[0]}-${node[1]}`} cx={node[0]} cy={node[1]} r="4" />;
+      <g fill="#2F5D62">
+        {NODES.map((node, index) => {
+          return (
+            <circle
+              key={`${node[0]}-${node[1]}`}
+              className="bg-node"
+              cx={node[0]}
+              cy={node[1]}
+              r="4"
+              opacity="0.28"
+              style={{ animationDelay: `${index * 430}ms` }}
+            />
+          );
         })}
       </g>
 
       <g stroke="#DFE1E4" strokeWidth="1.5" fill="none" opacity="0.9">
         {beats.map((beat) => {
-          return <path key={beat} d={`M ${beat * 300 - 20} 410 ${BEAT}`} />;
+          return (
+            <path
+              key={beat}
+              className="bg-trace"
+              d={`M ${beat * 300 - 20} 410 ${BEAT}`}
+              // The dash length only has to exceed the real path length for the
+              // draw-on to start fully hidden. 320 comfortably covers one beat.
+              style={
+                {
+                  "--trace-len": "320",
+                  animationDelay: `${beat * 420}ms`
+                } as CSSProperties
+              }
+            />
+          );
         })}
       </g>
     </svg>
