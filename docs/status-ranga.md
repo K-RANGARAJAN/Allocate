@@ -1,6 +1,6 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 03:06 IST / 0b54e53
-Building against contract version: 1.2.0
+Updated: 2026-09-08 10:22 IST / 20af5a6
+Building against contract version: 1.6.0
 
 ## Public surface I currently provide
 
@@ -12,11 +12,24 @@ Building against contract version: 1.2.0
 | `runSensitivity(config)` | working |
 | `runParetoSweep(config, points)` | working |
 | `compareOutcomes(baseline, scenario, ...)` | working |
+| `runRobustness(config, seeds?)` | not started |
+| `runCounterfactual(baseline, scenario, ...)` | not started |
+| `runConstrainedFrontier(config, points, constraint, ...)` | not started |
 
-`working` means the call is wired and its result is on screen. All six are.
-The two long calls run in a Web Worker behind their own button.
+`working` means the call is wired and its result is on screen. The first six
+are. The three added at 1.4.0 through 1.6.0 are not wired yet; they land during
+the five-page restructure, each in the worker behind its own button.
 
 ## Done since last update
+
+- **Now building against contract 1.6.0**, starting from `20af5a6`. Verified
+  nine exports, eleven `Metrics` fields, and the new `equity` and `steadyState`
+  fields against a live run before writing anything.
+- **Renamed the metric grid's `is-stale` state to `is-running`.** The two ideas
+  had one name. The grid reads off the debounced `Outcome`, so it is dimmed only
+  while a run is in flight and can never hold a result from a config that is no
+  longer live. `is-stale` is being freed up to mean exactly that, for the five
+  expensive panels whose results do not re-run on a config change.
 
 - All six exports are now wired and the interface is feature complete against
   contract 1.2.0.
@@ -175,6 +188,12 @@ The two long calls run in a Web Worker behind their own button.
   not on the `Outcome` rather than working it out on my side.
 
 ## Warnings
+
+- **`is-stale` no longer means what it did.** It is reserved for a result that
+  came from a config that is no longer live — the five expensive panels, which
+  do not re-run when a control moves. A panel dimmed while its own run is in
+  flight is `is-running` instead. Nothing on screen carries `is-stale` yet; it
+  arrives with the restructure.
 
 - **`runSensitivity` and `runParetoSweep` are called only from `src/ui/worker.ts`,
   never on the main thread and never from a control change.** `runSimulation` is

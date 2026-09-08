@@ -32,7 +32,9 @@
   line-height: 1;
 }
 
-/* Dimmed while a run is in flight, so a stale number never reads as current. */
-.metric-grid.is-stale .metric-value {
+/* Dimmed while a run is in flight. This is `is-running`, not `is-stale`: the
+   grid reads off the debounced Outcome and can never belong to a config that is
+   no longer live. `is-stale` means that, and belongs to the expensive panels. */
+.metric-grid.is-running .metric-value {
   color: var(--soft-ink);
 }

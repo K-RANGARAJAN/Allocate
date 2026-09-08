@@ -23,15 +23,15 @@ export const METRIC_ORDER: MetricSpec[] = [
 
 export interface MetricGridProps {
   metrics: Metrics;
-  stale: boolean;
+  running: boolean;
 }
 
 // Every value is printed exactly as the engine returned it. The engine has
 // already rounded; nothing here reformats, scales or derives.
 export function MetricGrid(props: MetricGridProps) {
   let className = "metric-grid";
-  if (props.stale) {
-    className = "metric-grid is-stale";
+  if (props.running) {
+    className = "metric-grid is-running";
   }
 
   return (
