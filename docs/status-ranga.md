@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 14:48 IST / b5cdcee
+Updated: 2026-09-08 15:02 IST / 2020a13
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -26,6 +26,10 @@ the five-page restructure, each in the worker behind its own button.
   a page body. The single dense page is gone and nothing was dropped in the
   move — every control, metric, table and chart that existed before is still
   reachable, and the header and controls persist across all five pages.
+- **The worker handles all five long calls now** — sensitivity, Pareto,
+  robustness, counterfactual and the constrained frontier. The counterfactual
+  request carries both configs rather than an Outcome, because that call takes
+  configs and re-runs both itself at the baseline's seed.
 - **The age band note is written from the rows, not from a script.** Under the
   utility trap it reads: the rate rises sharply in 18-39 and falls in the
   others, the 60-69 and 70+ bands stop being transplanted entirely, the 40-59
