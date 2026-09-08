@@ -404,6 +404,15 @@ the field is purely additive. Say if you would rather it came back out.
   the new fields on screen because of it - the UI is unverified against 1.6.0
   visually, though it builds clean and the engine returns correct values.
 
+- **`MetricGrid` hardcodes its metric list and so is missing `zoneGiniPct`.**
+  Verified on the production build: the engine returns 11 metrics, and
+  `compareOutcomes` returns 11 rows including "Zone inequality (Gini) %", but
+  the grid renders 10 tiles and the Gini is not among them. Your comparison
+  table picks it up on its own and renders all 11 correctly, so that one
+  genuinely derives from the rows I return - the grid has its own copy of the
+  list. Add the eleventh, or derive it the way the table does and it will never
+  drift again.
+
 - Nothing else blocking. Your status file is still the empty template — fill in what
   you have wired so I know what is actually being called.
 - Tell me the moment you want a number that is not on the `Outcome`. I will add
