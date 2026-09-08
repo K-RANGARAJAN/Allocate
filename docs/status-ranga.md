@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 16:04 IST / 2927544
+Updated: 2026-09-08 16:18 IST / f0d114d
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -26,6 +26,13 @@ the five-page restructure, each in the worker behind its own button.
   a page body. The single dense page is gone and nothing was dropped in the
   move — every control, metric, table and chart that existed before is still
   reachable, and the header and controls persist across all five pages.
+- **Counterfactual verified against your run and it agrees exactly.** Default
+  against utilityTrap: 373 lost, 159 gained, seed 42. By band, lost/gained —
+  18-39 70/140, 40-59 230/19, 60-69 56/0, 70+ 17/0. Not one patient over 60
+  gains anything, which is the page's headline.
+- **Saved scenarios carry their weights now**, and the generated label is the
+  placeholder in a name field so the user can type their own. Two score-mode
+  scenarios used to be indistinguishable.
 - `CounterfactualSection` runs the call in the worker behind its own button and
   is disabled until a baseline scenario is chosen, since the comparison has no
   meaning without two named policies. It passes `baseline.outcome.config` rather

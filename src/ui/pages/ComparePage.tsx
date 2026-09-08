@@ -1,16 +1,43 @@
-import type { Outcome } from "../../contract/types";
-import type { ScenarioStore } from "../state/useScenarios";
+import { useState } from "react";
+
+import type { Outcome, PolicyConfig } from "../../contract/types";
+import type { EngineWorker } from "../state/useEngineWorker";
+import type { Scenario, ScenarioStore } from "../state/useScenarios";
+import { CounterfactualSection } from "../components/CounterfactualSection";
 import { ScenarioPanel } from "../components/ScenarioPanel";
 
 export interface ComparePageProps {
   outcome: Outcome;
+  config: PolicyConfig;
   store: ScenarioStore;
+  worker: EngineWorker;
 }
 
+// The baseline lives here because both panels read it: the comparison table
+// and the counterfactual must be talking about the same saved policy.
 export function ComparePage(props: ComparePageProps) {
+  const [baselineId, setBaselineId] = useState<number | null>(null);
+
+  let baseline: Scenario | null = null;
+  for (const one of props.store.scenarios) {
+    if (one.id === baselineId) {
+      baseline = one;
+    }
+  }
+
   return (
     <div className="stack">
-      <ScenarioPanel outcome={props.outcome} store={props.store} />
+      <ScenarioPanel
+        outcome={props.outcome}
+        store={props.store}
+        baselineId={baselineId}
+        setBaselineId={setBaselineId}
+      />
+      <CounterfactualSection
+        baseline={baseline}
+        config={props.config}
+        worker={props.worker}
+      />
     </div>
   );
 }

@@ -10,9 +10,18 @@ export interface Scenario {
 
 export interface ScenarioStore {
   scenarios: Scenario[];
-  save: (outcome: Outcome) => void;
+  save: (outcome: Outcome, name: string) => void;
   remove: (id: number) => void;
   exportJson: () => void;
+}
+
+// Two score-mode scenarios used to be indistinguishable, both reading
+// "Scenario 1 · score". The weights are what the user actually changed, so they
+// belong in the name. Everything is read off the config echoed back on the
+// Outcome rather than live control state, which may already have moved on.
+export function generatedLabel(outcome: Outcome, id: number) {
+  const w = outcome.config.weights;
+  return `${id}. ${outcome.config.mode} ${w.urgency}/${w.lifeYears}/${w.waitingTime}`;
 }
 
 // Scenarios live in memory for the session and leave as JSON. There is no
@@ -21,13 +30,15 @@ export function useScenarios(): ScenarioStore {
   const [scenarios, setScenarios] = useState<Scenario[]>([]);
   const nextId = useRef(1);
 
-  function save(outcome: Outcome) {
+  function save(outcome: Outcome, name: string) {
     const id = nextId.current;
     nextId.current = id + 1;
 
-    // The label reads the config echoed back on the Outcome rather than live
-    // control state, which may already have moved on.
-    const label = `Scenario ${id} · ${outcome.config.mode}`;
+    let label = name.trim();
+    if (label.length === 0) {
+      label = generatedLabel(outcome, id);
+    }
+
     const scenario = { id, label, outcome };
     setScenarios((prev) => [...prev, scenario]);
   }

@@ -2,17 +2,20 @@ import { useState } from "react";
 
 import { compareOutcomes } from "../../engine/index";
 import type { Outcome } from "../../contract/types";
-import type { ScenarioStore } from "../state/useScenarios";
+import { generatedLabel, type ScenarioStore } from "../state/useScenarios";
 import { ComparisonTable } from "./ComparisonTable";
 
 export interface ScenarioPanelProps {
   outcome: Outcome;
   store: ScenarioStore;
+  baselineId: number | null;
+  setBaselineId: (next: number | null) => void;
 }
 
 export function ScenarioPanel(props: ScenarioPanelProps) {
-  const [baselineId, setBaselineId] = useState<number | null>(null);
+  const [name, setName] = useState("");
   const scenarios = props.store.scenarios;
+  const baselineId = props.baselineId;
 
   let baseline = null;
   for (const one of scenarios) {
@@ -42,7 +45,21 @@ export function ScenarioPanel(props: ScenarioPanelProps) {
     <section className="panel">
       <h2 className="panel-title">Scenarios</h2>
       <div className="compare-head">
-        <button type="button" className="btn" onClick={() => props.store.save(props.outcome)}>
+        <input
+          className="control-number"
+          type="text"
+          value={name}
+          placeholder={generatedLabel(props.outcome, scenarios.length + 1)}
+          onChange={(event) => setName(event.target.value)}
+        />
+        <button
+          type="button"
+          className="btn"
+          onClick={() => {
+            props.store.save(props.outcome, name);
+            setName("");
+          }}
+        >
           Save current
         </button>
         <button
@@ -56,7 +73,7 @@ export function ScenarioPanel(props: ScenarioPanelProps) {
         {scenarios.map((one) => {
           return (
             <span className="scenario-chip" key={one.id}>
-              <button type="button" onClick={() => setBaselineId(one.id)}>
+              <button type="button" onClick={() => props.setBaselineId(one.id)}>
                 {one.label}
               </button>
               <button type="button" onClick={() => props.store.remove(one.id)}>

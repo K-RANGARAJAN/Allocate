@@ -46,7 +46,14 @@ export function App() {
       body = <WhatMovesItPage config={run.config} worker={worker} />;
     }
     if (nav.page === "compare") {
-      body = <ComparePage outcome={outcome} store={scenarios} />;
+      body = (
+        <ComparePage
+          outcome={outcome}
+          config={run.config}
+          store={scenarios}
+          worker={worker}
+        />
+      );
     }
   }
 
