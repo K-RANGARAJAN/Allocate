@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 13:34 IST / 3c20803
+Updated: 2026-09-08 13:44 IST / 7c417c3
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -22,6 +22,13 @@ the five-page restructure, each in the worker behind its own button.
 
 ## Done since last update
 
+- **Page 3, Trade-offs.** Opens with the Pareto frontier exactly as it was,
+  data-scaled y axis and mode-dependent subtitles untouched. The constrained
+  frontier joins it once that call is wired.
+- **Page 2, Who it reaches.** Equity leads, then the four breakdown tables,
+  then steady state. Equity is first on purpose: the tables are the evidence and
+  the equity rows are the claim they support, and putting the tables first would
+  bury a 22.3 age Gini under four tables that each look equally important.
 - `SteadyStatePanel.tsx` renders the eleven rows with the window days read off
   `meta`. The three `windowable: false` rows print an em dash and the verdict
   "not applicable" — never a zero, which would read as no drift and mean the
