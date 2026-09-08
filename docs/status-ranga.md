@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 17:30 IST / 2aea153
+Updated: 2026-09-08 17:42 IST / a17eda7
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -30,6 +30,12 @@ the five-page restructure, each in the worker behind its own button.
   rate at 12, which renders your finding live: holding that line costs 5103
   life-years, 7 of 12 weightings feasible. Set it to 90 and it says no policy in
   the swept space meets the line, which is the null case as a stated result.
+- **The median wait row now carries its caveat.** Under the utility trap it
+  colours green at -77.7%, which is honest per `betterDirection` and still
+  misleading: the policy stopped transplanting the long-waiting older patients,
+  so they left the median rather than being served by it. The footnote says both
+  readings and points at the over-60 rate. It renders only when that row is
+  present, and it is a caveat, not a computed number.
 - **All five expensive panels go stale, verified.** Never flagged before a run;
   false while the config is unchanged; true for all five the moment the user
   clicks Default after running under the locality trap; true when a single
