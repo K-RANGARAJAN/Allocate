@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 19:56 IST / 60b5749
+Updated: 2026-09-08 20:06 IST / f754d1f
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -30,6 +30,11 @@ the five-page restructure, each in the worker behind its own button.
   rate at 12, which renders your finding live: holding that line costs 5103
   life-years, 7 of 12 weightings feasible. Set it to 90 and it says no policy in
   the swept space meets the line, which is the null case as a stated result.
+- `HomeBackground` is the landing artwork, inline SVG with no image files and
+  no external assets: a sparse node-and-link network for hospitals and organ
+  movement, and an ECG-style trace across the lower third. Line work in the
+  standard line colour, nodes in teal at low opacity, both quiet enough that the
+  title carries the page. Nothing anatomical — the subject is allocation policy.
 - **The app opens on a landing page now.** `"home"` is the initial page and is
   deliberately kept out of `PAGES`, so it never renders as a tab — once the
   simulator is open there is no route back short of a reload, which is what you

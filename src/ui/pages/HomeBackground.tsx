@@ -1,0 +1,77 @@
+// Abstract and medical-adjacent: an ECG-style trace across the lower third and
+// a sparse network of nodes and thin links standing for hospitals and the
+// movement of organs between them. Inline SVG, no image files and no external
+// assets. Nothing anatomical — the subject is allocation policy, not surgery.
+const NODES = [
+  [140, 120],
+  [330, 78],
+  [520, 148],
+  [700, 96],
+  [880, 168],
+  [1060, 110],
+  [255, 226],
+  [610, 250],
+  [960, 236]
+];
+
+const LINKS = [
+  [0, 1],
+  [1, 2],
+  [2, 3],
+  [3, 4],
+  [4, 5],
+  [0, 6],
+  [6, 2],
+  [2, 7],
+  [7, 4],
+  [4, 8],
+  [1, 6],
+  [3, 7]
+];
+
+// One period of a resting-rhythm trace: baseline, small P, the QRS spike, T.
+const BEAT =
+  "l 46 0 l 7 -9 l 7 9 l 30 0 l 9 4 l 7 -34 l 8 52 l 9 -22 l 12 0 l 22 0 " +
+  "l 9 -12 l 10 12 l 44 0";
+
+export function HomeBackground() {
+  const beats = [0, 1, 2, 3];
+
+  return (
+    <svg
+      className="home-bg"
+      viewBox="0 0 1200 520"
+      preserveAspectRatio="xMidYMid slice"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <g stroke="#DFE1E4" strokeWidth="1" fill="none">
+        {LINKS.map((link) => {
+          const a = NODES[link[0]];
+          const b = NODES[link[1]];
+          return (
+            <line
+              key={`${link[0]}-${link[1]}`}
+              x1={a[0]}
+              y1={a[1]}
+              x2={b[0]}
+              y2={b[1]}
+            />
+          );
+        })}
+      </g>
+
+      <g fill="#2F5D62" opacity="0.28">
+        {NODES.map((node) => {
+          return <circle key={`${node[0]}-${node[1]}`} cx={node[0]} cy={node[1]} r="4" />;
+        })}
+      </g>
+
+      <g stroke="#DFE1E4" strokeWidth="1.5" fill="none" opacity="0.9">
+        {beats.map((beat) => {
+          return <path key={beat} d={`M ${beat * 300 - 20} 410 ${BEAT}`} />;
+        })}
+      </g>
+    </svg>
+  );
+}

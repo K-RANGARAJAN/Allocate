@@ -1,3 +1,5 @@
+import { HomeBackground } from "./HomeBackground";
+
 export interface HomePageProps {
   onOpen: () => void;
   leaving: boolean;
@@ -13,6 +15,7 @@ export function HomePage(props: HomePageProps) {
 
   return (
     <div className={className}>
+      <HomeBackground />
       <div className="home-inner">
         <h1 className="home-title">Allocate</h1>
         <p className="home-sub">
