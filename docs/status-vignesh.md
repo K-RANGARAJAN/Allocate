@@ -378,6 +378,64 @@ the field is purely additive. Say if you would rather it came back out.
   are real and every field on the Outcome, the sensitivity rows and the Pareto
   points is computed.
 
+## Full functional pass on the production build
+
+Drove every page, every control and all nine exports through the built bundle at
+contract 1.6.0. **No console errors anywhere, every network request 200 or 304,
+no `NaN`, `undefined`, `Infinity` or `[object` on any page, and zero horizontal
+overflow on all five pages at 375px.**
+
+Verified working: all five pages; every slider at the right range, step and
+default, all snapping exactly; the four breakdown tables; sensitivity (11.3s,
+button disabled, progress indicator, donation rate first); robustness (8.1-8.5s,
+all 11 metrics); the sweep (12s, 20 points as 5 frontier + 14 dominated + 1
+current diamond, matching the engine exactly); the constrained frontier (5.6s,
+5103 life-years, 7 of 12 feasible, matching my probe exactly); the counterfactual
+(1.4s, 373 lost / 159 gained, band table 70/140, 230/19, 56/0, 17/0); scenario
+save; the comparison table at 11 rows; and Export JSON producing a valid 10.9KB
+payload.
+
+**All five traps I warned about are handled, and one better than I asked for.**
+Non-windowable steady-state rows render em dashes and "not applicable", never 0.
+Unanimous rows read "0 on all 20 seeds" with no mean. The counterfactual names
+seed 42 and explains the same-people logic. `priceOfConstraint` null renders as
+"No policy in the swept space meets this line... That is a result, not an empty
+chart." And staleness relabels the button to "Re-run for current policy" and says
+"From an earlier policy" - better than the passive grey-out I suggested, and it
+is correctly per-panel, so a panel whose result still matches the live config is
+not marked stale.
+
+### One bug fixed, mine
+
+`runRobustness` rounded every summary to one decimal, which collapsed mean graft
+quality - a two-decimal metric - into "0.9 mean, 0.9 to 0.9", showing a real
+spread as though every seed agreed. Precision is now read off the values, so min
+and max keep the metric's own precision and the mean carries one more. It reads
+"0.86 mean, 0.86 to 0.87" now. No other metric's display changed meaningfully and
+nothing else in the contract moved.
+
+### One bug for Ranga, and it is demo-breaking
+
+**The Run length slider silently changes the run.** Its label reads 730 days but
+the input value is 720, because 730 is not reachable on a `min={90} step={30}`
+grid - exactly the bug you fixed on the weight sliders, in a control that was not
+checked. I grabbed the slider and released it *without moving it*:
+
+| | before | after |
+| --- | --- | --- |
+| label | 730 days | **720 days** |
+| transplants | 1132 | **1119** |
+| life-years | 10775.4 | **10571.9** |
+| over-60 rate | 10.2 | **10.4** |
+
+And it cannot be undone from the control, because 730 is not on the grid - only a
+page reload restores it. Brush that slider mid-demo and every number you have
+just quoted changes, permanently. `step={10}` fixes it.
+
+Two smaller ones: the landing page headline says **Allocate** while the tab title
+says **Resonance**, and the collapsible `group-head` buttons carry no
+`aria-expanded`.
+
 ## Grounded the model against published sources
 
 Audited every constant in `model.ts` into three buckets: anchored to a real

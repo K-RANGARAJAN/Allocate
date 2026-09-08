@@ -18,13 +18,41 @@ import type {
   RobustnessRow
 } from "../contract/types";
 import { COMPARISON_ROWS } from "./compare";
-import { round1 } from "./metrics";
 import { DEFAULT_ROBUSTNESS_SEEDS } from "./model";
 
 function withSeed(config: PolicyConfig, seed: number): PolicyConfig {
   const next = JSON.parse(JSON.stringify(config)) as PolicyConfig;
   next.sim.seed = seed;
   return next;
+}
+
+// How many decimals this metric is actually carried at. Rounding every summary
+// to one decimal collapsed mean graft quality, which the engine reports to two,
+// into "0.9 mean, 0.9 to 0.9" - a real spread rendered as though every seed
+// agreed. The precision is read off the values rather than kept in a table, so a
+// metric that changes precision cannot fall out of step with this.
+function decimalsIn(values: number[]): number {
+  let most = 0;
+  for (const value of values) {
+    const text = String(value);
+    const dot = text.indexOf(".");
+    if (dot === -1) {
+      continue;
+    }
+    const places = text.length - dot - 1;
+    if (places > most) {
+      most = places;
+    }
+  }
+  if (most > 2) {
+    return 2;
+  }
+  return most;
+}
+
+function roundTo(value: number, decimals: number): number {
+  const factor = Math.pow(10, decimals);
+  return Math.round(value * factor) / factor;
 }
 
 function summarise(metric: MetricKey, label: string, values: number[]): RobustnessRow {
@@ -46,12 +74,21 @@ function summarise(metric: MetricKey, label: string, values: number[]): Robustne
     }
   }
 
+  // The mean can carry one more decimal than the metric itself, because an
+  // average of integers is not an integer. Min and max are values the engine
+  // already produced, so they are passed through at their own precision.
+  const decimals = decimalsIn(values);
+  let meanDecimals = decimals + 1;
+  if (meanDecimals > 2) {
+    meanDecimals = 2;
+  }
+
   return {
     metric,
     label,
-    mean: round1(total / values.length),
-    min: round1(min),
-    max: round1(max),
+    mean: roundTo(total / values.length, meanDecimals),
+    min: roundTo(min, decimals),
+    max: roundTo(max, decimals),
     unanimous
   };
 }
