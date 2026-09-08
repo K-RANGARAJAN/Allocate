@@ -58,6 +58,17 @@ export function ControlsPanel(props: ControlsPanelProps) {
     });
   }
 
+  function setSim<K extends keyof PolicyConfig["sim"]>(
+    key: K,
+    value: PolicyConfig["sim"][K]
+  ) {
+    props.setConfig((prev) => {
+      const sim = { ...prev.sim };
+      sim[key] = value;
+      return { ...prev, sim };
+    });
+  }
+
   function setDonationRate(next: number) {
     props.setConfig((prev) => {
       const resources = { ...prev.resources, donationRateMultiplier: next };
@@ -116,7 +127,7 @@ export function ControlsPanel(props: ControlsPanelProps) {
           value={config.weights.urgency}
           min={0}
           max={1}
-          step={0.05}
+          step={0.01}
           onChange={(next) => setWeight("urgency", next)}
         />
         <Slider
@@ -124,7 +135,7 @@ export function ControlsPanel(props: ControlsPanelProps) {
           value={config.weights.lifeYears}
           min={0}
           max={1}
-          step={0.05}
+          step={0.01}
           onChange={(next) => setWeight("lifeYears", next)}
         />
         <Slider
@@ -132,7 +143,7 @@ export function ControlsPanel(props: ControlsPanelProps) {
           value={config.weights.waitingTime}
           min={0}
           max={1}
-          step={0.05}
+          step={0.01}
           onChange={(next) => setWeight("waitingTime", next)}
         />
       </div>
@@ -239,6 +250,31 @@ export function ControlsPanel(props: ControlsPanelProps) {
           max={15}
           step={1}
           onChange={(next) => setCentres("west", next)}
+        />
+        <Slider
+          label="Run length"
+          value={config.sim.durationDays}
+          min={90}
+          max={1460}
+          step={30}
+          suffix=" days"
+          onChange={(next) => setSim("durationDays", next)}
+        />
+        <Slider
+          label="Initial waitlist"
+          value={config.sim.initialWaitlistSize}
+          min={0}
+          max={5000}
+          step={100}
+          onChange={(next) => setSim("initialWaitlistSize", next)}
+        />
+        <Slider
+          label="New listings per day"
+          value={config.sim.newListingsPerDay}
+          min={0}
+          max={20}
+          step={1}
+          onChange={(next) => setSim("newListingsPerDay", next)}
         />
       </div>
     </section>

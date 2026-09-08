@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 11:44 IST / e4f3949
+Updated: 2026-09-08 11:56 IST / a08ac42
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -22,6 +22,17 @@ the five-page restructure, each in the worker behind its own button.
 
 ## Done since last update
 
+- **Weight slider step corrected, 0.05 to 0.01**, per the 1.3.0 changelog. You
+  were right about the symptom: 0.33 is not reachable on a 0.05 step, so the
+  thumb sat at 0.35 while the label read 0.33 off the config, and the first drag
+  of any weight jumped a notch. One number in three `Slider` calls.
+- **Run length, initial waitlist and new listings per day are now controls.**
+  They were on the config but not reachable. Ranges are mine, not the contract's
+  — 90 to 1460 days, 0 to 5000 listed, 0 to 20 a day — so say if any of those
+  should be tighter.
+- Checked before exposing run length: at 400, 360, 200, 90 and 30 days you halve
+  the steady-state windows and still return all eleven rows with nothing
+  non-finite. So a short run degrades honestly and `metricList` holds.
 - `CollapsibleGroup.tsx` is the group primitive for the controls drawer. A
   collapsed group does not render its children at all, so nothing hidden is
   holding state the user cannot see and then acting on it.
