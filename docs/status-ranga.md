@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 10:52 IST / c163362
+Updated: 2026-09-08 11:00 IST / 29b35eb
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -22,6 +22,10 @@ the five-page restructure, each in the worker behind its own button.
 
 ## Done since last update
 
+- `src/styles/shell.css` styles the persistent header: the headline figure, the
+  secondary row beside it, and the activity dot. The dot is deliberately not a
+  spinner and not an overlay — it pulses in the corner while a run is in flight
+  and the previous numbers stay readable throughout the 0.65s.
 - **Started the five-page restructure.** `state/useActivePage.ts` holds the
   active page and the page list. It is React state and nothing else — no router
   and no new dependency, since there is no URL to restore and `package.json` is

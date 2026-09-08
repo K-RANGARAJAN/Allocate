@@ -1,0 +1,73 @@
+/* The persistent shell: header, page tabs, and the drawer that holds the
+   controls. These stay put while the page body changes underneath them. */
+
+.shell-header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: var(--paper);
+  border-bottom: var(--border);
+  padding: var(--space-4) var(--space-5);
+}
+
+.shell-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-6);
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+/* The headline figure. Everything else in the header is secondary to it. */
+.headline-value {
+  font-size: 2.5rem;
+  font-weight: var(--weight-semibold);
+  letter-spacing: -0.03em;
+  line-height: 1;
+  font-variant-numeric: var(--numeric);
+}
+
+.headline-label {
+  color: var(--soft-ink);
+  font-size: var(--text-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.secondary-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5);
+}
+
+.secondary-value {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-medium);
+  line-height: 1.1;
+  font-variant-numeric: var(--numeric);
+}
+
+.shell-spacer {
+  flex: 1 1 auto;
+}
+
+/* Visible only while a run is in flight. Not a spinner and not an overlay: the
+   previous numbers stay readable for the 0.65s. */
+.activity-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--teal);
+  animation: activity-pulse 1s ease-in-out infinite;
+}
+
+@keyframes activity-pulse {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 1;
+  }
+}
