@@ -1,11 +1,14 @@
 import { useEffect, useId, useRef, useState } from "react";
-import type { MouseEvent } from "react";
+import type { MouseEvent, ReactNode } from "react";
 
 import { CONTROL_HINTS } from "../data/controlHints";
 import { placeBubble } from "./hintPlacement";
 
 export interface ControlHintProps {
   hint: string;
+  // The label this explains. It sits inside the hover region so pointing at the
+  // word opens the bubble, not just the icon.
+  children?: ReactNode;
 }
 
 export function ControlHint(props: ControlHintProps) {
@@ -63,16 +66,19 @@ export function ControlHint(props: ControlHintProps) {
     describedBy = id;
   }
 
+  // Hover is on the region, which wraps the label text and the icon and nothing
+  // else. It deliberately stops short of the value on the right and the slider
+  // track below: covering those would keep firing the bubble mid-drag. There is
+  // no click handler here — the <label> must go on focusing its own input.
   return (
-    <>
+    <span className="hint-target" onMouseEnter={place} onMouseLeave={hide}>
+      {props.children}
       <span
         ref={iconRef}
         className="hint-icon"
         tabIndex={0}
         aria-label="What this control does"
         aria-describedby={describedBy}
-        onMouseEnter={place}
-        onMouseLeave={hide}
         onFocus={place}
         onBlur={hide}
         onMouseDown={keepFocus}
@@ -88,6 +94,6 @@ export function ControlHint(props: ControlHintProps) {
       >
         {text}
       </span>
-    </>
+    </span>
   );
 }

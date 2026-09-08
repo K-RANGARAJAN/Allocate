@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 22:26 IST / 33ff345
+Updated: 2026-09-08 22:40 IST / 5e0057b
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -30,6 +30,16 @@ the five-page restructure, each in the worker behind its own button.
   rate at 12, which renders your finding live: holding that line costs 5103
   life-years, 7 of 12 weightings feasible. Set it to 90 and it says no policy in
   the swept space meets the line, which is the null case as a stated result.
+- **The hint hover target now covers the label, not just the icon.** Pointing
+  at the word "Urgency" opens its bubble exactly as pointing at the icon does.
+  `mouseenter` and `mouseleave` moved onto a region wrapping the label text and
+  the icon; keyboard focus stays on the icon alone and Escape still closes.
+- The region is `inline-flex`, so it hugs the label and icon instead of
+  stretching across the row. That is the whole point: a full-width region would
+  sit under the value on the right and over the slider track, and dragging a
+  slider would then reopen the bubble on every pointer move.
+- No click handler was added anywhere. These controls are `<label>` elements
+  bound to their inputs, and clicking the label must go on focusing the control.
 - **The hint bubble was translucent over charts, and the cause was the fade.**
   It faded in on `opacity`, which meant the bubble was partly transparent for
   the whole 120ms and gridlines and axis labels read straight through it. The

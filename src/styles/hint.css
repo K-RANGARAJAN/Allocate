@@ -64,3 +64,12 @@
     transition: none;
   }
 }
+
+/* The hover region: the label text and the icon, nothing more. It is
+   inline-flex so it hugs its contents rather than stretching across the row —
+   spanning the full width would put it under the value and over the slider
+   track, and a drag would then reopen the bubble on every pointer move. */
+.hint-target {
+  display: inline-flex;
+  align-items: center;
+}
