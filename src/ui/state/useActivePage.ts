@@ -2,7 +2,16 @@ import { useState } from "react";
 
 // Tab state is React state and nothing more. No router, no new dependency:
 // there is no URL to restore and package.json is shared.
-export type PageId = "outcome" | "reach" | "tradeoffs" | "movers" | "compare";
+// "home" is the landing page. It is deliberately not in PAGES, so it never
+// appears as a tab: once the simulator is open there is no route back to it
+// short of a reload.
+export type PageId =
+  | "home"
+  | "outcome"
+  | "reach"
+  | "tradeoffs"
+  | "movers"
+  | "compare";
 
 export interface PageSpec {
   id: PageId;
@@ -46,6 +55,6 @@ export interface ActivePage {
 }
 
 export function useActivePage(): ActivePage {
-  const [page, setPage] = useState<PageId>("outcome");
+  const [page, setPage] = useState<PageId>("home");
   return { page, setPage };
 }

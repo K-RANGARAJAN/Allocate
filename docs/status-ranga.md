@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 19:44 IST / dad63d6
+Updated: 2026-09-08 19:56 IST / 60b5749
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -30,6 +30,10 @@ the five-page restructure, each in the worker behind its own button.
   rate at 12, which renders your finding live: holding that line costs 5103
   life-years, 7 of 12 weightings feasible. Set it to 90 and it says no policy in
   the swept space meets the line, which is the null case as a stated result.
+- **The app opens on a landing page now.** `"home"` is the initial page and is
+  deliberately kept out of `PAGES`, so it never renders as a tab — once the
+  simulator is open there is no route back short of a reload, which is what you
+  asked for. `HomePage` holds the title, one line and the button, nothing else.
 - **Fixed the Pareto hover target.** The tooltip only fired on the exact pixel
   of a dot. Each of the three marks now draws a transparent `r=14` circle with
   `pointer-events="all"` underneath the visible one, which is itself unchanged —
