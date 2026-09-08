@@ -138,6 +138,46 @@ inside a window is often transplanted long after it, so a rate confined to a
 window is not a rate of anything. Those three rows return zeros and the interface
 must not display them as numbers — show "not applicable" or omit the row.
 
+## steadyState is a complete, ordered row set - guaranteed
+
+`Outcome.steadyState` carries **exactly one row per metric on `Metrics`, always,
+including the three where `windowable` is false**. It is built by walking the
+same ordered list `compareOutcomes` uses, so its order and its `label` strings
+are identical to the comparison table's, and it can never fall out of step with
+`Metrics`.
+
+It will never be filtered to windowable rows only. If a metric is added to
+`Metrics`, a row appears here in the same release. The interface may rely on
+this for label and ordering, and the smoke test asserts the row count and the
+windowable flags on every run.
+
+## Simulation ranges and what they cost
+
+There are no hard limits. Every corner of the ranges below returns finite,
+correctly shaped output - all 11 metrics, 11 `steadyState` rows, 3 equity rows,
+4 age bands, a non-empty timeline. An empty world (`initialWaitlistSize` 0 and
+`newListingsPerDay` 0) is valid and returns zeros in 1ms rather than throwing.
+
+The limit is time, not correctness. Cost scales with the number of
+patient-days simulated:
+
+| Config | One `runSimulation` |
+| --- | --- |
+| default, 730 days | 0.48s |
+| `durationDays` 1460 | 5.0s |
+| `initialWaitlistSize` 5000 | 3.3s |
+| `newListingsPerDay` 20 | 4.3s |
+| all four maxima together | **41s** |
+
+**41 seconds is not survivable on the main thread**, and it makes the four
+expensive calls unusable: `runSensitivity` becomes ~12 minutes,
+`runParetoSweep` at 20 points ~14 minutes, `runRobustness` ~14 minutes. A user
+who drags three sliders to their maxima has frozen the tab with no way back.
+
+Either cap the exposed ranges well below those maxima, or gate the expensive
+panels on the estimated cost of the current config. The demo never needs more
+than the default 730 days.
+
 ## Robustness
 
 `runRobustness(config, seeds?)` re-runs the whole simulation once per seed and

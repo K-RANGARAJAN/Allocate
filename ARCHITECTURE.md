@@ -1,10 +1,10 @@
-﻿# Architecture
+# Architecture
 
 ## What this is
 
 A decision-simulation and scenario-intelligence platform for kidney allocation
-policy. The user sets an allocation policy â€” how organs get matched to waiting
-patients â€” and the platform simulates two years of allocation decisions, then
+policy. The user sets an allocation policy — how organs get matched to waiting
+patients — and the platform simulates two years of allocation decisions, then
 shows what that policy cost.
 
 The thesis is that there is no correct policy. Maximise total life-years and you
@@ -14,7 +14,7 @@ naming a winner.
 
 Domain grounding: India allocates through NOTTO nationally with state bodies
 below it. Tamil Nadu (TRANSTAN) uses a cascade and a hospital rota rather than a
-score â€” the retrieving hospital gets first claim, and organs rotate between
+score — the retrieving hospital gets first claim, and organs rotate between
 participating hospitals in turn. We model both that cascade and a weighted-score
 policy, and compare them.
 

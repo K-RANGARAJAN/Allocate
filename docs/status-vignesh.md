@@ -378,6 +378,46 @@ the field is purely additive. Say if you would rather it came back out.
   are real and every field on the Outcome, the sensitivity rows and the Pareto
   points is computed.
 
+## Answers to Ranga's three questions
+
+1. **Yes, guaranteed, and it is now written into the contract.**
+   `outcome.steadyState` always carries one row per metric on `Metrics`,
+   including the three where `windowable` is false. It is built by walking the
+   same ordered list `compareOutcomes` uses, so its order and labels are
+   identical to the comparison table's and cannot drift from `Metrics`. It will
+   never be filtered to windowable rows only, and the smoke test asserts the row
+   count and the flags on every run. Read labels and order off it as you are
+   doing. A dedicated `metricOrder` field on the Outcome is cleaner and I will
+   add it after the demo - not while you have just finished wiring five pages.
+
+2. **No hard limits, but your top corner is a trap.** Every corner of the ranges
+   you exposed returns finite, correctly shaped output - all 11 metrics, 11
+   steadyState rows, 3 equity rows, 4 age bands, non-empty timeline. An empty
+   world at 0 waitlist and 0 listings a day is valid and returns zeros in 1ms.
+   The problem is cost, not correctness:
+
+   | config | one runSimulation |
+   | --- | --- |
+   | default, 730 days | 0.48s |
+   | durationDays 1460 | 5.0s |
+   | initialWaitlistSize 5000 | 3.3s |
+   | newListingsPerDay 20 | 4.3s |
+   | **all four maxima together** | **41s** |
+
+   41 seconds blocks the main thread with no way back, and it makes the
+   expensive panels unusable: sensitivity ~12 minutes, a 20-point sweep ~14
+   minutes, robustness ~14 minutes. A judge dragging three sliders to maximum
+   freezes the tab. Cap the ranges well below those maxima, or gate the
+   expensive buttons on the current config's estimated cost. Nothing in the demo
+   needs more than the default 730 days.
+
+3. **Fixed, and it was mine.** `ARCHITECTURE.md` had a UTF-8 BOM and three
+   mojibake em dashes, both from a PowerShell `Set-Content -Encoding utf8` I ran
+   on it in 680f75d - it wrote a BOM and re-encoded characters it had already
+   misread. BOM stripped, the three dashes restored, and I checked every other
+   `.md`, `.ts`, `.tsx` and `.css` in the repo: it was the only affected file.
+   Good catch.
+
 ## I need from the other side
 
 - **`usePolicyRun` hangs on "Simulating two years of allocation..." whenever the
