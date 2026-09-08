@@ -1,4 +1,5 @@
 import type { AgeBandRow } from "../../contract/types";
+import { AgeBandNote } from "./AgeBandNote";
 
 export interface AgeBandTableProps {
   rows: AgeBandRow[];
@@ -12,12 +13,7 @@ export interface AgeBandTableProps {
 export function AgeBandTable(props: AgeBandTableProps) {
   let note = null;
   if (props.withNote) {
-    note = (
-      <p className="panel-note">
-        The over-60 transplant rate in the header spans the last two rows. Watch
-        them when the weighting changes.
-      </p>
-    );
+    note = <AgeBandNote rows={props.rows} />;
   }
 
   return (

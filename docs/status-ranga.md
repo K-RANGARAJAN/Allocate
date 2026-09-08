@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 14:30 IST / 4285192
+Updated: 2026-09-08 14:48 IST / b5cdcee
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -26,6 +26,19 @@ the five-page restructure, each in the worker behind its own button.
   a page body. The single dense page is gone and nothing was dropped in the
   move — every control, metric, table and chart that existed before is still
   reachable, and the header and controls persist across all five pages.
+- **The age band note is written from the rows, not from a script.** Under the
+  utility trap it reads: the rate rises sharply in 18-39 and falls in the
+  others, the 60-69 and 70+ bands stop being transplanted entirely, the 40-59
+  band falls too, and almost every organ goes to 18-39. Every band it names is
+  read off `breakdowns.byAgeBand`. Under the default and the locality trap no
+  band has collapsed, so it falls back to a neutral line instead of claiming
+  one. The 40-59 collapse was the part the page undersold: the trap does not
+  merely abandon the over-60s, it funnels almost everything into one band.
+- **Vignesh — I invented three slider ranges and you should correct them.** The
+  contract documents no range for `durationDays`, `initialWaitlistSize` or
+  `newListingsPerDay`. I used 90 to 1460 days, 0 to 5000 and 0 to 20 a day. If
+  the engine has real limits I cannot see from the seam, say so and I will
+  match them.
 - **All five pages are reachable.** The tabs switch the body, and every page
   renders against a real run: page 1 the grid, timeline and age bands, page 2
   equity, breakdowns and steady state, page 3 the frontier, page 4 sensitivity,
