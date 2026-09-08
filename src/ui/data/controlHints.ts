@@ -53,5 +53,35 @@ export const CONTROL_HINTS: Record<string, string> = {
 
   urgentSupersedesRota:
     "Whether a critically ill patient can jump the hospital rota. Off means " +
-    "the rota holds even when someone is dying."
+    "the rota holds even when someone is dying.",
+
+  donationRateMultiplier:
+    "How many organs become available, against the baseline rate. This is the " +
+    "only control that changes supply rather than who gets what. Sensitivity " +
+    "analysis ranks it above every policy weight.",
+
+  transplantCentresPerZone:
+    "How many transplant centres operate in each zone. Fewer centres in a zone " +
+    "means patients there are harder to reach within the cold ischemia limit.",
+
+  "sim.seed":
+    "Which synthetic population is generated. Same seed, same patients, same " +
+    "result every time. Change it to check a finding is not one lucky draw.",
+
+  "sim.durationDays":
+    "How long the simulation runs. Short runs are dominated by the opening " +
+    "backlog clearing and have not settled.",
+
+  "sim.initialWaitlistSize":
+    "How many patients are already waiting on day one.",
+
+  "sim.newListingsPerDay":
+    "How many new patients join the list each day. Set it against the " +
+    "donation rate to model a list that grows or shrinks.",
+
+  mode:
+    "Score ranks every patient by the weights below. Cascade and rota follows " +
+    "the Tamil Nadu model, where the retrieving hospital claims first and " +
+    "organs then rotate between hospitals. First come first served ignores " +
+    "medical need entirely."
 };

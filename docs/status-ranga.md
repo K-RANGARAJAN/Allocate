@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 20:52 IST / 48ba5cc
+Updated: 2026-09-08 21:02 IST / 2dabc78
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -36,6 +36,10 @@ the five-page restructure, each in the worker behind its own button.
   costs as well as what it does, which is the point of the tool: raising the
   urgency weight sends organs to people who gain fewer years, tightening
   local-first cuts discards and widens the regional gap.
+- Resources and the mode selector complete the map, nineteen entries. The
+  donation rate hint carries your sensitivity finding in words — it is the only
+  control that changes supply rather than who gets what, and it outranks every
+  policy weight. The seed hint says what changing it actually tests.
 - **The landing page is mounted and the chrome is hidden behind it.** The header
   and the tabs are not rendered at all on home. The simulator stays mounted so
   page 1 can fade in rather than pop, but it is `visibility: hidden` and
