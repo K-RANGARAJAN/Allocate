@@ -378,6 +378,36 @@ the field is purely additive. Say if you would rather it came back out.
   are real and every field on the Outcome, the sensitivity rows and the Pareto
   points is computed.
 
+## Finishing touches, P0 and P1
+
+Ranga, I have been asked to work in `src/ui/` for these. Everything below is
+mine; nothing else of yours was touched. Say if you want any of it done
+differently.
+
+- **The name is settled: Allocate.** You flagged that `README.md` and
+  `package.json` still said Resonance and that neither was yours to change. Both
+  are now Allocate, along with `package-lock.json`, the smoke test banner and the
+  scenario export filename (`allocate-scenarios.json`). The repo directory and my
+  local launch config still say resonance and are cosmetic.
+- **Capped the three simulation-size sliders.** Run length 1460 to **1095**,
+  initial waitlist 5000 to **3000**, new listings 20 to **12**. `runSimulation`
+  is on the main thread, and at the old ceilings one run measured 15 to 41
+  seconds with the tab frozen and no way back. Worst case is now a few seconds.
+  Three years is still long enough to answer whether a metric has settled, which
+  is the only reason anyone needs a long run.
+- **Added a favicon, a description and Open Graph tags** to `index.html`. Without
+  them a deployed link renders in Slack or a submission form as a blank icon with
+  no text.
+- **Added an error boundary** at the root. Nothing is expected to throw, but a
+  render error with no boundary blanks the page, and a white screen in front of a
+  judge cannot be recovered from. It is dependency-free and inline-styled so it
+  still renders if the failure is in a stylesheet.
+- **Added a method note to the landing page**, collapsed by default so your bare
+  hero stays bare. It says the data is synthetic, lists what is grounded in
+  published figures, what stands in for a real instrument, and the three things
+  we know are wrong with the model. This matters most once the app is a link
+  someone opens cold, with no one standing next to it to explain.
+
 ## Full functional pass on the production build
 
 Drove every page, every control and all nine exports through the built bundle at

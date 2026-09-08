@@ -1,3 +1,4 @@
+import { MethodNote } from "../components/MethodNote";
 import { HomeBackground } from "./HomeBackground";
 
 export interface HomePageProps {
@@ -24,6 +25,7 @@ export function HomePage(props: HomePageProps) {
         <button type="button" className="home-button" onClick={props.onOpen}>
           Open the simulator
         </button>
+        <MethodNote />
       </div>
     </div>
   );

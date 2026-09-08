@@ -54,7 +54,7 @@ export function useScenarios(): ScenarioStore {
 
     const link = document.createElement("a");
     link.href = url;
-    link.download = "resonance-scenarios.json";
+    link.download = "allocate-scenarios.json";
     link.click();
 
     URL.revokeObjectURL(url);

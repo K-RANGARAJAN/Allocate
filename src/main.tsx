@@ -1,6 +1,7 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { App } from "./ui/App";
+import { ErrorBoundary } from "./ui/components/ErrorBoundary";
 
 import "./styles/tokens.css";
 import "./styles/base.css";
@@ -22,6 +23,8 @@ if (container === null) {
 const root = createRoot(container);
 root.render(
   <React.StrictMode>
-    <App />
+    <ErrorBoundary>
+      <App />
+    </ErrorBoundary>
   </React.StrictMode>
 );

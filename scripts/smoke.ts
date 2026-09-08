@@ -185,7 +185,7 @@ if (frontier.feasibleCount === 0 && frontier.priceOfConstraint !== null) {
   problems.push("frontier priced a constraint that nothing satisfies");
 }
 
-console.log("Resonance smoke test");
+console.log("Allocate smoke test");
 console.log("Contract version: " + outcome.contractVersion);
 console.log("");
 console.log("Metrics");

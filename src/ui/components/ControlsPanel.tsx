@@ -276,12 +276,20 @@ export function ControlsPanel(props: ControlsPanelProps) {
           step={1}
           onChange={(next) => setCentres("west", next)}
         />
+        {/*
+          These three set how much work a run is, and runSimulation is on the
+          main thread. At the old ceilings (1460 days, 5000 waiting, 20 a day)
+          a single run took 15 to 41 seconds with the tab frozen and no way
+          back, and sensitivity became several minutes. Capped here so the
+          worst case anyone can reach is a few seconds. Three years is still
+          long enough to answer whether a metric has settled.
+        */}
         <Slider
           label="Run length"
           hint="sim.durationDays"
           value={config.sim.durationDays}
           min={90}
-          max={1460}
+          max={1095}
           step={10}
           suffix=" days"
           onChange={(next) => setSim("durationDays", next)}
@@ -291,7 +299,7 @@ export function ControlsPanel(props: ControlsPanelProps) {
           hint="sim.initialWaitlistSize"
           value={config.sim.initialWaitlistSize}
           min={0}
-          max={5000}
+          max={3000}
           step={100}
           onChange={(next) => setSim("initialWaitlistSize", next)}
         />
@@ -308,7 +316,7 @@ export function ControlsPanel(props: ControlsPanelProps) {
           hint="sim.newListingsPerDay"
           value={config.sim.newListingsPerDay}
           min={0}
-          max={20}
+          max={12}
           step={1}
           onChange={(next) => setSim("newListingsPerDay", next)}
         />

@@ -1,4 +1,4 @@
-# Resonance
+# Allocate
 
 A kidney allocation policy simulator. Set an allocation policy - how organs get
 matched to waiting patients - and the platform simulates two years of allocation
@@ -7,7 +7,7 @@ the waiting list, waiting times, discarded organs, and who was and was not
 reached.
 
 There is no correct policy. Maximise life-years and you stop transplanting older
-patients. Prioritise local patients and regional disparity widens. Resonance
+patients. Prioritise local patients and regional disparity widens. Allocate
 exists to make those trade-offs visible, not to name a winner.
 
 ## Running it
