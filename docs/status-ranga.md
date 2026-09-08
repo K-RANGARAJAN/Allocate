@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 17:42 IST / a17eda7
+Updated: 2026-09-08 17:54 IST / cb9ae66
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -30,6 +30,9 @@ the five-page restructure, each in the worker behind its own button.
   rate at 12, which renders your finding live: holding that line costs 5103
   life-years, 7 of 12 weightings feasible. Set it to 90 and it says no policy in
   the swept space meets the line, which is the null case as a stated result.
+- `state/useMotion.ts` holds the two animation tiers and the reduced-motion
+  query, which is watched live rather than read once so a reader who changes the
+  system setting mid-session is respected without a reload.
 - **The median wait row now carries its caveat.** Under the utility trap it
   colours green at -77.7%, which is honest per `betterDirection` and still
   misleading: the policy stopped transplanting the long-waiting older patients,
