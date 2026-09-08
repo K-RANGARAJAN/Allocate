@@ -31,7 +31,12 @@ export const MIN_VIABLE_QUALITY = 0.6;
 export const URGENT_LIST_THRESHOLD = 8.5;
 
 // Share of a zone's transplant centres that are government run.
-export const GOVERNMENT_CENTRE_SHARE = 0.4;
+//
+// Grounded, not guessed. Of the 682 kidney transplant centres registered with
+// NOTTO, 87% are private and 13% are government. This was 0.4 until we checked,
+// which understated how concentrated Indian transplant capacity is in the
+// private sector. See the Grounding section of README.md.
+export const GOVERNMENT_CENTRE_SHARE = 0.13;
 
 // The age at which a patient counts as an older recipient. The whole utility
 // trap is measured against this line, so it is named rather than inlined.
@@ -123,6 +128,18 @@ export function clamp(low: number, high: number, value: number): number {
 }
 
 // What a policy believes a candidate is worth, estimated at listing time.
+//
+// Real-world analogue: LYFT, "Life Years From Transplant" (Wolfe et al., 1999),
+// a published measure of the survival gain from a transplant that has been used
+// in actual US allocation policy. Ours is our own curve, not their model, but it
+// lands close to published survival: this returns 11.0 years at age 50 against a
+// published mean post-transplant survival of 11.9 years at a median age of 52,
+// and 3.0 years at age 70 with mean comorbidity against a published median of
+// about 4 years for over-65 diabetic deceased-donor recipients.
+//
+// It is conservative at the young end - real gains for recipients in their
+// twenties exceed 22 years - which means the utility trap this drives would be
+// stronger in reality, not weaker. See the Grounding section of README.md.
 // The decline with age is the mechanism the whole project rests on.
 // Age 30 gives about 18.3 years, age 60 about 7.3, age 70 about 3.7.
 export function expectedLifeYearsAtListing(age: number, comorbidityIndex: number): number {
@@ -146,6 +163,15 @@ export function dailyDeathProbability(urgency: number, comorbidityIndex: number)
   return BASE_DAILY_DEATH_HAZARD * (1 + urgency / 5) * (1 + comorbidityIndex);
 }
 
+// Real-world analogue: KDPI, the Kidney Donor Profile Index, derived from the
+// KDRI Cox model of Rao et al. and used by OPTN to rank deceased-donor kidneys
+// on a 1-100 scale against a reference donor aged 40.
+//
+// This is a deliberately simplified linear proxy for it. KDPI reads eight to ten
+// donor characteristics - diabetes, hypertension, creatinine, DCD status, height,
+// weight and others - none of which this model generates. Donor age is the single
+// strongest of those factors, so age alone is the honest reduction. It is a proxy
+// for KDPI, not an implementation of it, and should never be described as one.
 export function donorQuality(donorAge: number): number {
   return clamp(0.35, 1.0, 1.25 - donorAge / 100);
 }

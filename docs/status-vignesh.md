@@ -378,6 +378,44 @@ the field is purely additive. Say if you would rather it came back out.
   are real and every field on the Outcome, the sensitivity rows and the Pareto
   points is computed.
 
+## Grounded the model against published sources
+
+Audited every constant in `model.ts` into three buckets: anchored to a real
+published figure, a simplified proxy for a real instrument, or ours. The result
+is a Grounding section and a Known limitations section in `README.md`.
+
+- **One constant was contradicted by the data and is now corrected.**
+  `GOVERNMENT_CENTRE_SHARE` was 0.4. Of the 682 kidney transplant centres
+  registered with NOTTO, 87% are private and 13% are government, so it is 0.13.
+  **Every headline metric is byte-identical after the change** - 1132, 10775.4,
+  1304, 934, 38, 1.5, 10.2, 1.9 - and Gate C still passes all five checks. Only
+  the hospital-type breakdown moved: government listed 2319 to 969, private 4102
+  to 5379, with the rates barely shifting (18.3 / 17.8 against 18.3 / 17.2).
+  Ranga, that table will look different and nothing else will.
+- **The life-years curve validates against published survival, which I did not
+  expect.** It returns 11.0 years at age 50 against a published mean
+  post-transplant survival of 11.9 at median age 52, and 3.0 at age 70 with mean
+  comorbidity against a published median near 4 for over-65 diabetic
+  deceased-donor recipients. It is conservative at the young end, which means the
+  utility trap would be **stronger** in reality, not weaker. Good line for the
+  demo.
+- **Named the real instruments our formulas proxy.** `expectedLifeYearsAtListing`
+  is our own curve in the spirit of LYFT (Wolfe et al., 1999). `donorQuality` is
+  a deliberately linear proxy for KDPI, which reads eight to ten donor factors we
+  do not generate. Both are documented as proxies, never as implementations.
+- **Stated the scale for the first time.** 0.8 donors a day is about 292 a year,
+  which at India's 0.77 per million rate means this world is a region of roughly
+  380 million - about a quarter of national deceased donation, consistent with
+  five states producing around 90% of it.
+- **Wrote down four limitations rather than waiting to be caught.** Discards are
+  ~3% against a real ~20% because transit decay is our only discard mechanism;
+  cold ischemia averages 10.5h against a real 17-20h because the geography is
+  compact; median wait is long partly from the backdated waitlist; and living
+  donors, the majority of Indian kidney transplants, are not modelled at all.
+- Re-ran everything after the change: smoke, build, Gate C, and the 20-seed
+  robustness script. Both headline findings still hold on all 20 seeds, and the
+  discard finding improved to 19 of 20 with none worse.
+
 ## Answers to Ranga's three questions
 
 1. **Yes, guaranteed, and it is now written into the contract.**
