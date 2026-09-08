@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { compareOutcomes } from "../../engine/index";
-import type { Outcome } from "../../contract/types";
+import type { Outcome, PolicyConfig } from "../../contract/types";
 import { generatedLabel, type ScenarioStore } from "../state/useScenarios";
 import { ComparisonTable } from "./ComparisonTable";
 
@@ -10,6 +10,11 @@ export interface ScenarioPanelProps {
   store: ScenarioStore;
   baselineId: number | null;
   setBaselineId: (next: number | null) => void;
+  // Puts a saved scenario's settings back on the controls, which turns a saved
+  // scenario into a custom preset. The config comes off the Outcome the engine
+  // echoed back, not from live control state, so what is restored is exactly
+  // what produced those numbers.
+  applyConfig: (next: PolicyConfig) => void;
 }
 
 export function ScenarioPanel(props: ScenarioPanelProps) {
@@ -75,6 +80,14 @@ export function ScenarioPanel(props: ScenarioPanelProps) {
             <span className="scenario-chip" key={one.id}>
               <button type="button" onClick={() => props.setBaselineId(one.id)}>
                 {one.label}
+              </button>
+              <button
+                type="button"
+                className="chip-load"
+                title="Load these settings back into the controls"
+                onClick={() => props.applyConfig(one.outcome.config)}
+              >
+                Use
               </button>
               <button type="button" onClick={() => props.store.remove(one.id)}>
                 ×

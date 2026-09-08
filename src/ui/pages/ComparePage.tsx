@@ -12,6 +12,8 @@ export interface ComparePageProps {
   config: PolicyConfig;
   store: ScenarioStore;
   worker: EngineWorker;
+  // Threaded through so a saved scenario can be put back on the controls.
+  setWholeConfig: (next: PolicyConfig) => void;
 }
 
 // The baseline lives here because both panels read it: the comparison table
@@ -33,6 +35,7 @@ export function ComparePage(props: ComparePageProps) {
         store={props.store}
         baselineId={baselineId}
         setBaselineId={setBaselineId}
+        applyConfig={props.setWholeConfig}
       />
       <CounterfactualSection
         baseline={baseline}

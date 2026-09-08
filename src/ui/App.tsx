@@ -101,6 +101,7 @@ export function App() {
           config={run.config}
           store={scenarios}
           worker={worker}
+          setWholeConfig={run.setWholeConfig}
         />
       );
     }

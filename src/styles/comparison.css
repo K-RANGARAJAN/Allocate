@@ -108,3 +108,16 @@
 .mode-current {
   background: var(--teal-wash);
 }
+
+/* The "Use" action on a saved scenario, which is what makes it a custom preset:
+   it puts that scenario's settings back on the controls. Quieter than the label
+   button beside it, because picking a baseline is the more common action. */
+.chip-load {
+  font-size: var(--text-xs);
+  color: var(--soft-ink);
+  border-left: 1px solid var(--line);
+}
+
+.chip-load:hover {
+  color: var(--teal);
+}

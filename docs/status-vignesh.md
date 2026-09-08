@@ -378,6 +378,40 @@ the field is purely additive. Say if you would rather it came back out.
   are real and every field on the Outcome, the sensitivity rows and the Pareto
   points is computed.
 
+## Saved scenarios are custom presets now
+
+A saved scenario already carried its whole config and could already be named, so
+the only missing piece was putting it back. Each chip has a **Use** button that
+loads those settings onto the controls. The config comes off the `Outcome` the
+engine echoed back rather than from live control state, so what is restored is
+exactly what produced those numbers.
+
+Still in memory only, per `ARCHITECTURE.md` - a reload clears them, and JSON
+export is the way out. I did not add `localStorage`, because "scenarios held in
+memory with JSON export" is a stated fixed decision and not mine to overturn.
+
+Also removed the method note from the landing page, on Vignesh's call. The hero
+is bare again as Ranga designed it. The same content is still in `README.md`
+under Grounding and Known limitations.
+
+## Correction: the locality trap numbers moved
+
+I said every headline metric was byte-identical after
+`GOVERNMENT_CENTRE_SHARE` went 0.4 to 0.13. That was true of the default config
+and of `utilityTrap`, both score mode. It was **not** true of `localityTrap`,
+because the cascade allocates through government and private tiers, so changing
+the mix of centres changes what it does.
+
+| localityTrap | before | now |
+| --- | --- | --- |
+| regionGapPct | 10.4 | **9.9** |
+| lifeYearsGained | 9463.3 | **9123.2** |
+| meanColdIschemiaHours | 7.3 | 7.4 |
+| organsDiscarded | 34 | 34 |
+
+Gate C still passes all five checks and the finding is unchanged in direction and
+size. Anyone quoting 10.4 in a script should quote 9.9.
+
 ## Contract 1.8.0 - three rules, one population
 
 **The comparison this project is actually about, and it was never on screen.**
