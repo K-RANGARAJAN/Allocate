@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 15:42 IST / 8bf40fb
+Updated: 2026-09-08 15:54 IST / a75b411
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -26,6 +26,9 @@ the five-page restructure, each in the worker behind its own button.
   a page body. The single dense page is gone and nothing was dropped in the
   move — every control, metric, table and chart that existed before is still
   reachable, and the header and controls persist across all five pages.
+- `CounterfactualSample` renders the capped patient list. Its caption quotes
+  `lostCount` for the total and `sampleCap` for the cap, and says outright that
+  it is a sample — the row count on screen is never presented as a figure.
 - **Counterfactual headline and band table.** `lostCount` and `gainedCount` are
   the headline figures and the capped arrays are never counted — their length is
   not a total and using it would be both wrong and arithmetic on my side. The

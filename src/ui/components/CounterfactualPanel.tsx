@@ -62,3 +62,44 @@ export function CounterfactualBands(props: CounterfactualBandsProps) {
     </table>
   );
 }
+
+export interface CounterfactualSampleProps {
+  report: CounterfactualReport;
+}
+
+// The array is capped, so the caption says so and quotes the true total from
+// lostCount rather than the number of rows on screen.
+export function CounterfactualSample(props: CounterfactualSampleProps) {
+  const report = props.report;
+
+  return (
+    <div>
+      <p className="cf-sample">
+        The longest-waiting of the {report.lostCount} who lost a transplant,
+        shown as a sample capped at {report.sampleCap} rows.
+      </p>
+      <table className="data-table">
+        <thead>
+          <tr>
+            <th>Band</th>
+            <th>Age</th>
+            <th>Zone</th>
+            <th>Waited, days</th>
+          </tr>
+        </thead>
+        <tbody>
+          {report.lost.map((one) => {
+            return (
+              <tr key={one.patientId}>
+                <td>{one.ageBand}</td>
+                <td>{one.age}</td>
+                <td>{one.zone}</td>
+                <td>{one.waitDays}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+}
