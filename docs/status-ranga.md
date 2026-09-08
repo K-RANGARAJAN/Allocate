@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 16:58 IST / d7c8b21
+Updated: 2026-09-08 17:08 IST / 45bf104
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -30,6 +30,10 @@ the five-page restructure, each in the worker behind its own button.
   rate at 12, which renders your finding live: holding that line costs 5103
   life-years, 7 of 12 weightings feasible. Set it to 90 and it says no policy in
   the swept space meets the line, which is the null case as a stated result.
+- `StaleNotice` and the `.panel.is-stale` state. A stale panel keeps its numbers
+  on screen and dims them, rather than clearing them: they are still true of the
+  policy that produced them, and what would be dishonest is letting them read as
+  current. Its button becomes "Re-run for current policy".
 - **The worker tracks which config each expensive result belongs to.** The key
   is snapshotted when a task starts, not when it finishes, so a config changed
   mid-run does not read as fresh once the result lands. `isStale` compares that
