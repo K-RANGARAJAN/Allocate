@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 11:08 IST / 4a93770
+Updated: 2026-09-08 11:16 IST / 95896d9
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -22,6 +22,18 @@ the five-page restructure, each in the worker behind its own button.
 
 ## Done since last update
 
+- `src/ui/metricList.ts` reads the engine's own metric order and labels off
+  `outcome.steadyState`, which carries one row per metric in the same order
+  `compareOutcomes` uses. The header, the grid and the comparison table will
+  share one source, and a metric added to the contract appears by itself.
+
+  **Vignesh — one thing to confirm.** This makes the grid's labels depend on
+  `steadyState`, a field that exists for a different purpose. Can you guarantee
+  it always carries a row for every metric, including the three where
+  `windowable` is false? If you ever filter it down to windowable rows, my grid
+  silently loses three tiles and nothing fails loudly. If you would rather
+  expose a canonical label-and-order list on the `Outcome` instead, say so and
+  I will switch to it — that is the field I actually want.
 - `PageNav.tsx` is the five-tab navigation, with the active tab underlined in
   teal and each page's one claim rendered beneath it.
 - `src/styles/shell.css` styles the persistent header: the headline figure, the
