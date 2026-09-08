@@ -1,0 +1,49 @@
+/* Equity rows. The age row is deliberately larger than the other two: at the
+   default config age inequality is more than ten times regional inequality, and
+   this project spent its first weeks telling a geography story. The layout
+   should not keep implying the zone row is the important one. */
+
+.equity-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: var(--space-4);
+  align-items: baseline;
+  padding: var(--space-4) 0;
+  border-bottom: var(--border);
+}
+
+.equity-row:last-child {
+  border-bottom: none;
+}
+
+.equity-name {
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+}
+
+.equity-groups {
+  color: var(--soft-ink);
+  font-size: var(--text-xs);
+  margin-top: var(--space-1);
+}
+
+.equity-figure {
+  text-align: right;
+  min-width: 92px;
+}
+
+.equity-value {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-medium);
+  font-variant-numeric: var(--numeric);
+  line-height: 1.1;
+}
+
+.equity-row.is-dominant .equity-value {
+  font-size: var(--text-metric);
+  color: var(--burnt-orange);
+}
+
+.equity-row.is-dominant .equity-name {
+  font-size: var(--text-lg);
+}

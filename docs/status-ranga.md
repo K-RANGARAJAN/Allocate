@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 13:00 IST / 4f3e64e
+Updated: 2026-09-08 13:12 IST / 4fd2c40
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -22,6 +22,16 @@ the five-page restructure, each in the worker behind its own button.
 
 ## Done since last update
 
+- `src/styles/equity.css` styles the three equity rows, with a dominant state
+  for the age row. Your finding drives the layout: age inequality is more than
+  ten times regional at the default config, and a layout that keeps the zone row
+  visually equal would go on implying the geography story is the big one.
+- **Page 1 verified against both configs.** Default to utilityTrap on page 1
+  alone: the header over-60 rate goes 10.2 to 0, the grid tile goes 10.2 to 0,
+  and the age table shows 60-69 at 95 transplants dropping to 0 and 70+ at 30
+  dropping to 0. The collapse reads three ways without leaving the page. Worth
+  noting the 40-59 band collapses too, 16.8% to 3%, while 18-39 goes from 414
+  transplants to 1027 — the trap concentrates almost everything into one band.
 - **Page 1, Policy and outcome.** The eleven-tile metric grid, the timeline at
   full width, and the four age bands beneath it. It is built so a reader who
   never leaves this page still sees the over-60 collapse: the header carries the
