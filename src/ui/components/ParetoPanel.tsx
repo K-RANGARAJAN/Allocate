@@ -49,7 +49,10 @@ export function ParetoPanel(props: ParetoPanelProps) {
   }
 
   function run() {
-    worker.start({ kind: "pareto", config: props.config, points: POINTS });
+    worker.start(
+      { kind: "pareto", config: props.config, points: POINTS },
+      props.config
+    );
   }
 
   return (

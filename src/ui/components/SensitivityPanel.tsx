@@ -47,7 +47,7 @@ export function SensitivityPanel(props: SensitivityPanelProps) {
   }
 
   function run() {
-    worker.start({ kind: "sensitivity", config: props.config });
+    worker.start({ kind: "sensitivity", config: props.config }, props.config);
   }
 
   return (

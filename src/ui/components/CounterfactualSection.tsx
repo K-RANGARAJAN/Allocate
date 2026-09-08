@@ -51,13 +51,16 @@ export function CounterfactualSection(props: CounterfactualSectionProps) {
     if (baseline === null) {
       return;
     }
-    worker.start({
-      kind: "counterfactual",
-      baseline: baseline.outcome.config,
-      scenario: props.config,
-      baselineLabel: baseline.label,
-      scenarioLabel: "Current"
-    });
+    worker.start(
+      {
+        kind: "counterfactual",
+        baseline: baseline.outcome.config,
+        scenario: props.config,
+        baselineLabel: baseline.label,
+        scenarioLabel: "Current"
+      },
+      props.config
+    );
   }
 
   let disabled = worker.busy !== null;

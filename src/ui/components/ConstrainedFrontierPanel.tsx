@@ -59,7 +59,10 @@ export function ConstrainedFrontierPanel(props: ConstrainedFrontierPanelProps) {
     const direct = direction as "atLeast" | "atMost";
     const constraint = { metric, direction: direct, value };
     const request = { kind: "frontier" as const, config: props.config };
-    worker.start({ ...request, points: POINTS, constraint, objective: "lifeYearsGained" });
+    worker.start(
+      { ...request, points: POINTS, constraint, objective: "lifeYearsGained" },
+      props.config
+    );
   }
 
   return (

@@ -62,7 +62,7 @@ export function RobustnessPanel(props: RobustnessPanelProps) {
   }
 
   function run() {
-    worker.start({ kind: "robustness", config: props.config });
+    worker.start({ kind: "robustness", config: props.config }, props.config);
   }
 
   return (

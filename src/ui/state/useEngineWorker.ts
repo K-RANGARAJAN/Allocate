@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 
+import { configKey } from "./configKey";
 import type {
   ConstrainedFrontierReport,
   CounterfactualReport,
   ParetoPoint,
+  PolicyConfig,
   RobustnessReport,
   SensitivityRow
 } from "../../contract/types";
@@ -41,7 +43,9 @@ export interface EngineWorker {
   busy: TaskKind | null;
   elapsedMs: number;
   error: string | null;
-  start: (request: StartRequest) => void;
+  start: (request: StartRequest, against: PolicyConfig) => void;
+  // True when a finished result came from a config that is no longer live.
+  isStale: (kind: TaskKind, current: PolicyConfig) => boolean;
 }
 
 export function useEngineWorker(): EngineWorker {
@@ -58,6 +62,9 @@ export function useEngineWorker(): EngineWorker {
   const [elapsedMs, setElapsedMs] = useState(0);
   const [error, setError] = useState<string | null>(null);
 
+  // Snapshotted when a task starts, not when it finishes: a config changed
+  // mid-run must not read as fresh once the result lands.
+  const ranWith = useRef<Partial<Record<TaskKind, string>>>({});
   const workerRef = useRef<Worker | null>(null);
   const nextId = useRef(1);
   useEffect(() => {
@@ -112,7 +119,15 @@ export function useEngineWorker(): EngineWorker {
     };
   }, [busy]);
 
-  function start(request: StartRequest) {
+  function isStale(kind: TaskKind, current: PolicyConfig) {
+    const ran = ranWith.current[kind];
+    if (ran === undefined) {
+      return false;
+    }
+    return ran !== configKey(current);
+  }
+
+  function start(request: StartRequest, against: PolicyConfig) {
     const worker = workerRef.current;
     if (worker === null) {
       return;
@@ -121,6 +136,7 @@ export function useEngineWorker(): EngineWorker {
     nextId.current = id + 1;
     setError(null);
     setBusy(request.kind);
+    ranWith.current[request.kind] = configKey(against);
     worker.postMessage({ ...request, id } as WorkerRequest);
   }
 
@@ -133,6 +149,7 @@ export function useEngineWorker(): EngineWorker {
     busy,
     elapsedMs,
     error,
-    start
+    start,
+    isStale
   };
 }
