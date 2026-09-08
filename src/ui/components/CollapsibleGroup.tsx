@@ -1,3 +1,4 @@
+import { useId } from "react";
 import type { ReactNode } from "react";
 
 export interface CollapsibleGroupProps {
@@ -11,9 +12,15 @@ export interface CollapsibleGroupProps {
 // mounted-free: the body is simply not rendered, so nothing hidden is holding
 // state the user cannot see.
 export function CollapsibleGroup(props: CollapsibleGroupProps) {
+  const bodyId = useId();
+
   let body = null;
   if (props.open) {
-    body = <div className="group-body">{props.children}</div>;
+    body = (
+      <div className="group-body" id={bodyId}>
+        {props.children}
+      </div>
+    );
   }
 
   let marker = "+";
@@ -23,7 +30,13 @@ export function CollapsibleGroup(props: CollapsibleGroupProps) {
 
   return (
     <section className="group">
-      <button type="button" className="group-head" onClick={props.onToggle}>
+      <button
+        type="button"
+        className="group-head"
+        aria-expanded={props.open}
+        aria-controls={bodyId}
+        onClick={props.onToggle}
+      >
         <span className="group-title">{props.title}</span>
         <span className="group-marker num">{marker}</span>
       </button>

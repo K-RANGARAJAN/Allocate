@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-09 09:20 IST / b4228c5
+Updated: 2026-09-09 09:34 IST / cf63193
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -30,6 +30,17 @@ the five-page restructure, each in the worker behind its own button.
   rate at 12, which renders your finding live: holding that line costs 5103
   life-years, 7 of 12 weightings feasible. Set it to 90 and it says no policy in
   the swept space meets the line, which is the null case as a stated result.
+- The collapsible group headers now carry `aria-expanded`, plus `aria-controls`
+  pointing at the body they open. Without it a screen reader announced them as
+  plain buttons with no way to tell an open group from a closed one, which is
+  the one thing that markup exists to say.
+- **The tab said Resonance and the landing page says Allocate.** I made the tab
+  match the landing page, since that is the name a reader actually sees and it
+  was the later deliberate choice. Flagging it rather than treating it as
+  settled: `README.md` and `docs/status-vignesh.md` both still say Resonance,
+  and neither is mine to edit. If Resonance is the real name then the fix is the
+  opposite one-liner, in `HomePage.tsx` rather than `index.html` — say which and
+  I will switch it.
 - **Run length was silently rewriting the config, and it is fixed.** The
   contract default is 730 days but the slider ran `min={90} step={30}`, and 730
   is not reachable on that step — 90 plus 21 steps is 720. Merely grabbing the
