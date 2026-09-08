@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 21:12 IST / a815206
+Updated: 2026-09-08 21:26 IST / ba31a80
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -30,6 +30,12 @@ the five-page restructure, each in the worker behind its own button.
   rate at 12, which renders your finding live: holding that line costs 5103
   life-years, 7 of 12 weightings feasible. Set it to 90 and it says no policy in
   the swept space meets the line, which is the null case as a stated result.
+- `hintPlacement.ts` decides where a bubble goes, and it is verified against
+  four cases: anchored to the drawer's right edge in a wide viewport, flipped to
+  the left of the icon when there is no room, anchored to the icon itself in the
+  header where there is no drawer, and clamped to the viewport edge rather than
+  going off-screen. It is anchored to the drawer rather than the icon so the
+  bubble clears the whole control column instead of covering the next control.
 - `src/styles/hint.css` styles the icon and the bubble. The bubble is
   `position: fixed` so the drawer's own scrolling cannot clip it, and
   `pointer-events: none` so it can never swallow a drag on the slider it is
