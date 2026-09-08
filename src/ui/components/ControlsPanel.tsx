@@ -282,7 +282,6 @@ export function ControlsPanel(props: ControlsPanelProps) {
           value={config.sim.seed}
           min={1}
           max={999999}
-          hint="Same seed, same synthetic people. Change it to test whether a finding is the policy or the draw."
           onChange={(next) => setSim("seed", next)}
         />
         <Slider

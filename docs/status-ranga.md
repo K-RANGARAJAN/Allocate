@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 21:36 IST / 7ffbafb
+Updated: 2026-09-08 21:50 IST / 3abb6fd
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -30,6 +30,11 @@ the five-page restructure, each in the worker behind its own button.
   rate at 12, which renders your finding live: holding that line costs 5103
   life-years, 7 of 12 weightings feasible. Set it to 90 and it says no policy in
   the swept space meets the line, which is the null case as a stated result.
+- All four control primitives take an optional `hint` key. A control without
+  copy renders no icon at all, rather than an empty circle.
+- Dropped `NumberField`'s old inline note while doing it. It collided with the
+  new prop, and its only user was the seed, whose tooltip now says the same
+  thing better — two explanations of one control is worse than none.
 - `ControlHint.tsx` is the circled "i". It opens on hover **and** keyboard
   focus — hover alone shuts out keyboard and touch — and closes on leave, blur
   or Escape. The trigger is a focusable span, not a button: these controls wrap

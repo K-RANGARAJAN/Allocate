@@ -1,23 +1,27 @@
 import type { ChangeEvent } from "react";
+import { ControlHint } from "./ControlHint";
 
 export interface NumberFieldProps {
   label: string;
+  // Key into CONTROL_HINTS. Omitted means no icon at all.
+  hint?: string;
   value: number;
   min: number;
   max: number;
-  hint?: string;
   onChange: (next: number) => void;
 }
 
 // A typed integer, for values a slider cannot express well. The seed is the
 // case that matters: it is an identifier, not a magnitude, so dragging along a
 // range is the wrong gesture and the user usually wants a specific number.
-export function NumberField(props: NumberFieldProps) {
-  let hint = null;
-  if (props.hint !== undefined) {
-    hint = <span className="field-hint">{props.hint}</span>;
+function HintFor(props: { hint?: string }) {
+  if (props.hint === undefined) {
+    return null;
   }
+  return <ControlHint hint={props.hint} />;
+}
 
+export function NumberField(props: NumberFieldProps) {
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
     const next = Number(event.target.value);
     if (Number.isFinite(next) === false) {
@@ -36,6 +40,7 @@ export function NumberField(props: NumberFieldProps) {
     <label className="control">
       <span className="control-head">
         <span className="control-label">{props.label}</span>
+        <HintFor hint={props.hint} />
       </span>
       <input
         className="control-number num"
@@ -46,7 +51,6 @@ export function NumberField(props: NumberFieldProps) {
         value={props.value}
         onChange={handleChange}
       />
-      {hint}
     </label>
   );
 }

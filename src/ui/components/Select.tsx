@@ -1,4 +1,5 @@
 import type { ChangeEvent } from "react";
+import { ControlHint } from "./ControlHint";
 
 export interface SelectOption {
   value: string;
@@ -7,9 +8,18 @@ export interface SelectOption {
 
 export interface SelectProps {
   label: string;
+  // Key into CONTROL_HINTS. Omitted means no icon at all.
+  hint?: string;
   value: string;
   options: SelectOption[];
   onChange: (next: string) => void;
+}
+
+function HintFor(props: { hint?: string }) {
+  if (props.hint === undefined) {
+    return null;
+  }
+  return <ControlHint hint={props.hint} />;
 }
 
 // A labelled dropdown. The caller owns the option list and the meaning of each
@@ -23,6 +33,7 @@ export function Select(props: SelectProps) {
     <label className="control">
       <span className="control-head">
         <span className="control-label">{props.label}</span>
+        <HintFor hint={props.hint} />
       </span>
       <select
         className="control-select"
