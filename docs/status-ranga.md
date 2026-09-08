@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 17:54 IST / cb9ae66
+Updated: 2026-09-08 18:04 IST / 3f5235c
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -30,6 +30,11 @@ the five-page restructure, each in the worker behind its own button.
   rate at 12, which renders your finding live: holding that line costs 5103
   life-years, 7 of 12 weightings feasible. Set it to 90 and it says no policy in
   the swept space meets the line, which is the null case as a stated result.
+- `CountUp` animates the headline. The interpolation never becomes the answer:
+  the final frame assigns your value verbatim, and with animation off the value
+  renders directly with no arithmetic at all. It carries the same suspended-rAF
+  guarantee as the run hook — a frozen count-up would otherwise leave an
+  interpolated number on screen looking like a result.
 - `state/useMotion.ts` holds the two animation tiers and the reduced-motion
   query, which is watched live rather than read once so a reader who changes the
   system setting mid-session is respected without a reload.
