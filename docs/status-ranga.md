@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 11:26 IST / feed33c
+Updated: 2026-09-08 11:44 IST / e4f3949
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -22,6 +22,9 @@ the five-page restructure, each in the worker behind its own button.
 
 ## Done since last update
 
+- `CollapsibleGroup.tsx` is the group primitive for the controls drawer. A
+  collapsed group does not render its children at all, so nothing hidden is
+  holding state the user cannot see and then acting on it.
 - `AppHeader.tsx` is the persistent header, on every page: transplants as the
   headline figure, life-years, waitlist deaths and the over-60 rate beside it,
   the allocation mode selector, and the activity dot. The over-60 rate is
