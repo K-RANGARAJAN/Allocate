@@ -74,7 +74,11 @@ export function App() {
       <div className="app">
         <p className="page-claim">{claim}</p>
         <div className="layout">
-          <ControlsDrawer config={run.config} setConfig={run.setConfig} />
+          <ControlsDrawer
+            config={run.config}
+            setConfig={run.setConfig}
+            setWholeConfig={run.setWholeConfig}
+          />
           {body}
         </div>
       </div>

@@ -7,6 +7,7 @@ import { ControlsPanel } from "./ControlsPanel";
 export interface ControlsDrawerProps {
   config: PolicyConfig;
   setConfig: Dispatch<SetStateAction<PolicyConfig>>;
+  setWholeConfig: (next: PolicyConfig) => void;
 }
 
 // The controls are reachable from every page, so they live in the shell rather
@@ -17,7 +18,13 @@ export function ControlsDrawer(props: ControlsDrawerProps) {
 
   let body = null;
   if (open) {
-    body = <ControlsPanel config={props.config} setConfig={props.setConfig} />;
+    body = (
+      <ControlsPanel
+        config={props.config}
+        setConfig={props.setConfig}
+        setWholeConfig={props.setWholeConfig}
+      />
+    );
   }
 
   let label = "Hide controls";

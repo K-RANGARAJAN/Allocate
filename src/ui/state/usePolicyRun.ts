@@ -3,6 +3,7 @@ import type { Dispatch, SetStateAction } from "react";
 
 import { defaultConfig, runSimulation } from "../../engine/index";
 import type { Outcome, PolicyConfig } from "../../contract/types";
+import type { MotionTier } from "./useMotion";
 
 // runSimulation costs about 0.65s, so it is never called from a control's own
 // change event. Edits land in state immediately and the run trails them by this
@@ -18,13 +19,18 @@ export interface PolicyRun {
   config: PolicyConfig;
   outcome: Outcome | null;
   running: boolean;
+  // "full" on first load and preset clicks, where the whole picture changes.
+  // "quiet" on a slider-driven run, where a count-up would feel laggy.
+  tier: MotionTier;
   setConfig: Dispatch<SetStateAction<PolicyConfig>>;
+  setWholeConfig: (next: PolicyConfig) => void;
 }
 
 export function usePolicyRun(): PolicyRun {
   const [config, setConfig] = useState<PolicyConfig>(defaultConfig);
   const [outcome, setOutcome] = useState<Outcome | null>(null);
   const [running, setRunning] = useState(true);
+  const [tier, setTier] = useState<MotionTier>("full");
 
   // Guards against a slow run landing after a newer one and overwriting it.
   const generation = useRef(0);
@@ -77,5 +83,24 @@ export function usePolicyRun(): PolicyRun {
     };
   }, [config]);
 
-  return { config, outcome, running, setConfig };
+  // A preset replaces the entire config, so it earns the full treatment. Every
+  // other edit comes through setConfig and stays quiet.
+  function setWholeConfig(next: PolicyConfig) {
+    setTier("full");
+    setConfig(next);
+  }
+
+  function setConfigQuietly(action: SetStateAction<PolicyConfig>) {
+    setTier("quiet");
+    setConfig(action);
+  }
+
+  return {
+    config,
+    outcome,
+    running,
+    tier,
+    setConfig: setConfigQuietly,
+    setWholeConfig
+  };
 }

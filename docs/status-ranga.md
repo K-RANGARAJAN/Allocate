@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 18:04 IST / 3f5235c
+Updated: 2026-09-08 18:16 IST / 5cbfed4
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -30,6 +30,11 @@ the five-page restructure, each in the worker behind its own button.
   rate at 12, which renders your finding live: holding that line costs 5103
   life-years, 7 of 12 weightings feasible. Set it to 90 and it says no policy in
   the swept space meets the line, which is the null case as a stated result.
+- **The two tiers are routed by which setter the change came through.** A preset
+  replaces the whole config and goes through `setWholeConfig`, which asks for
+  full motion; every other edit goes through `setConfig` and stays quiet. That
+  is more honest than trying to infer intent from how much the config moved —
+  the caller knows, and a preset is the only change that rewrites everything.
 - `CountUp` animates the headline. The interpolation never becomes the answer:
   the final frame assigns your value verbatim, and with animation off the value
   renders directly with no arithmetic at all. It carries the same suspended-rAF

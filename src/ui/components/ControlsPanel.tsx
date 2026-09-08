@@ -12,6 +12,7 @@ import { Toggle } from "./Toggle";
 export interface ControlsPanelProps {
   config: PolicyConfig;
   setConfig: Dispatch<SetStateAction<PolicyConfig>>;
+  setWholeConfig: (next: PolicyConfig) => void;
 }
 
 type WeightKey = keyof PolicyConfig["weights"];
@@ -129,7 +130,7 @@ export function ControlsPanel(props: ControlsPanelProps) {
         open={open === "priorities"}
         onToggle={() => toggle("priorities")}
       >
-        <PresetButtons onPick={props.setConfig} />
+        <PresetButtons onPick={props.setWholeConfig} />
         <p className="panel-note">
           Weights need not sum to 1. The engine normalises them before scoring,
           so three equal values mean an equal split.
