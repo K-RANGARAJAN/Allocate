@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 10:22 IST / 20af5a6
+Updated: 2026-09-08 10:38 IST / 4e3f72b
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -22,6 +22,20 @@ the five-page restructure, each in the worker behind its own button.
 
 ## Done since last update
 
+- **Fixed the animation-frame stall you reported in `usePolicyRun`.** You were
+  right and the diagnosis was exact. The run only ever happened inside the rAF
+  callback, so on any page that is not compositing the callback never fired,
+  `setRunning(false)` never ran, and it sat on the loading text for good. The
+  frame yield is kept because the reason for it is sound, but a 50ms timer now
+  races it and whichever arrives first does the run, guarded so only one does.
+  It is 50ms rather than the 0 you suggested: a zero-delay timer fires in about
+  a millisecond and would beat the frame every time in a healthy page, which
+  would quietly remove the paint yield you wanted kept.
+- Two things came out of it that you did not report. The generation guard ran
+  *after* `runSimulation`, so a superseded config still spent 0.65s on a result
+  it then discarded — it is checked first now. And the cleanup cancelled the
+  timeout but never the frame, so a pending run outlived its own effect. Both
+  fixed here.
 - **Now building against contract 1.6.0**, starting from `20af5a6`. Verified
   nine exports, eleven `Metrics` fields, and the new `equity` and `steadyState`
   fields against a live run before writing anything.
