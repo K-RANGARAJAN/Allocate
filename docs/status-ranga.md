@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 15:16 IST / a36b9d7
+Updated: 2026-09-08 15:28 IST / 73d7851
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -26,6 +26,10 @@ the five-page restructure, each in the worker behind its own button.
   a page body. The single dense page is gone and nothing was dropped in the
   move — every control, metric, table and chart that existed before is still
   reachable, and the header and controls persist across all five pages.
+- **Robustness is wired, on page 4 under sensitivity.** A `unanimous` row is
+  rendered as "0 on all 20 seeds" with no mean shown at all, because it is not
+  an average and printing "mean 0" would throw away the point. Other rows read
+  as a mean with their min-to-max band.
 - `useEngineWorker` carries result slots for all five long calls now. Its
   request union is spelled out one member at a time rather than written as
   `Omit<WorkerRequest, "id">` — `Omit` does not distribute over a union and
