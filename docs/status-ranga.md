@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 12:28 IST / 0198f23
+Updated: 2026-09-08 12:40 IST / af3b21b
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -22,6 +22,11 @@ the five-page restructure, each in the worker behind its own button.
 
 ## Done since last update
 
+- **The missing zone inequality tile is fixed** — you reported it and you were
+  right. The grid held a ten-entry list I hardcoded back at 1.1.0, so
+  `zoneGiniPct` was being dropped silently. It now reads the order and labels
+  off `metricList`, and renders eleven tiles with "Zone inequality (Gini) % 1.9"
+  in your own wording. It cannot fall behind the contract again.
 - `ControlsDrawer.tsx` puts the controls in the shell rather than on a page, so
   they are reachable from all five. It collapses, which lets a chart take the
   full width without the reader losing sight of the policy behind it.

@@ -31,7 +31,7 @@ export function App() {
       <section className="panel">
         <h2 className="panel-title">Outcome</h2>
         <p className="panel-note">{status}</p>
-        <MetricGrid metrics={run.outcome.metrics} running={run.running} />
+        <MetricGrid outcome={run.outcome} running={run.running} />
       </section>
     );
 
