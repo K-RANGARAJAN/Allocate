@@ -29,10 +29,9 @@ export function PresetButtons(props: PresetButtonsProps) {
 
   return (
     <div className="presets">
-      <span className="label">
-        Presets
-        <ControlHint hint="presets" />
-      </span>
+      <ControlHint hint="presets">
+        <span className="label">Presets</span>
+      </ControlHint>
       <div className="preset-row">
         <button
           type="button"

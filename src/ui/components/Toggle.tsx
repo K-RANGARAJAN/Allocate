@@ -9,11 +9,13 @@ export interface ToggleProps {
   onChange: (next: boolean) => void;
 }
 
-function HintFor(props: { hint?: string }) {
+// With no copy the label renders bare, with no icon and no hover region.
+function ControlLabel(props: { label: string; hint?: string }) {
+  const label = <span className="control-label">{props.label}</span>;
   if (props.hint === undefined) {
-    return null;
+    return label;
   }
-  return <ControlHint hint={props.hint} />;
+  return <ControlHint hint={props.hint}>{label}</ControlHint>;
 }
 
 // A labelled checkbox for the boolean constraints.
@@ -25,8 +27,7 @@ export function Toggle(props: ToggleProps) {
   return (
     <label className="control control-toggle">
       <input type="checkbox" checked={props.checked} onChange={handleChange} />
-      <span className="control-label">{props.label}</span>
-      <HintFor hint={props.hint} />
+      <ControlLabel label={props.label} hint={props.hint} />
     </label>
   );
 }

@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 22:40 IST / 5e0057b
+Updated: 2026-09-08 22:52 IST / 7380594
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -30,6 +30,11 @@ the five-page restructure, each in the worker behind its own button.
   rate at 12, which renders your finding live: holding that line costs 5103
   life-years, 7 of 12 weightings feasible. Set it to 90 and it says no policy in
   the swept space meets the line, which is the null case as a stated result.
+- Verified the resulting structure on a slider: `.hint-target` holds the label
+  and the icon, the value is its sibling outside the region, and the range input
+  is outside the head entirely. So the word opens the bubble and a drag on the
+  track cannot. The icon is still rendered — it is what signals an explanation
+  exists at all, which a bare label does not.
 - **The hint hover target now covers the label, not just the icon.** Pointing
   at the word "Urgency" opens its bubble exactly as pointing at the icon does.
   `mouseenter` and `mouseleave` moved onto a region wrapping the label text and

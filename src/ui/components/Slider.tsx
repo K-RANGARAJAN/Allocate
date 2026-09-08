@@ -15,11 +15,13 @@ export interface SliderProps {
   onChange: (next: number) => void;
 }
 
-function HintFor(props: { hint?: string }) {
+// With no copy the label renders bare, with no icon and no hover region.
+function ControlLabel(props: { label: string; hint?: string }) {
+  const label = <span className="control-label">{props.label}</span>;
   if (props.hint === undefined) {
-    return null;
+    return label;
   }
-  return <ControlHint hint={props.hint} />;
+  return <ControlHint hint={props.hint}>{label}</ControlHint>;
 }
 
 // A labelled range input with its current value shown in tabular figures. The
@@ -38,8 +40,7 @@ export function Slider(props: SliderProps) {
   return (
     <label className="control">
       <span className="control-head">
-        <span className="control-label">{props.label}</span>
-        <HintFor hint={props.hint} />
+        <ControlLabel label={props.label} hint={props.hint} />
         <span className="control-value num">
           {props.value}
           {suffix}
