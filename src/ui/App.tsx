@@ -40,7 +40,9 @@ export function App() {
       body = <WhoItReachesPage outcome={outcome} />;
     }
     if (nav.page === "tradeoffs") {
-      body = <TradeOffsPage config={run.config} worker={worker} />;
+      body = (
+        <TradeOffsPage outcome={outcome} config={run.config} worker={worker} />
+      );
     }
     if (nav.page === "movers") {
       body = <WhatMovesItPage config={run.config} worker={worker} />;

@@ -30,6 +30,11 @@ the five-page restructure, each in the worker behind its own button.
   rate at 12, which renders your finding live: holding that line costs 5103
   life-years, 7 of 12 weightings feasible. Set it to 90 and it says no policy in
   the swept space meets the line, which is the null case as a stated result.
+- **The constrained frontier is live on page 3**, defaulting to the over-60 rate
+  at 12, which renders your finding from live output: holding that line costs
+  5103 life-years, 7 of 12 weightings feasible, best feasible 10268 against an
+  unconstrained 15371. Set it to 90 and it reports that no policy in the swept
+  space meets the line — the null case as a stated result, not a blank panel.
 - `ConstrainedFrontierPanel` carries the constraint control — metric, direction
   and value — defaulting to the over-60 rate at 12. It deliberately does not
   re-plot the scatter: `ParetoScatter` marks points by domination, not by
