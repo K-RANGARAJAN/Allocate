@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 23:10 IST / f689dfc
+Updated: 2026-09-08 23:24 IST / 8483271
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -30,6 +30,17 @@ the five-page restructure, each in the worker behind its own button.
   rate at 12, which renders your finding live: holding that line costs 5103
   life-years, 7 of 12 weightings feasible. Set it to 90 and it says no policy in
   the swept space meets the line, which is the null case as a stated result.
+- **Every one of the eleven tiles now carries a definition.** Verified against
+  a real run: eleven definitions, five of them followed by their "In practice"
+  figure, none bare. The definition always renders first — what the measure is,
+  before what the world does.
+- The header line above the grid names both kinds of text, so a reader can tell
+  a definition from a sourced figure without having to infer it from wording.
+- Two definitions do work the numbers cannot do alone. The median wait one says
+  outright that it can fall because the slowest-waiting patients stopped being
+  transplanted, which is the trap arriving disguised as an improvement. The zone
+  Gini one says it can sit still while the regional gap moves, which is your
+  reason for returning both.
 - **Metric context now has two fields, not one.** A plain `definition` of what
   the measure is, and the sourced `inPractice` figure, kept apart so a
   definition can never be read as a claim about the real world. The definition
