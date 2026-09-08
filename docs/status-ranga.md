@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 21:26 IST / ba31a80
+Updated: 2026-09-08 21:36 IST / 7ffbafb
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -30,6 +30,11 @@ the five-page restructure, each in the worker behind its own button.
   rate at 12, which renders your finding live: holding that line costs 5103
   life-years, 7 of 12 weightings feasible. Set it to 90 and it says no policy in
   the swept space meets the line, which is the null case as a stated result.
+- `ControlHint.tsx` is the circled "i". It opens on hover **and** keyboard
+  focus — hover alone shuts out keyboard and touch — and closes on leave, blur
+  or Escape. The trigger is a focusable span, not a button: these controls wrap
+  their label in a `<label>`, and a button inside one is activated by the label,
+  so Enter on the icon would have toggled the control being explained.
 - `hintPlacement.ts` decides where a bubble goes, and it is verified against
   four cases: anchored to the drawer's right edge in a wide viewport, flipped to
   the left of the icon when there is no room, anchored to the icon itself in the
