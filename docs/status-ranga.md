@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 12:50 IST / dab6c18
+Updated: 2026-09-08 13:00 IST / 4f3e64e
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -22,6 +22,11 @@ the five-page restructure, each in the worker behind its own button.
 
 ## Done since last update
 
+- **Page 1, Policy and outcome.** The eleven-tile metric grid, the timeline at
+  full width, and the four age bands beneath it. It is built so a reader who
+  never leaves this page still sees the over-60 collapse: the header carries the
+  rate, the grid carries it again, and the age table shows the two bands it
+  spans going to nothing. Verified below against both configs.
 - `AgeBandTable.tsx` is pulled out of the breakdowns so page 1 can carry it on
   its own. Page 1 has to make the over-60 argument without the reader visiting
   another page, so it shows the table with a note pointing at the last two rows;
