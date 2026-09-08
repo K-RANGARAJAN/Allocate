@@ -67,3 +67,22 @@
   font-size: var(--text-xs);
   margin: var(--space-4) 0 var(--space-2);
 }
+
+.frontier-headline {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  margin: 0 0 var(--space-3);
+}
+
+.frontier-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.frontier-controls .control {
+  margin-bottom: 0;
+  min-width: 170px;
+}

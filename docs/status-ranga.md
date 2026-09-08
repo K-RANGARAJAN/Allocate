@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 16:18 IST / f0d114d
+Updated: 2026-09-08 16:30 IST / 679d27c
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -26,6 +26,10 @@ the five-page restructure, each in the worker behind its own button.
   a page body. The single dense page is gone and nothing was dropped in the
   move — every control, metric, table and chart that existed before is still
   reachable, and the header and controls persist across all five pages.
+- `FrontierVerdict` states the price in words. It never presents `best` as a
+  recommendation — the framing is that the user drew a line and this is what
+  holding it costs. A null `priceOfConstraint` is rendered as its own finding,
+  "No policy in the swept space meets this line", rather than as a blank panel.
 - **Counterfactual verified against your run and it agrees exactly.** Default
   against utilityTrap: 373 lost, 159 gained, seed 42. By band, lost/gained —
   18-39 70/140, 40-59 230/19, 60-69 56/0, 70+ 17/0. Not one patient over 60
