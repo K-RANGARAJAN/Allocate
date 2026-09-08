@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 13:22 IST / 92a6d5c
+Updated: 2026-09-08 13:34 IST / 3c20803
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -22,6 +22,11 @@ the five-page restructure, each in the worker behind its own button.
 
 ## Done since last update
 
+- `SteadyStatePanel.tsx` renders the eleven rows with the window days read off
+  `meta`. The three `windowable: false` rows print an em dash and the verdict
+  "not applicable" — never a zero, which would read as no drift and mean the
+  opposite of the truth. It checks the flag, never the value. Verified: your
+  life-years +12% and discards -50% both come through as still moving.
 - `EquityPanel.tsx` renders the three rows with Gini and spread side by side and
   the best and worst group named. Both figures are shown because they disagree,
   which your contract note says is the point — a middle zone can drift while the
