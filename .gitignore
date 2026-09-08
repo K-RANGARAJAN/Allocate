@@ -4,3 +4,6 @@ dist/
 *.log
 
 .tasks/
+
+# Demo handouts. Generated from the docs, not source of truth.
+docs/*.pdf
