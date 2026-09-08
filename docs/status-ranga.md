@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 22:52 IST / 7380594
+Updated: 2026-09-08 23:10 IST / f689dfc
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -30,6 +30,11 @@ the five-page restructure, each in the worker behind its own button.
   rate at 12, which renders your finding live: holding that line costs 5103
   life-years, 7 of 12 weightings feasible. Set it to 90 and it says no policy in
   the swept space meets the line, which is the null case as a stated result.
+- **Metric context now has two fields, not one.** A plain `definition` of what
+  the measure is, and the sourced `inPractice` figure, kept apart so a
+  definition can never be read as a claim about the real world. The definition
+  renders first and carries no prefix and no source; the published figure sits
+  beneath it still marked "In practice" and still carrying its citation.
 - Verified the resulting structure on a slider: `.hint-target` holds the label
   and the icon, the value is its sibling outside the region, and the range input
   is outside the head entirely. So the word opens the bubble and a drag on the
