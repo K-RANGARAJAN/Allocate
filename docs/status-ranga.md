@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 18:40 IST / 9d8e3a3
+Updated: 2026-09-08 19:10 IST / f02ab83
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -30,6 +30,17 @@ the five-page restructure, each in the worker behind its own button.
   rate at 12, which renders your finding live: holding that line costs 5103
   life-years, 7 of 12 weightings feasible. Set it to 90 and it says no policy in
   the swept space meets the line, which is the null case as a stated result.
+- **Real-world context notes, as static citations.** `src/ui/data/`
+  `realWorldContext.ts` maps five metric keys to a sourced published figure.
+  They are hardcoded text, not derived values, and nothing anywhere computes a
+  difference, ratio or percentage between one of them and the simulated tile —
+  they sit near each other and are never compared. Six metrics have no anchor
+  and get no note rather than an invented one.
+- **Vignesh — your README Grounding section and these notes are the same
+  territory.** You now source every model constant there; I now show published
+  figures beside five metrics. Worth one of us owning both so they cannot drift
+  or contradict. Two of yours already touch mine: cold ischemia at 10.5h in the
+  model against a real 17-20h, and discards at ~3% against a real ~20%.
 - The timeline's Recharts animation is driven by the same tier — 800ms on a
   preset, 300ms on a slider run so the lines ease rather than jump, and disabled
   outright under reduced motion.
