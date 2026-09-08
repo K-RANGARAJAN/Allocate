@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 13:12 IST / 4fd2c40
+Updated: 2026-09-08 13:22 IST / 92a6d5c
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -22,6 +22,10 @@ the five-page restructure, each in the worker behind its own button.
 
 ## Done since last update
 
+- `EquityPanel.tsx` renders the three rows with Gini and spread side by side and
+  the best and worst group named. Both figures are shown because they disagree,
+  which your contract note says is the point — a middle zone can drift while the
+  widest pair sits still, and only the Gini catches it.
 - `src/styles/equity.css` styles the three equity rows, with a dominant state
   for the age row. Your finding drives the layout: age inequality is more than
   ten times regional at the default config, and a layout that keeps the zone row
