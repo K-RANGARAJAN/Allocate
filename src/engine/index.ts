@@ -1,7 +1,7 @@
-// The engine seam. This module exports exactly nine functions and nothing else.
+// The engine seam. This module exports exactly ten functions and nothing else.
 // The interface half imports only from here.
 //
-// All nine are real. Every number they return comes out of a seeded simulation
+// All ten are real. Every number they return comes out of a seeded simulation
 // of the same 730 days, and the same config at the same seed always produces the
 // same Outcome, with meta.runtimeMs the one documented exception.
 
@@ -11,6 +11,7 @@ import type {
   CounterfactualReport,
   FrontierConstraint,
   MetricKey,
+  ModeComparison,
   Outcome,
   ParetoPoint,
   PolicyConfig,
@@ -18,11 +19,12 @@ import type {
   ScenarioComparison,
   SensitivityRow
 } from "../contract/types";
-import { buildComparison } from "./compare";
+import { buildComparison, metricOrder } from "./compare";
 import { buildCounterfactual, configWithSeed } from "./counterfactual";
 import { buildEquity } from "./equity";
 import { buildConstrainedFrontier } from "./frontier";
 import { buildBreakdowns, buildMetrics } from "./metrics";
+import { buildModeComparison } from "./modes";
 import { buildPareto } from "./pareto";
 import { buildRobustness } from "./robustness";
 import { buildSensitivity } from "./sensitivity";
@@ -76,7 +78,7 @@ export function presets(): Record<string, PolicyConfig> {
   // The Tamil Nadu shape of the trap: a cascade, the retrieving hospital
   // keeping both kidneys, a rota between centres, and organs sealed inside the
   // zone they were donated in. localFirst was "state", which in this model puts
-  // every zone in one state and so restricts nothing — the preset was named
+  // every zone in one state and so restricts nothing â€” the preset was named
   // after a constraint it did not apply. "zone" is the tightened setting the
   // trap is about, and it moves the regional gap from 1.5% to 10.4% while
   // cutting both cold ischemia time and discards.
@@ -103,6 +105,7 @@ export function runSimulation(config: PolicyConfig): Outcome {
     metrics,
     breakdowns,
     timeline: log.timeline,
+    metricOrder: metricOrder(),
     // Both of these are aggregation over the log that was just produced. No
     // extra simulation runs, so runSimulation costs what it always did.
     equity: buildEquity(breakdowns),
@@ -173,6 +176,15 @@ export function runCounterfactual(
     seed,
     Date.now() - startedAt
   );
+}
+
+// Three full simulations at one seed, so about three times a single run. The
+// same patients and the same organs meet all three allocation rules, and only
+// the rule for choosing between them changes.
+export function runModeComparison(config: PolicyConfig): ModeComparison {
+  return buildModeComparison(config, (moded) => {
+    return runSimulation(moded);
+  });
 }
 
 // Costs exactly one sweep. The user sets the constraint; this reports the price

@@ -4,6 +4,7 @@ import { configKey } from "./configKey";
 import type {
   ConstrainedFrontierReport,
   CounterfactualReport,
+  ModeComparison,
   ParetoPoint,
   PolicyConfig,
   RobustnessReport,
@@ -12,6 +13,7 @@ import type {
 import type {
   CounterfactualRequest,
   FrontierRequest,
+  ModesRequest,
   ParetoRequest,
   RobustnessRequest,
   SensitivityRequest,
@@ -24,6 +26,7 @@ export type TaskKind =
   | "pareto"
   | "robustness"
   | "counterfactual"
+  | "modes"
   | "frontier";
 // Spelled out rather than Omit<WorkerRequest, "id">, because Omit does not
 // distribute over a union and would collapse these to their shared keys.
@@ -32,6 +35,7 @@ export type StartRequest =
   | Omit<ParetoRequest, "id">
   | Omit<RobustnessRequest, "id">
   | Omit<CounterfactualRequest, "id">
+  | Omit<ModesRequest, "id">
   | Omit<FrontierRequest, "id">;
 
 export interface EngineWorker {
@@ -39,6 +43,7 @@ export interface EngineWorker {
   pareto: ParetoPoint[] | null;
   robustness: RobustnessReport | null;
   counterfactual: CounterfactualReport | null;
+  modes: ModeComparison | null;
   frontier: ConstrainedFrontierReport | null;
   busy: TaskKind | null;
   elapsedMs: number;
@@ -54,6 +59,7 @@ export function useEngineWorker(): EngineWorker {
   const [robustness, setRobustness] = useState<RobustnessReport | null>(null);
   const [counterfactual, setCounterfactual] =
     useState<CounterfactualReport | null>(null);
+  const [modes, setModes] = useState<ModeComparison | null>(null);
   const [frontier, setFrontier] = useState<ConstrainedFrontierReport | null>(
     null
   );
@@ -88,6 +94,9 @@ export function useEngineWorker(): EngineWorker {
       }
       if (data.kind === "counterfactual") {
         setCounterfactual(data.report);
+      }
+      if (data.kind === "modes") {
+        setModes(data.report);
       }
       if (data.kind === "frontier") {
         setFrontier(data.report);
@@ -145,6 +154,7 @@ export function useEngineWorker(): EngineWorker {
     pareto,
     robustness,
     counterfactual,
+    modes,
     frontier,
     busy,
     elapsedMs,

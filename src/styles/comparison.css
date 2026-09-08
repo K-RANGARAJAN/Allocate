@@ -86,3 +86,25 @@
   margin-bottom: 0;
   min-width: 170px;
 }
+
+/* Three rules, one population. The winner mark is applied only where the engine
+   named one, so the styling can never imply a victory the engine did not
+   report. The current rule is marked separately, because "what you are running"
+   and "what reads best" are different questions and the table must not blur
+   them. */
+
+.panel-subtitle {
+  color: var(--ink);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  margin: var(--space-5) 0 var(--space-2);
+}
+
+.mode-best {
+  color: var(--teal);
+  font-weight: var(--weight-semibold);
+}
+
+.mode-current {
+  background: var(--teal-wash);
+}

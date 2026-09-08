@@ -59,3 +59,45 @@ h3 {
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
+
+/* Keyboard focus. Every control here is custom-styled, which suppresses the
+   browser default ring on several of them, so a keyboard user could tab through
+   the whole app with nothing visibly selected. One rule, applied to everything
+   focusable, using :focus-visible so it never shows on a mouse click. */
+
+a:focus-visible,
+button:focus-visible,
+select:focus-visible,
+summary:focus-visible,
+details:focus-visible,
+[tabindex]:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 2px;
+  border-radius: var(--radius);
+}
+
+/* The range thumb is the one element an outline sits awkwardly on, so the
+   track gets the ring instead of the thumb itself. */
+input[type="range"]:focus-visible {
+  outline-offset: 4px;
+}
+
+/* Skip link, so a keyboard user can reach the results without tabbing through
+   every control in the drawer first. */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  padding: var(--space-3) var(--space-4);
+  background: var(--teal);
+  color: var(--paper);
+  border-radius: var(--radius);
+  font-size: var(--text-sm);
+}
+
+.skip-link:focus {
+  left: var(--space-4);
+  top: var(--space-4);
+}

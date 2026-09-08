@@ -6,6 +6,7 @@
 import {
   runConstrainedFrontier,
   runCounterfactual,
+  runModeComparison,
   runParetoSweep,
   runRobustness,
   runSensitivity
@@ -15,6 +16,7 @@ import type {
   CounterfactualReport,
   FrontierConstraint,
   MetricKey,
+  ModeComparison,
   ParetoPoint,
   PolicyConfig,
   RobustnessReport,
@@ -50,6 +52,13 @@ export interface CounterfactualRequest {
   scenarioLabel: string;
 }
 
+// Three simulations at one seed, so about three times a single run.
+export interface ModesRequest {
+  kind: "modes";
+  id: number;
+  config: PolicyConfig;
+}
+
 export interface FrontierRequest {
   kind: "frontier";
   id: number;
@@ -64,6 +73,7 @@ export type WorkerRequest =
   | ParetoRequest
   | RobustnessRequest
   | CounterfactualRequest
+  | ModesRequest
   | FrontierRequest;
 
 export type WorkerResponse =
@@ -71,6 +81,7 @@ export type WorkerResponse =
   | { kind: "pareto"; id: number; points: ParetoPoint[] }
   | { kind: "robustness"; id: number; report: RobustnessReport }
   | { kind: "counterfactual"; id: number; report: CounterfactualReport }
+  | { kind: "modes"; id: number; report: ModeComparison }
   | { kind: "frontier"; id: number; report: ConstrainedFrontierReport }
   | { kind: "error"; id: number; message: string };
 
@@ -113,6 +124,12 @@ ctx.addEventListener("message", (event) => {
         request.scenarioLabel
       );
       ctx.postMessage({ kind: "counterfactual", id: request.id, report });
+      return;
+    }
+
+    if (request.kind === "modes") {
+      const report = runModeComparison(request.config);
+      ctx.postMessage({ kind: "modes", id: request.id, report });
       return;
     }
 

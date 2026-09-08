@@ -1,4 +1,4 @@
-export const CONTRACT_VERSION = "1.6.0";
+export const CONTRACT_VERSION = "1.8.0";
 
 export type BloodGroup = "A" | "B" | "AB" | "O";
 export type ZoneId = "north" | "south" | "west";
@@ -134,12 +134,26 @@ export interface SteadyStateRow {
   windowable: boolean;
 }
 
+// The canonical display order and label for every metric on `Metrics`, in one
+// place. The interface renders metric lists from this rather than keeping its
+// own copy, so a metric added to the contract appears everywhere at once and no
+// two panels can name the same number differently.
+//
+// Same order and same label strings that `compareOutcomes` and `steadyState`
+// use, because all three are built from it.
+export interface MetricLabel {
+  metric: MetricKey;
+  label: string;
+}
+
 export interface Outcome {
   contractVersion: string;
   config: PolicyConfig;
   metrics: Metrics;
   breakdowns: Breakdowns;
   timeline: TimelinePoint[];
+  // One entry per metric, always complete, always in display order.
+  metricOrder: MetricLabel[];
   // Three rows, always all three, in this order: zone, ageBand, hospitalType.
   equity: EquityIndex[];
   // One row per metric, in the same display order as compareOutcomes.
@@ -259,6 +273,45 @@ export interface CounterfactualReport {
   gained: CounterfactualPatient[];
   sampleCap: number;
   byAgeBand: CounterfactualBandRow[];
+  runtimeMs: number;
+}
+
+// The same policy settings run under all three allocation rules at one seed.
+//
+// This is the comparison the project exists to make. A weighted score is the
+// textbook approach; the cascade is what Tamil Nadu actually operates; first
+// come first served is the null hypothesis. Same patients, same organs, same
+// seed - only the rule for choosing between them changes.
+export interface ModeMetricRow {
+  metric: MetricKey;
+  label: string;
+  score: number;
+  cascade: number;
+  fcfs: number;
+  // Which rule reads best on this metric. Null where the metric has no honest
+  // direction - the over-60 rate is the argument, not a score, so no rule
+  // "wins" it.
+  best: PolicyMode | null;
+  // Widest gap between any two rules on this metric, in the metric's own units.
+  spread: number;
+}
+
+// Transplant rate per group under each rule. The evidence for who each rule
+// reaches, as opposed to how much it delivers in total.
+export interface ModeGroupRow {
+  group: string;
+  score: number;
+  cascade: number;
+  fcfs: number;
+}
+
+export interface ModeComparison {
+  seed: number;
+  // The rule the caller's own config is set to, so the interface can mark it.
+  currentMode: PolicyMode;
+  rows: ModeMetricRow[];
+  byAgeBand: ModeGroupRow[];
+  byZone: ModeGroupRow[];
   runtimeMs: number;
 }
 

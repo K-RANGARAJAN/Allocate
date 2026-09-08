@@ -1,6 +1,6 @@
 # Contract
 
-**Version 1.6.0**
+**Version 1.8.0**
 
 This document is the prose companion to `src/contract/types.ts`. The types file is
 the machine-readable truth. This file explains what the fields mean.
@@ -8,9 +8,9 @@ the machine-readable truth. This file explains what the fields mean.
 Neither developer changes the contract without messaging the other first. When it
 changes, `CONTRACT_VERSION` changes with it and both status files are updated.
 
-## The nine-function API
+## The ten-function API
 
-`src/engine/index.ts` exports exactly these nine functions and nothing else. The
+`src/engine/index.ts` exports exactly these ten functions and nothing else. The
 interface imports from this module only, never from engine internals.
 
 | Function | Returns | Cost | Purpose |
@@ -24,6 +24,7 @@ interface imports from this module only, never from engine internals.
 | `runRobustness(config, seeds?)` | `RobustnessReport` | ~13s at 20 seeds | Every metric as a range across many seeds |
 | `runCounterfactual(baseline, scenario, baselineLabel?, scenarioLabel?)` | `CounterfactualReport` | ~1.5s | The individual patients whose outcome the policy changed |
 | `runConstrainedFrontier(config, points, constraint, objective?)` | `ConstrainedFrontierReport` | one sweep | What holding a user-set constraint costs |
+| `runModeComparison(config)` | `ModeComparison` | ~2.4s | The same settings under all three allocation rules |
 
 The last three run in a worker, behind an explicit button, never on a control
 change. `runRobustness` is the most expensive call on the contract: it is one
@@ -90,9 +91,32 @@ The interface plots it as given.
 
 ## Nullability
 
-`constraints.maxAgeToList` is the only field that is legitimately `null`, meaning
-no upper age limit on listing. Every other numeric field is always a finite
-number. The smoke test enforces this.
+Two fields are legitimately `null`. `constraints.maxAgeToList` null means no
+upper age limit on listing. `ModeMetricRow.best` null means no allocation rule
+reads best on that metric, either because the metric has no honest direction or
+because the rules tied. Every other numeric field is always a finite number. The
+smoke test enforces this.
+
+## Three rules, one population
+
+`runModeComparison(config)` runs the caller's settings under all three allocation
+rules at one seed, so the same synthetic patients and the same organs meet the
+weighted score, the Tamil Nadu cascade and first come first served. About three
+times a single run, so roughly 2.4 seconds. Worker only.
+
+`rows` is one entry per metric with the value under each rule, plus `best` and
+`spread`. **`best` is null wherever no rule genuinely wins**: always for
+`overSixtyRatePct`, because whether more or fewer older recipients is an
+improvement is the argument this platform refuses to settle, and on any metric
+where the three rules tie. The interface must not mark a winner the engine did
+not name.
+
+`byAgeBand` and `byZone` give the transplant rate per group under each rule, in
+the same order as the matching `Breakdowns` arrays. They are the evidence for who
+each rule reaches rather than how much it delivers in total.
+
+`currentMode` echoes the caller's own `config.mode`, so the interface can mark
+which column the user is actually running without inferring it.
 
 ## Scenario comparison
 
@@ -137,6 +161,23 @@ months are that queue draining. Each row compares the metric over the final
 inside a window is often transplanted long after it, so a rate confined to a
 window is not a rate of anything. Those three rows return zeros and the interface
 must not display them as numbers — show "not applicable" or omit the row.
+
+## metricOrder is where metric lists come from
+
+`Outcome.metricOrder` is one `{ metric, label }` entry per metric on `Metrics`,
+always complete, always in display order. The interface renders every metric list
+from it rather than keeping its own copy, so a metric added to the contract
+appears everywhere at once and no two panels can name the same number
+differently.
+
+It is built from the same list `compareOutcomes` and `steadyState` use, so all
+three agree by construction. The smoke test asserts the entry count against
+`Metrics`, that every named metric exists, that every entry has a label, and that
+the order and labels match `steadyState` position for position.
+
+Read labels and order from here. `steadyState` also carries them and is also
+guaranteed complete, but that is a property of what it is for, not a promise
+about labelling.
 
 ## steadyState is a complete, ordered row set - guaranteed
 
@@ -219,6 +260,20 @@ finding and should be shown as one, not as an empty chart.
 ## Changelog
 
 <!-- One line per contract change: version, date, what moved, who agreed. -->
+
+1.8.0 — 2026-09-08 — added `runModeComparison` with `ModeComparison`,
+`ModeMetricRow` and `ModeGroupRow`. Everything else in the project compares
+weightings of one scoring rule; this compares the rules themselves, which is the
+comparison the project is actually about. `ModeMetricRow.best` is nullable and is
+null for `overSixtyRatePct` and on ties, so the engine never names a winner it
+has not earned. Agreed by Vignesh.
+
+1.7.0 — 2026-09-08 — added `Outcome.metricOrder` and the `MetricLabel` type, the
+canonical display order and label for every metric. Requested by Ranga: his
+metric grid was reading labels off `steadyState`, which worked only because that
+array happens to be complete, and would have silently lost tiles if it were ever
+filtered. Additive; `steadyState` is unchanged and still carries its own labels.
+Agreed by Vignesh.
 
 1.6.0 — 2026-09-08 — added `runConstrainedFrontier` with `FrontierConstraint`
 and `ConstrainedFrontierReport`, and added `metrics: Metrics` to `ParetoPoint` so

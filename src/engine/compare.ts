@@ -8,6 +8,7 @@ import type {
   MetricDelta,
   MetricDirection,
   MetricKey,
+  MetricLabel,
   Outcome,
   ScenarioComparison
 } from "../contract/types";
@@ -29,6 +30,14 @@ export const COMPARISON_ROWS: { metric: MetricKey; label: string; better: Metric
   { metric: "meanColdIschemiaHours", label: "Mean cold ischemia, hours", better: "lower" },
   { metric: "meanGraftQuality", label: "Mean graft quality", better: "higher" }
 ];
+
+// The contract's canonical metric order and labels, lifted straight off the row
+// list above so there is exactly one place either can be changed.
+export function metricOrder(): MetricLabel[] {
+  return COMPARISON_ROWS.map((row) => {
+    return { metric: row.metric, label: row.label };
+  });
+}
 
 function percentMove(before: number, after: number): number {
   if (before === 0) {

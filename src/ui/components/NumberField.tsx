@@ -25,10 +25,14 @@ function ControlLabel(props: { label: string; hint?: string }) {
 
 export function NumberField(props: NumberFieldProps) {
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
-    const next = Number(event.target.value);
-    if (Number.isFinite(next) === false) {
+    const raw = Number(event.target.value);
+    if (Number.isFinite(raw) === false) {
       return;
     }
+    // The engine coerces a seed to a 32-bit integer, so 42.7 and 42 are the same
+    // run. Truncating here rather than passing the fraction through means the
+    // number on screen is the seed that was actually used.
+    const next = Math.trunc(raw);
     if (next < props.min) {
       return;
     }

@@ -112,6 +112,14 @@ export function App() {
       <div className={simulatorClass} aria-hidden={onHome}>
         {chrome}
         <div className="app">
+          {/*
+            The controls drawer is a long tab stop. Without this a keyboard user
+            has to walk every slider in it before reaching the numbers those
+            sliders produce.
+          */}
+          <a className="skip-link" href="#results">
+            Skip to results
+          </a>
           <p className="page-claim">{claim}</p>
           <div className="layout">
             <ControlsDrawer
@@ -119,7 +127,9 @@ export function App() {
               setConfig={run.setConfig}
               setWholeConfig={run.setWholeConfig}
             />
-            {body}
+            <div id="results" tabIndex={-1}>
+              {body}
+            </div>
           </div>
         </div>
       </div>

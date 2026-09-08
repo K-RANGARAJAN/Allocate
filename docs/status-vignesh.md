@@ -378,6 +378,40 @@ the field is purely additive. Say if you would rather it came back out.
   are real and every field on the Outcome, the sensitivity rows and the Pareto
   points is computed.
 
+## Contract 1.8.0 - three rules, one population
+
+**The comparison this project is actually about, and it was never on screen.**
+Everything else here compares weightings of a single scoring rule.
+`runModeComparison(config)` compares the rules themselves: it runs the caller's
+exact settings under the weighted score, the Tamil Nadu cascade and first come
+first served, at one seed, so the same synthetic patients and the same organs
+meet all three. About 2.4 seconds. It is on the Compare page, in the worker,
+behind its own button.
+
+**The result is the strongest finding in the project.**
+
+| | score | cascade | first come |
+| --- | --- | --- | --- |
+| life-years gained | **10775.4** | 9134.6 | 9585.9 |
+| over-60 transplant rate | 10.2 | 19.7 | 16.4 |
+| 18-39 transplant rate | 26.0 | 15.6 | 17.4 |
+| 70+ transplant rate | 9.5 | **21.4** | 15.6 |
+
+The cascade transplants more than twice the share of over-70s that the weighted
+score does, and it **reverses the age gradient entirely**: the score runs 26%
+down to 9.5% across the bands, the cascade runs 15.6% up to 21.4%. It costs 1,641
+life-years to do it.
+
+Nothing in the cascade knows what age is. It allocates by tier and by waiting
+time and never scores anyone against anyone, so it cannot prefer a patient for
+having more expected life left - which is exactly what the weighted score does,
+and exactly why the utility trap exists. The Indian system is more equitable
+across age than the Western-style scoring approach, and the cost is measurable.
+
+No rule wins everything: cascade reads best on five metrics, the score on two,
+first-come on three. `best` is null on `overSixtyRatePct` always, and on ties, so
+the engine never names a winner it has not earned. The smoke test asserts that.
+
 ## Finishing touches, P0 and P1
 
 Ranga, I have been asked to work in `src/ui/` for these. Everything below is

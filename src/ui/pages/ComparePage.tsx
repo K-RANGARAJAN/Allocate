@@ -4,6 +4,7 @@ import type { Outcome, PolicyConfig } from "../../contract/types";
 import type { EngineWorker } from "../state/useEngineWorker";
 import type { Scenario, ScenarioStore } from "../state/useScenarios";
 import { CounterfactualSection } from "../components/CounterfactualSection";
+import { ModeComparisonPanel } from "../components/ModeComparisonPanel";
 import { ScenarioPanel } from "../components/ScenarioPanel";
 
 export interface ComparePageProps {
@@ -38,6 +39,11 @@ export function ComparePage(props: ComparePageProps) {
         config={props.config}
         worker={props.worker}
       />
+      {/*
+        Needs no saved baseline: it compares the three allocation rules against
+        each other rather than against a scenario, so it stands on its own.
+      */}
+      <ModeComparisonPanel config={props.config} worker={props.worker} />
     </div>
   );
 }

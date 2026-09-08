@@ -30,7 +30,7 @@ scripts/
 src/
   contract/types.ts      the shared contract, changed only by agreement
   engine/
-    index.ts             the seam, exports exactly nine functions
+    index.ts             the seam, exports exactly ten functions
     rng.ts               seeded Mulberry32 generator
     population.ts        synthetic waitlist generation
     organs.ts            synthetic donor organ arrivals
@@ -42,6 +42,7 @@ src/
     sensitivity.ts       one-lever-at-a-time sensitivity
     pareto.ts            weight-space sweep and domination
     frontier.ts          user-set constraints priced against the sweep
+    modes.ts             the three allocation rules against one population
     robustness.ts        the same config re-run across many seeds
     counterfactual.ts    joins two event logs to find who the policy moved
     compare.ts           two finished outcomes as one delta table
@@ -87,7 +88,7 @@ These are absolute.
 - No `Math.random()`. All randomness comes from `createRng` in `src/engine/rng.ts`.
 - No `Date.now()`, no `fetch`, no `localStorage`, no file I/O.
 - No DOM access, no React, no imports from `src/ui/`.
-- `src/engine/index.ts` exports exactly nine functions and nothing else.
+- `src/engine/index.ts` exports exactly ten functions and nothing else.
 
 ## The interface never computes a metric
 
@@ -105,7 +106,7 @@ what keeps the two halves reviewable independently.
 
 ## Vignesh (Engine) must
 
-- Keep the nine exports in `src/engine/index.ts` stable and correctly typed.
+- Keep the ten exports in `src/engine/index.ts` stable and correctly typed.
 - Keep every stub marked with a `// STUB` comment as the first line of its body.
 - Keep `npm run smoke` passing before every commit.
 - Add any metric the interface needs, rather than letting the interface derive it.
@@ -115,7 +116,7 @@ what keeps the two halves reviewable independently.
 
 - Write anything in `src/ui/`, `src/main.tsx`, `index.html` or `src/styles/`.
 - Introduce impurity: randomness outside `rng.ts`, clocks, network, storage.
-- Export anything from `src/engine/index.ts` beyond the nine functions.
+- Export anything from `src/engine/index.ts` beyond the ten functions.
 
 ## Ranga (Interface) must
 

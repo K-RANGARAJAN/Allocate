@@ -7,12 +7,29 @@ import {
   presets,
   runConstrainedFrontier,
   runCounterfactual,
+  runModeComparison,
   runRobustness,
   runSimulation
 } from "../src/engine/index";
 
-// maxAgeToList is legitimately null when no upper age limit is set.
+// Fields where null is the answer rather than a hole.
+//
+// maxAgeToList null means no upper age limit. ModeMetricRow.best null means no
+// allocation rule reads best on that metric, either because the metric has no
+// honest direction or because the rules tied - both are deliberate refusals to
+// declare a winner, and turning them into a value would be the platform picking
+// a side it has promised not to pick.
 const NULLABLE_PATHS = ["outcome.config.constraints.maxAgeToList"];
+
+function isNullable(path: string): boolean {
+  if (NULLABLE_PATHS.includes(path)) {
+    return true;
+  }
+  if (path.startsWith("modes.rows[") && path.endsWith("].best")) {
+    return true;
+  }
+  return false;
+}
 
 const METRIC_ORDER: MetricKey[] = [
   "transplants",
@@ -39,7 +56,7 @@ function inspect(path: string, value: unknown, problems: string[]): void {
     return;
   }
   if (value === null) {
-    if (!NULLABLE_PATHS.includes(path)) {
+    if (!isNullable(path)) {
       problems.push(path + " is null");
     }
     return;
@@ -81,6 +98,36 @@ if (outcome.contractVersion !== CONTRACT_VERSION) {
 for (const key of ["transplants", "waitlistDeaths", "organsDiscarded"] as MetricKey[]) {
   if (outcome.metrics[key] < 0) {
     problems.push("outcome.metrics." + key + " is negative");
+  }
+}
+
+// metricOrder is what the interface renders every metric list from, so it has to
+// carry one entry per metric on Metrics, in the same order as steadyState and
+// the comparison rows. A missing entry silently drops a tile from the grid.
+const metricKeys = Object.keys(outcome.metrics);
+if (outcome.metricOrder.length !== metricKeys.length) {
+  problems.push(
+    "outcome.metricOrder has " + outcome.metricOrder.length + " entries for " +
+      metricKeys.length + " metrics"
+  );
+}
+for (const entry of outcome.metricOrder) {
+  if (!metricKeys.includes(entry.metric)) {
+    problems.push("metricOrder names " + entry.metric + ", which is not on Metrics");
+  }
+  if (typeof entry.label !== "string" || entry.label.length === 0) {
+    problems.push("metricOrder." + entry.metric + " has no label");
+  }
+}
+for (let i = 0; i < outcome.steadyState.length; i++) {
+  if (outcome.metricOrder[i] === undefined) {
+    continue;
+  }
+  if (outcome.metricOrder[i].metric !== outcome.steadyState[i].metric) {
+    problems.push("metricOrder and steadyState disagree at position " + i);
+  }
+  if (outcome.metricOrder[i].label !== outcome.steadyState[i].label) {
+    problems.push("metricOrder and steadyState label " + outcome.metricOrder[i].metric + " differently");
   }
 }
 
@@ -169,6 +216,25 @@ if (counterfactual.lostCount < counterfactual.lost.length) {
 }
 if (counterfactual.seed !== config.sim.seed) {
   problems.push("counterfactual did not run at the baseline seed");
+}
+
+const modes = runModeComparison(config);
+inspect("modes", modes, problems);
+if (modes.rows.length !== outcome.metricOrder.length) {
+  problems.push("modeComparison returned " + modes.rows.length + " rows, expected one per metric");
+}
+if (modes.byAgeBand.length !== outcome.breakdowns.byAgeBand.length) {
+  problems.push("modeComparison age bands do not match the breakdown");
+}
+if (modes.currentMode !== config.mode) {
+  problems.push("modeComparison did not report the caller's own mode");
+}
+for (const row of modes.rows) {
+  // The over-60 rate must never be given a winner. Whether more or fewer older
+  // recipients is better is the argument, not a score.
+  if (row.metric === "overSixtyRatePct" && row.best !== null) {
+    problems.push("modeComparison named a winner on overSixtyRatePct");
+  }
 }
 
 const frontier = runConstrainedFrontier(
