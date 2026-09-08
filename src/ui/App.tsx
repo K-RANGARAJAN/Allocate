@@ -1,12 +1,20 @@
 import { AppHeader } from "./components/AppHeader";
 import { ControlsDrawer } from "./components/ControlsDrawer";
-import { MetricGrid } from "./components/MetricGrid";
 import { PageNav } from "./components/PageNav";
+import { ComparePage } from "./pages/ComparePage";
+import { PolicyOutcomePage } from "./pages/PolicyOutcomePage";
+import { TradeOffsPage } from "./pages/TradeOffsPage";
+import { WhatMovesItPage } from "./pages/WhatMovesItPage";
+import { WhoItReachesPage } from "./pages/WhoItReachesPage";
 import { PAGES, useActivePage } from "./state/useActivePage";
+import { useEngineWorker } from "./state/useEngineWorker";
 import { usePolicyRun } from "./state/usePolicyRun";
+import { useScenarios } from "./state/useScenarios";
 
 export function App() {
   const run = usePolicyRun();
+  const scenarios = useScenarios();
+  const worker = useEngineWorker();
   const nav = useActivePage();
 
   let claim = "";
@@ -16,30 +24,30 @@ export function App() {
     }
   }
 
-  let status = "Simulating two years of allocation…";
-  if (run.running === false) {
-    status = "Two years of allocation under the current policy.";
-  }
+  let body = (
+    <section className="panel">
+      <p className="panel-note">Simulating two years of allocation…</p>
+    </section>
+  );
 
-  let results = null;
   if (run.outcome !== null) {
-    results = (
-      <section className="panel">
-        <h2 className="panel-title">Outcome</h2>
-        <p className="panel-note">{status}</p>
-        <MetricGrid outcome={run.outcome} running={run.running} />
-      </section>
-    );
-  }
+    const outcome = run.outcome;
 
-  let placeholder = null;
-  if (run.outcome === null) {
-    placeholder = (
-      <section className="panel">
-        <h2 className="panel-title">Outcome</h2>
-        <p className="panel-note">{status}</p>
-      </section>
-    );
+    if (nav.page === "outcome") {
+      body = <PolicyOutcomePage outcome={outcome} running={run.running} />;
+    }
+    if (nav.page === "reach") {
+      body = <WhoItReachesPage outcome={outcome} />;
+    }
+    if (nav.page === "tradeoffs") {
+      body = <TradeOffsPage config={run.config} worker={worker} />;
+    }
+    if (nav.page === "movers") {
+      body = <WhatMovesItPage config={run.config} worker={worker} />;
+    }
+    if (nav.page === "compare") {
+      body = <ComparePage outcome={outcome} store={scenarios} />;
+    }
   }
 
   return (
@@ -58,10 +66,7 @@ export function App() {
         <p className="page-claim">{claim}</p>
         <div className="layout">
           <ControlsDrawer config={run.config} setConfig={run.setConfig} />
-          <div className="stack">
-            {placeholder}
-            {results}
-          </div>
+          {body}
         </div>
       </div>
     </div>

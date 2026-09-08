@@ -1,5 +1,5 @@
 # Status — Ranga (Interface)
-Updated: 2026-09-08 14:18 IST / 73b6dc0
+Updated: 2026-09-08 14:30 IST / 4285192
 Building against contract version: 1.6.0
 
 ## Public surface I currently provide
@@ -26,6 +26,11 @@ the five-page restructure, each in the worker behind its own button.
   a page body. The single dense page is gone and nothing was dropped in the
   move — every control, metric, table and chart that existed before is still
   reachable, and the header and controls persist across all five pages.
+- **All five pages are reachable.** The tabs switch the body, and every page
+  renders against a real run: page 1 the grid, timeline and age bands, page 2
+  equity, breakdowns and steady state, page 3 the frontier, page 4 sensitivity,
+  page 5 scenarios. The restructure is done and nothing was dropped — the three
+  new engine calls attach to these pages next.
 - **The shell chrome is live.** `App.tsx` now renders the persistent header and
   the five tabs above a page claim, with the controls drawer beside the body.
   The old page title and standing subtitle are gone — the header carries the
