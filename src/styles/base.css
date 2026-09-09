@@ -101,3 +101,24 @@ input[type="range"]:focus-visible {
   left: var(--space-4);
   top: var(--space-4);
 }
+
+/* Legend for the trade-off scatter. Drawn from the same shapes as the chart,
+   because filled-versus-hollow is the encoding a reader has to pick up and a
+   row of identical coloured squares loses it. */
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-4);
+  list-style: none;
+  margin: var(--space-2) 0 0;
+  padding: 0;
+  font-size: var(--text-xs);
+  color: var(--soft-ink);
+}
+
+.chart-legend li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}

@@ -5,6 +5,14 @@
 const HIT_RADIUS = 14;
 const DOT_RADIUS = 5;
 
+// One definition per series, shared by the marks and the legend, so the swatch
+// can never drift from the dot it stands for. The legend used to read its
+// colour off the Scatter's own fill, which none of these set, so all three
+// swatches came out the same and the legend looked broken.
+export const FRONTIER_FILL = "#2F5D62";
+export const DOMINATED_STROKE = "#5C6470";
+export const CURRENT_FILL = "#A65E2E";
+
 export interface ScatterShapeProps {
   cx?: number;
   cy?: number;
@@ -26,7 +34,7 @@ export function FrontierDot(props: ScatterShapeProps) {
   return (
     <g>
       <HitArea cx={props.cx} cy={props.cy} />
-      <circle cx={props.cx} cy={props.cy} r={DOT_RADIUS} fill="#2F5D62" />
+      <circle cx={props.cx} cy={props.cy} r={DOT_RADIUS} fill={FRONTIER_FILL} />
     </g>
   );
 }
@@ -40,7 +48,7 @@ export function DominatedDot(props: ScatterShapeProps) {
         cy={props.cy}
         r={DOT_RADIUS}
         fill="none"
-        stroke="#5C6470"
+        stroke={DOMINATED_STROKE}
         strokeWidth={1.5}
       />
     </g>
@@ -62,7 +70,7 @@ export function CurrentDiamond(props: ScatterShapeProps) {
   return (
     <g>
       <HitArea cx={cx} cy={cy} />
-      <polygon points={points} fill="#A65E2E" />
+      <polygon points={points} fill={CURRENT_FILL} />
     </g>
   );
 }
