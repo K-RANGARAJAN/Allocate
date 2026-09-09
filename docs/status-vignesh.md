@@ -378,6 +378,36 @@ the field is purely additive. Say if you would rather it came back out.
   are real and every field on the Outcome, the sensitivity rows and the Pareto
   points is computed.
 
+## Saved scenarios persist across a reload now
+
+On Vignesh's call, overturning the original "held in memory" decision. A saved
+policy that vanishes on refresh is not really saved, and naming one only to lose
+it is worse than not offering the feature.
+
+They go to `localStorage`. No backend, nothing leaves the browser, JSON export
+unchanged. `ARCHITECTURE.md` has been updated to say so rather than leaving the
+doc contradicting the code. The `localStorage` ban in the purity rules is about
+`src/engine/`, which is untouched and still pure.
+
+Three things that could have gone wrong and do not:
+
+- **It never breaks the app.** Every read and write is wrapped. `localStorage`
+  throws rather than returning null in a private window, when site data is
+  blocked, and when the quota is full. A quota failure loses persistence for that
+  save and nothing else.
+- **Stale data is dropped, not rendered.** Stored scenarios carry the contract
+  version they were saved under. A scenario saved under 1.7.0 holds an Outcome of
+  the old shape, and the panels would render it against today's fields, so a
+  version mismatch clears the store. I planted a `1.0.0` payload with an empty
+  outcome and reloaded: dropped cleanly, no console errors, no error boundary.
+- **Ids continue rather than colliding.** `nextId` is restored alongside the
+  scenarios, so a reload does not produce a second "1.".
+
+Verified end to end on the production build: saved a hand-built config at urgency
+0.85 as "Persist test", reloaded the page, the chip was still there, and **Use**
+put 0.85 back on the controls. Delete writes through too - 7KB stored, zero after
+removing the last one.
+
 ## Saved scenarios are custom presets now
 
 A saved scenario already carried its whole config and could already be named, so

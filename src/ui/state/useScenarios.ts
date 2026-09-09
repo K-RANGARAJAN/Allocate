@@ -1,5 +1,6 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
+import { CONTRACT_VERSION } from "../../contract/types";
 import type { Outcome } from "../../contract/types";
 
 export interface Scenario {
@@ -24,11 +25,87 @@ export function generatedLabel(outcome: Outcome, id: number) {
   return `${id}. ${outcome.config.mode} ${w.urgency}/${w.lifeYears}/${w.waitingTime}`;
 }
 
-// Scenarios live in memory for the session and leave as JSON. There is no
-// backend and nothing is persisted, which matches ARCHITECTURE.md.
+const STORAGE_KEY = "allocate.scenarios";
+
+interface StoredShape {
+  contractVersion: string;
+  nextId: number;
+  scenarios: Scenario[];
+}
+
+// Every read and write is wrapped. localStorage throws rather than returning
+// null in a private window, when site data is blocked, and when the quota is
+// full, and a saved scenario is a convenience - it must never be the reason the
+// app fails to start.
+function readStored(): StoredShape | null {
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    if (raw === null) {
+      return null;
+    }
+
+    const parsed = JSON.parse(raw) as StoredShape;
+    if (Array.isArray(parsed.scenarios) === false) {
+      return null;
+    }
+
+    // A scenario saved under an older contract holds an Outcome of the old
+    // shape, and the panels would render it against today's fields. Dropping
+    // them is better than showing a table with holes in it.
+    if (parsed.contractVersion !== CONTRACT_VERSION) {
+      return null;
+    }
+
+    return parsed;
+  } catch (error) {
+    return null;
+  }
+}
+
+function writeStored(scenarios: Scenario[], nextId: number): void {
+  try {
+    const payload: StoredShape = {
+      contractVersion: CONTRACT_VERSION,
+      nextId,
+      scenarios
+    };
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+  } catch (error) {
+    // Most likely the quota: an Outcome is a few kilobytes and a determined
+    // user can save a lot of them. The scenario still works for this session,
+    // it just will not survive a reload, which is the old behaviour.
+  }
+}
+
+// Scenarios live in localStorage so they survive a reload, and leave as JSON.
+// There is still no backend and nothing leaves the browser. This overturns the
+// original "held in memory" decision in ARCHITECTURE.md, on Vignesh's call,
+// because a saved policy that vanishes on refresh is not really saved.
 export function useScenarios(): ScenarioStore {
-  const [scenarios, setScenarios] = useState<Scenario[]>([]);
+  const [scenarios, setScenarios] = useState<Scenario[]>(() => {
+    const stored = readStored();
+    if (stored === null) {
+      return [];
+    }
+    return stored.scenarios;
+  });
+
   const nextId = useRef(1);
+  const loaded = useRef(false);
+
+  // Restored once, before the first write, so ids continue rather than
+  // colliding with a label already on screen.
+  if (loaded.current === false) {
+    loaded.current = true;
+    const stored = readStored();
+    if (stored !== null && typeof stored.nextId === "number") {
+      nextId.current = stored.nextId;
+    }
+  }
+
+  useEffect(() => {
+    writeStored(scenarios, nextId.current);
+  }, [scenarios]);
 
   function save(outcome: Outcome, name: string) {
     const id = nextId.current;

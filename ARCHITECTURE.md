@@ -77,8 +77,19 @@ index.html               Vite entry point
 3. The interface renders fields off that `Outcome`. It renders. It does not derive.
 4. `runSensitivity(config)` and `runParetoSweep(config, points)` follow the same shape.
 
-Scenarios are held in memory and exported as JSON. There is no backend, no
-database and no API layer. Everything runs in the browser.
+Scenarios are kept in the browser's `localStorage` so they survive a reload, and
+exported as JSON. There is no backend, no database and no API layer, and nothing
+leaves the browser. They were held only in memory until a saved policy vanishing
+on refresh proved to be the wrong behaviour for something the user had named.
+
+Reads and writes are wrapped: `localStorage` throws in a private window, when
+site data is blocked, and when the quota is full, and a saved scenario must never
+be the reason the app fails to start. Stored scenarios carry the contract version
+they were saved under and are dropped when it no longer matches, because an
+Outcome of an older shape would render against today's fields.
+
+The `localStorage` prohibition in the purity rules below applies to
+`src/engine/`, which stays pure. This is interface state.
 
 ## Engine purity rules
 
