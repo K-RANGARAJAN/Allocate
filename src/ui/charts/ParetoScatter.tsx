@@ -1,6 +1,5 @@
 import {
   CartesianGrid,
-  Legend,
   ResponsiveContainer,
   Scatter,
   ScatterChart,
@@ -106,7 +105,7 @@ export function ParetoScatter(props: ParetoScatterProps) {
   return (
     <div className="chart-wrap">
       <ResponsiveContainer width="100%" height={340}>
-        <ScatterChart margin={{ top: 8, right: 16, bottom: 34, left: 8 }}>
+        <ScatterChart margin={{ top: 8, right: 16, bottom: 28, left: 8 }}>
           <CartesianGrid stroke="#DFE1E4" strokeDasharray="2 4" />
           <XAxis
             type="number"
@@ -142,7 +141,6 @@ export function ParetoScatter(props: ParetoScatterProps) {
             }}
           />
           <Tooltip cursor={{ strokeDasharray: "3 3" }} />
-          <Legend wrapperStyle={{ fontSize: 12 }} content={<FrontierLegend />} />
           <Scatter
             name="On the frontier"
             data={frontier}
@@ -163,6 +161,12 @@ export function ParetoScatter(props: ParetoScatterProps) {
           />
         </ScatterChart>
       </ResponsiveContainer>
+      {/*
+        Outside the chart rather than a <Legend> inside it. Recharts reserves the
+        legend's space within the chart height and lays it out under the plot
+        area, which put it straight on top of the x-axis title.
+      */}
+      <FrontierLegend />
     </div>
   );
 }
