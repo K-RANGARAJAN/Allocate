@@ -25,7 +25,9 @@ export const PAGES: PageSpec[] = [
   {
     id: "outcome",
     label: "Policy and outcome",
-    claim: "What this policy does over two years."
+    // Duration-neutral: the run length is a slider, and the Outcome panel
+    // below states the actual span in words.
+    claim: "What this policy does over the full run."
   },
   {
     id: "reach",

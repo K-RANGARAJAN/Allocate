@@ -15,9 +15,15 @@
   transition: transform 500ms ease-out, opacity 500ms ease-out;
 }
 
+/* visibility follows the slide so nothing on the landing page stays clickable
+   or focusable once it is off screen. Delayed by the transition so it does not
+   blank the page mid-slide, the same shape as .simulator.is-behind. */
 .home.is-leaving {
   transform: translateY(-100%);
   opacity: 0;
+  visibility: hidden;
+  transition: transform 500ms ease-out, opacity 500ms ease-out,
+    visibility 0s 500ms;
 }
 
 .home-bg {

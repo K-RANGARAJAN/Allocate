@@ -22,6 +22,11 @@ export interface ParetoScatterProps {
 
 const AXIS = { fill: "#5C6470", fontSize: 11 };
 
+// The name props reach the tooltip only, so without these the headline chart of
+// the page shows two unlabelled number ranges and a first-time reader has no way
+// to know what is plotted against what.
+const AXIS_TITLE = { fill: "#5C6470", fontSize: 11, textAnchor: "middle" as const };
+
 // The points are split by the flags the engine sets, not by any test of mine.
 export function ParetoScatter(props: ParetoScatterProps) {
   const frontier: ParetoPoint[] = [];
@@ -43,7 +48,7 @@ export function ParetoScatter(props: ParetoScatterProps) {
   return (
     <div className="chart-wrap">
       <ResponsiveContainer width="100%" height={340}>
-        <ScatterChart margin={{ top: 8, right: 16, bottom: 16, left: 8 }}>
+        <ScatterChart margin={{ top: 8, right: 16, bottom: 34, left: 8 }}>
           <CartesianGrid stroke="#DFE1E4" strokeDasharray="2 4" />
           <XAxis
             type="number"
@@ -53,6 +58,12 @@ export function ParetoScatter(props: ParetoScatterProps) {
             tick={AXIS}
             tickLine={false}
             stroke="#DFE1E4"
+            label={{
+              value: "Life-years gained",
+              position: "insideBottom",
+              offset: -12,
+              style: AXIS_TITLE
+            }}
           />
           {/* Scaled to the data. The gap spans about two points at the default
               config, and a 0-to-100 axis would flatten a real effect. */}
@@ -64,7 +75,13 @@ export function ParetoScatter(props: ParetoScatterProps) {
             tick={AXIS}
             tickLine={false}
             stroke="#DFE1E4"
-            width={52}
+            width={64}
+            label={{
+              value: "Regional gap %",
+              angle: -90,
+              position: "insideLeft",
+              style: AXIS_TITLE
+            }}
           />
           <Tooltip cursor={{ strokeDasharray: "3 3" }} />
           <Legend wrapperStyle={{ fontSize: 12 }} />

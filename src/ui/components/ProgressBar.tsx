@@ -17,8 +17,7 @@ export function ProgressBar(props: ProgressBarProps) {
         <div className="progress-stripe" />
       </div>
       <p className="progress-note num">
-        {props.label} — {seconds}s elapsed, usually about{" "}
-        {props.expectedSeconds}.
+        {props.label} — {seconds}s elapsed, usually {props.expectedSeconds}.
       </p>
     </div>
   );

@@ -6,6 +6,8 @@ export interface ToggleProps {
   // Key into CONTROL_HINTS. Omitted means no icon at all.
   hint?: string;
   checked: boolean;
+  // Set when the engine ignores this control under the current mode.
+  disabled?: boolean;
   onChange: (next: boolean) => void;
 }
 
@@ -24,9 +26,19 @@ export function Toggle(props: ToggleProps) {
     props.onChange(event.target.checked);
   }
 
+  let className = "control control-toggle";
+  if (props.disabled === true) {
+    className = "control control-toggle is-inert";
+  }
+
   return (
-    <label className="control control-toggle">
-      <input type="checkbox" checked={props.checked} onChange={handleChange} />
+    <label className={className}>
+      <input
+        type="checkbox"
+        checked={props.checked}
+        disabled={props.disabled}
+        onChange={handleChange}
+      />
       <ControlLabel label={props.label} hint={props.hint} />
     </label>
   );

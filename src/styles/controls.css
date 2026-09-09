@@ -156,3 +156,27 @@
 .controls .group:last-child {
   border-bottom: none;
 }
+
+/* A control the engine ignores under the current mode. Dimmed and unusable,
+   but the value stays readable — the user still needs to see what it is set to,
+   and a note beside it says why it is off. */
+.control.is-inert {
+  opacity: 0.45;
+}
+
+.control.is-inert .control-range,
+.control.is-inert input[type="checkbox"] {
+  cursor: not-allowed;
+}
+
+/* Saving a preset sits with the presets, not three pages away under a
+   different name. */
+.preset-save {
+  display: grid;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.preset-save .control-number {
+  width: 100%;
+}

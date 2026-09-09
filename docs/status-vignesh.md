@@ -378,6 +378,40 @@ the field is purely additive. Say if you would rather it came back out.
   are real and every field on the Outcome, the sensitivity rows and the Pareto
   points is computed.
 
+## Eight interface fixes
+
+Ranga, all of these are in your half and all were reported against the built app.
+
+- **"Two years" was hardcoded in four places** while run length is a slider from
+  90 to 1095 days. At 180 days the app still claimed two years of allocation.
+  `src/ui/runLength.ts` turns the duration into words, read off the config the
+  engine echoed back, and the page claim is duration-neutral now.
+- **The age-band sentence contradicted itself when nothing was transplanted.**
+  With a 4 hour cold ischemia ceiling - one drag - every band is zero, and the
+  note picked `rows[0]` as the leader and then listed that same band among the
+  ones that had stopped. There is an all-zero branch now, and the band list joins
+  on commas rather than a chain of "and".
+- **"usually about about 14 seconds."** `ProgressBar` prepended "about" and four
+  callers passed a string starting with "about". The component no longer adds it.
+- **The landing page never left.** `leaving` was set and never cleared, so
+  HomePage stayed mounted behind the simulator - visible, clickable, in the tab
+  order - and the first Tab stop in the app was an invisible "Open the simulator"
+  button at -620px. It unmounts when the slide finishes, and `.home.is-leaving`
+  now takes `visibility: hidden` the way `.simulator.is-behind` already did.
+- **The weight sliders did nothing in cascade and first-come mode** and nothing
+  said so. They are disabled with the reason stated. Same for the rota, urgent
+  supersedes rota and retrieval hospital keeps in score mode.
+- **The trade-off scatter had no axis titles.** The `name` props reach the
+  tooltip only, so the headline chart of the page showed two unlabelled number
+  ranges.
+- **"Hide controls" did not give the width back.** The grid column stayed at
+  320px, leaving an empty column with a floating button in it. Drawer open state
+  is lifted to App so the grid can collapse the column: 888px to 1099px.
+- **Saving a preset was only reachable under "Scenarios" on the Compare page**,
+  which is not where anyone looks for a preset. There is a "Your presets" row
+  with a name field and Save directly under the built-in preset buttons, and
+  saved ones apply on click.
+
 ## Saved scenarios persist across a reload now
 
 On Vignesh's call, overturning the original "held in memory" decision. A saved

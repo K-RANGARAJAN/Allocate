@@ -29,8 +29,16 @@
   align-items: start;
 }
 
+/* Collapsed drawer: the column shrinks to the toggle button so the results
+   actually gain the width. It used to stay at 320px, leaving an empty column
+   with a floating "Show controls" button in it. */
+.layout.is-collapsed {
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
 @media (max-width: 900px) {
-  .layout {
+  .layout,
+  .layout.is-collapsed {
     grid-template-columns: minmax(0, 1fr);
   }
 }

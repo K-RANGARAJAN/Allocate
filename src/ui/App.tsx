@@ -9,6 +9,7 @@ import { WhatMovesItPage } from "./pages/WhatMovesItPage";
 import { WhoItReachesPage } from "./pages/WhoItReachesPage";
 import { useState } from "react";
 
+import { runLengthLabel } from "./runLength";
 import { PAGES, useActivePage } from "./state/useActivePage";
 import { useEngineWorker } from "./state/useEngineWorker";
 import { usePolicyRun } from "./state/usePolicyRun";
@@ -20,16 +21,31 @@ export function App() {
   const worker = useEngineWorker();
   const nav = useActivePage();
   const [leaving, setLeaving] = useState(false);
+  // Lifted out of the drawer so the grid can reclaim the column when it closes.
+  // Collapsing it used to leave a 320px empty column with a floating "Show
+  // controls" button in it, which is the opposite of giving a chart the width.
+  const [controlsOpen, setControlsOpen] = useState(true);
 
   const onHome = nav.page === "home";
 
   // The landing page starts its slide first and the switch follows, so page 1
   // is already rendered underneath and fades in as the cover leaves.
+  //
+  // `leaving` used to be set and never cleared, which kept HomePage mounted
+  // forever behind the simulator: translated off the top of the screen but
+  // still visible, still clickable and still in the tab order, so the first Tab
+  // stop in the whole app was an invisible "Open the simulator" button at
+  // -620px. It is now cleared once the slide has finished, which unmounts it.
+  const SLIDE_MS = 500;
+
   function openSimulator() {
     setLeaving(true);
     setTimeout(() => {
       nav.setPage("outcome");
     }, 30);
+    setTimeout(() => {
+      setLeaving(false);
+    }, SLIDE_MS + 60);
   }
 
   let home = null;
@@ -53,6 +69,11 @@ export function App() {
     );
   }
 
+  let layoutClass = "layout";
+  if (controlsOpen === false) {
+    layoutClass = "layout is-collapsed";
+  }
+
   let simulatorClass = "simulator";
   if (onHome) {
     simulatorClass = "simulator is-behind";
@@ -67,7 +88,9 @@ export function App() {
 
   let body = (
     <section className="panel">
-      <p className="panel-note">Simulating two years of allocation…</p>
+      <p className="panel-note">
+        Simulating {runLengthLabel(run.config.sim.durationDays)} of allocation…
+      </p>
     </section>
   );
 
@@ -122,11 +145,20 @@ export function App() {
             Skip to results
           </a>
           <p className="page-claim">{claim}</p>
-          <div className="layout">
+          <div className={layoutClass}>
             <ControlsDrawer
+              open={controlsOpen}
+              setOpen={setControlsOpen}
               config={run.config}
               setConfig={run.setConfig}
               setWholeConfig={run.setWholeConfig}
+              saved={scenarios.scenarios}
+              onSavePreset={(name) => {
+                if (run.outcome !== null) {
+                  scenarios.save(run.outcome, name);
+                }
+              }}
+              onRemovePreset={scenarios.remove}
             />
             <div id="results" tabIndex={-1}>
               {body}

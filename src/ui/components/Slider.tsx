@@ -12,6 +12,10 @@ export interface SliderProps {
   max: number;
   step: number;
   suffix?: string;
+  // Set when the engine ignores this control under the current mode. The
+  // control still shows its value; it just cannot be dragged, because a slider
+  // that moves and changes nothing reads as a broken app.
+  disabled?: boolean;
   onChange: (next: number) => void;
 }
 
@@ -37,8 +41,13 @@ export function Slider(props: SliderProps) {
     props.onChange(next);
   }
 
+  let className = "control";
+  if (props.disabled === true) {
+    className = "control is-inert";
+  }
+
   return (
-    <label className="control">
+    <label className={className}>
       <span className="control-head">
         <ControlLabel label={props.label} hint={props.hint} />
         <span className="control-value num">
@@ -53,6 +62,7 @@ export function Slider(props: SliderProps) {
         max={props.max}
         step={props.step}
         value={props.value}
+        disabled={props.disabled}
         onChange={handleChange}
       />
     </label>

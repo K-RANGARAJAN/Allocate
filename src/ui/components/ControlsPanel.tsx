@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { Dispatch, SetStateAction } from "react";
 
 import type { PolicyConfig, ZoneId } from "../../contract/types";
+import type { Scenario } from "../state/useScenarios";
 import { CollapsibleGroup } from "./CollapsibleGroup";
 import { Select } from "./Select";
 import { NumberField } from "./NumberField";
@@ -13,6 +14,9 @@ export interface ControlsPanelProps {
   config: PolicyConfig;
   setConfig: Dispatch<SetStateAction<PolicyConfig>>;
   setWholeConfig: (next: PolicyConfig) => void;
+  saved: Scenario[];
+  onSavePreset: (name: string) => void;
+  onRemovePreset: (id: number) => void;
 }
 
 type WeightKey = keyof PolicyConfig["weights"];
@@ -103,6 +107,31 @@ export function ControlsPanel(props: ControlsPanelProps) {
     setConstraint("maxAgeToList", null);
   }
 
+  // Only the weighted score reads the three weights: a cascade allocates by
+  // tier and first-come by wait length, so both ignore them entirely. And only
+  // the cascade reads the rota and the retrieval-hospital share. Leaving either
+  // set draggable while the numbers never move reads as a broken app, so they
+  // are disabled and the reason is stated.
+  const weightsInert = config.mode !== "score";
+  const cascadeInert = config.mode !== "cascade";
+
+  let weightsNote =
+    "Weights need not sum to 1. The engine normalises them before scoring, so three equal values mean an equal split.";
+  if (weightsInert) {
+    weightsNote =
+      "These are off because the weighted score is the only rule that reads them. A cascade allocates by tier and first come by waiting time, so neither scores one patient against another. Switch the allocation mode to use them.";
+  }
+
+  let cascadeNote = null;
+  if (cascadeInert) {
+    cascadeNote = (
+      <p className="panel-note">
+        The rota and the retrieval hospital share are off because only the
+        cascade consults them. They wake up in cascade mode.
+      </p>
+    );
+  }
+
   const maxAge = config.constraints.maxAgeToList;
   let ageLimitOn = false;
   if (maxAge !== null) {
@@ -131,11 +160,13 @@ export function ControlsPanel(props: ControlsPanelProps) {
         open={open === "priorities"}
         onToggle={() => toggle("priorities")}
       >
-        <PresetButtons onPick={props.setWholeConfig} />
-        <p className="panel-note">
-          Weights need not sum to 1. The engine normalises them before scoring,
-          so three equal values mean an equal split.
-        </p>
+        <PresetButtons
+          onPick={props.setWholeConfig}
+          saved={props.saved}
+          onSave={props.onSavePreset}
+          onRemove={props.onRemovePreset}
+        />
+        <p className="panel-note">{weightsNote}</p>
         <Slider
           label="Urgency"
           hint="weights.urgency"
@@ -143,6 +174,7 @@ export function ControlsPanel(props: ControlsPanelProps) {
           min={0}
           max={1}
           step={0.01}
+          disabled={weightsInert}
           onChange={(next) => setWeight("urgency", next)}
         />
         <Slider
@@ -152,6 +184,7 @@ export function ControlsPanel(props: ControlsPanelProps) {
           min={0}
           max={1}
           step={0.01}
+          disabled={weightsInert}
           onChange={(next) => setWeight("lifeYears", next)}
         />
         <Slider
@@ -161,6 +194,7 @@ export function ControlsPanel(props: ControlsPanelProps) {
           min={0}
           max={1}
           step={0.01}
+          disabled={weightsInert}
           onChange={(next) => setWeight("waitingTime", next)}
         />
       </CollapsibleGroup>
@@ -198,6 +232,7 @@ export function ControlsPanel(props: ControlsPanelProps) {
           step={1}
           onChange={(next) => setConstraint("minUrgencyToList", next)}
         />
+        {cascadeNote}
         <Slider
           label="Retrieval hospital keeps"
           hint="retrievalHospitalKeeps"
@@ -205,6 +240,7 @@ export function ControlsPanel(props: ControlsPanelProps) {
           min={0}
           max={2}
           step={1}
+          disabled={cascadeInert}
           onChange={(next) => setConstraint("retrievalHospitalKeeps", next)}
         />
         <Toggle
@@ -217,12 +253,14 @@ export function ControlsPanel(props: ControlsPanelProps) {
           label="Hospital rota"
           hint="rotaEnabled"
           checked={config.constraints.rotaEnabled}
+          disabled={cascadeInert}
           onChange={(next) => setConstraint("rotaEnabled", next)}
         />
         <Toggle
           label="Urgent supersedes rota"
           hint="urgentSupersedesRota"
           checked={config.constraints.urgentSupersedesRota}
+          disabled={cascadeInert}
           onChange={(next) => setConstraint("urgentSupersedesRota", next)}
         />
         <Toggle
